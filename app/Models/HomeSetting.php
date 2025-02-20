@@ -19,4 +19,7 @@ class HomeSetting extends Model
     public function experinceFour() {
         return $this->belongsTo(Experience::class,'experience4','id');
     }
+     public function experinceFive() {
+        return $this->belongsTo(Experience::class,'experience5','id');
+    }
 }

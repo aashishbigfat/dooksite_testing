@@ -18,12 +18,13 @@
                         <li class="nav-item" role="presentation">
                             <a class="nav-link an_flight active" id="simple-tab-1" data-bs-toggle="tab" href="#tour" role="tab" aria-controls="simple-tabpanel-1" aria-selected="false"><img src="{{asset('assets/images/icons/globe1.png')}}" alt=""> Tours</a>
                         </li>
+                           <li class="nav-item" role="presentation">
+                            <a class="nav-link  an_flight" id="simple-tab-0" data-bs-toggle="tab" href="#flight" role="tab" aria-controls="simple-tabpanel-0" aria-selected="true"><img src="{{asset('assets/images/icons/take-flight.png')}}" alt=""> Flights</a>
+                        </li>
                         <li class="nav-item" role="presentation">
                             <a class="nav-link an_flight" id="simple-tab-2" data-bs-toggle="tab" href="#hotel" role="tab" aria-controls="simple-tabpanel-2" aria-selected="false"><img src="{{asset('assets/images/icons/hotel-construction-iconSvg-co.png')}}" alt=""> Hotels</a>
                         </li>
-                        <li class="nav-item" role="presentation">
-                            <a class="nav-link  an_flight" id="simple-tab-0" data-bs-toggle="tab" href="#flight" role="tab" aria-controls="simple-tabpanel-0" aria-selected="true"><img src="{{asset('assets/images/icons/take-flight.png')}}" alt=""> Flights</a>
-                        </li>
+                     
                     </ul>
                     <div class="tab-content pt-3" id="tab-content">
                         <div class="tab-pane" id="flight" role="tabpanel" aria-labelledby="simple-tab-0">
@@ -305,7 +306,7 @@
     <section class="package_dest">
         <div class="container">
             <!-- GROUP TOURS -->
-            <div class="row pt-5" style="margin-bottom: -100px;">
+            <div class="row" style="margin-bottom: -100px;">
                 <div class="col-md-6">
                     <div class="blog_section pb-4">
                         <h5>OUR GROUP TOURS</h5>
@@ -328,8 +329,8 @@
                                             <p class="best_sell">BEST SELLING</p>
                                         @endif
                                     </div>
-                                    <div class="card-body" style="margin-top: -25px;">
-                                        <h6>{{$groupTour['Name']}}</h6>
+                                    <div class="card-body pack_height" >
+                                       <h6>{{ explode('-', $groupTour['Name'])[0] }}</h6>
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <p>{{$groupTour['DayNight']}}</p>
@@ -361,13 +362,13 @@
                                             </div>
                                             <div class="col-md-12 hightlights mt-3">
                                                 <h6>Tours Highlights</h6>
-                                                <ul class="hightlights">
+                                                <ul class="hightlights m-0">
                                                     @foreach (getFirstNonNullAttraction($groupTour['Itinerary']) as $attraction)
                                                         <li>{{$attraction['Name']}}</li>
                                                     @endforeach      
                                                 </ul>
                                                 <p >
-                                                    {{-- <small class="text-decoration-line-through">₹ 1,80,014</small>  --}}
+                                                    <small class="text-decoration-line-through"> ₹{{ formatIndianNumber($groupTour['Price'] + (round($groupTour['Price'] * 0.05))) }}</small>  
                                                     <span>₹{{formatIndianNumber($groupTour['Price'])}}</span>
                                                 </p>
                                             </div>
@@ -385,54 +386,22 @@
                     <h6>DOOK SPECIAL</h6>
                     <h4>WHY TRAVEL WITH DOOK?</h4>
                 </div>
-                <div class="col-md-3">
+                @foreach ($dook_special as $dookspecial)
+                <div class="col-md-3 pb-2 pt-2">
+                   <a href="{{$dookspecial->slug}}" target="_blank">
                     <div class="card" style="border-radius: 20px;">
-                        <img src="{{asset('assets/images/image(11).png')}}" class="card-img-top" alt="...">
+                        <img src="{{asset('assets/images')}}/{{$dookspecial->image}}" class="card-img-top" alt="...">
                         <div class="dook_special1 shadow">
-                            <img src="{{asset('assets/images/icons/users.png')}}" class="w-auto" style="top: 13px;position: relative;">
+                            <img src="{{asset('assets/images/icons/')}}/{{$dookspecial->icon_image}}" class="w-auto" style="top: 13px;position: relative;">
                         </div>
                         <div class="card-body" style="margin-top: -30px;">
-                            <h3 class="text-dark">2000+</h3>
-                            <h6 class="text-dark">GROUP TOURS</h6>
+                            <h3 class="text-dark">{{ $dookspecial->count}}</h3>
+                            <h6 class="text-dark">{{ $dookspecial->title ?? ''}}</h6>
                         </div>
                     </div>
+                   </a>
                 </div>
-                <div class="col-md-3">
-                    <div class="card" style="border-radius: 20px;">
-                        <img src="{{asset('assets/images/image(12).png')}}" class="card-img-top" alt="...">
-                        <div class="dook_special1 shadow">
-                            <img src="{{asset('assets/images/icons/globe.png')}}" class="w-auto" style="top: 13px;position: relative;">
-                        </div>
-                        <div class="card-body" style="margin-top: -30px;">
-                            <h3 class="text-dark">500+</h3>
-                            <h6 class="text-dark">Destinations</h6>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card" style="border-radius: 20px;">
-                        <img src="{{asset('assets/images/image().png')}}" class="card-img-top" alt="...">
-                        <div class="dook_special1 shadow">
-                            <img src="{{asset('assets/images/icons/briefcase.png')}}" class="w-auto" style="top: 13px;position: relative;">
-                        </div>
-                        <div class="card-body" style="margin-top: -30px;">
-                            <h3 class="text-dark">50+</h3>
-                            <h6 class="text-dark">EXPERIENCES</h6>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card" style="border-radius: 20px;">
-                        <img src="{{asset('assets/images/image(14).png')}}" class="card-img-top" alt="...">
-                        <div class="dook_special1 shadow">
-                            <img src="{{asset('assets/images/icons/Group 48098666.png')}}" class="w-auto" style="top: 13px;position: relative;">
-                        </div>
-                        <div class="card-body" style="margin-top: -30px;">
-                            <h3 class="text-dark">45K+</h3>
-                            <h6 class="text-dark">HAPPY CUSTOMER</h6>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
             <!-- bestselling -->
             <div class="row pb-5 pt-5">
@@ -451,13 +420,16 @@
                         @foreach ($departures as $departure)
                             <div class="item">
                                 <div class="card">
-                                    <img src="{{env('AWS_BUCKET_URL').'/package/'.$departure->image}}" class="card-img-top" alt="...">
-                                    {{-- <div class="best_selling">
-                                        <img src="./images/icons/Rectangle 19435.png" class="w-auto">
-                                        <p class="best_sell">BEST SELLING</p>
-                                    </div> --}}
+                                    <a href="{{ url($departure->slug_url_pre.'/'.$departure->slug_url.'/'.$departure->dep_dook_ref_id) }}" target="_blank">
+                                    <img src="{{env('AWS_BUCKET_URL').'/package/'.$departure->image}}" class="card-img-top" alt="...">                                     
+                                      @if($departure->featured == 1)
+                                        <div class="best_selling">
+                                            <img src="{{ asset('assets/images/icons/Rectangle19435.png') }}" class="w-auto">
+                                            <p class="best_sell">Best Selling</p>
+                                        </div> 
+                                    @endif
                                     {{-- @dd($departure) --}}
-                                    <div class="card-body" style="margin-top: -45px;">
+                                    <div class="card-body pack_height">
                                         <h6>{{$departure->title}}</h6>
                                         <div class="row">
                                             <div class="col-md-6">
@@ -477,7 +449,7 @@
                                             </div>
                                             <div class="col-md-12 hightlights mt-3">
                                                 <h6>Tours Highlights</h6>
-                                                <ul class="hightlights">
+                                                <ul class="hightlights m-0">
                                                     <li>Munnar Beach</li>
                                                     <li>Varkala Beach</li>
                                                     <li>Periyar National Park</li>
@@ -485,13 +457,14 @@
                                                 </ul>
                                                 @if ($departure->price !='' || !is_null($departure->price))
                                                     <p>
-                                                        {{-- <small class="text-decoration-line-through">₹ 1,80,014</small>  --}}
+                                                        <small class="text-decoration-line-through">₹{{ formatIndianNumber($departure->price + (round($departure->price * 0.05))) }}</small> 
                                                         <span>₹ {{formatIndianNumber($departure->price)}}</span>
                                                     </p>
                                                 @endif
                                             </div>
                                         </div>
                                     </div>
+                                </a>
                                 </div>
                             </div>
                         @endforeach
@@ -507,15 +480,17 @@
                 </div>
                 <div class="col-md-6 d-flex justify-content-end">
                     <div class="blog_section pb-4">
-                        <h6>All Destination <img src="{{asset('assets/images/arrow.png')}}"></h6>
+                        <h6><a href="{{route('frontend.destinations')}}" target="_blank">All Destination <img src="{{asset('assets/images/arrow.png')}}"></a></h6>
                     </div>
                 </div>
-                <div class="row">
-                    @foreach ($topDestinations as $topDestination)
-                        <div class="col-md-2 text-center">
-                            <img src="{{env('AWS_BUCKET_URL').'/poi/'.$topDestination->destination->image}}">
+                <div class="row p-0">
+                    @foreach ($topDestinations as $topDestination) 
+                        <div class="col-md-2 text-center col-6">
+                             <a href="{{url('destinations')}}/{{$topDestination->destination->slug_url}}" target="_blank">
+                            <img src="{{env('AWS_BUCKET_URL').'/poi/'.$topDestination->destination->image}}" class="dest_imgan">
                             <p class="an_dest">{{$topDestination->departureDestination->count()}} TOURS</p>
                             <h6 class="mt-3">{{$topDestination->destination->actualname}}</h6>
+                        </a>
                         </div>
                     @endforeach
                 </div>
@@ -560,80 +535,69 @@
                 <div class="col-md-9">
                     <div class="row">
                         <div class="col-md-8">
+                             <a href="{{url('/')}}/{{$homeSettings->experinceOne->slug_url}}" class="" target="_blank">
                             <div class="exp_img1" style="background: url('{{env('AWS_BUCKET_URL').'/home/'.$homeSettings->exp_image1}}')">
                                 <div class="honeymoon">
                                     <h4>{{$homeSettings->experinceOne->experience_name}}</h4>
                                 </div>
                             </div>
+                        </a>
                         </div>
                         <div class="col-md-4">
+                             <a href="{{url('/')}}/{{$homeSettings->experinceTwo->slug_url}}" class="" target="_blank">
                             <div class="exp_img2" style="background: url('{{env('AWS_BUCKET_URL').'/home/'.$homeSettings->exp_image2}}')">
 
                                 <div class="family">
                                     <h4>{{$homeSettings->experinceTwo->experience_name}}</h4>
                                 </div>
                             </div>
+                        </a>
                         </div>
                     </div>
                     <div class="row mt-4">
                         <div class="col-md-4">
+                             <a href="{{url('/')}}/{{$homeSettings->experinceThree->slug_url}}" class="" target="_blank">
                             <div class="exp_img3" style="background: url('{{env('AWS_BUCKET_URL').'/home/'.$homeSettings->exp_image3}}')">
                                 <div class="shopping">
                                     <h4>{{$homeSettings->experinceThree->experience_name}}</h4>
                                 </div>
                             </div>
+                        </a>
                         </div>
                         <div class="col-md-8">
+                             <a href="{{url('/')}}/{{$homeSettings->experinceFour->slug_url}}" class="" target="_blank">
                             <div class="exp_img4" style="background: url('{{env('AWS_BUCKET_URL').'/home/'.$homeSettings->exp_image4}}')">
                                 <div class="nightlife">
                                     <h4>{{$homeSettings->experinceFour->experience_name}}</h4>
                                 </div>
                             </div>
+                        </a>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="exp_img5">  
+                    <a href="{{url('/')}}/{{$homeSettings->experinceFive->slug_url}}" class="" target="_blank">
+                    <div class="exp_img5" style="background: url('{{env('AWS_BUCKET_URL').'/home/'.$homeSettings->exp_image5}}')">  
                         <div class="turkey">
-                            <h4>Exotic Turkey</h4>
+                            <h4>{{$homeSettings->experinceFive->experience_name}}</h4>
                         </div>
                     </div>
+                   </a>
                 </div>
             </div>
         </div>
     </section>
     <!-- testimonial -->
-    <section class="testimonial">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-6 testi">
-                    <p>Testimonials</p>
-                    <h4>Travelers love our locals</h4>
-                    <div><span class="fa fa-star checked"></span>
-                        <span class="fa fa-star checked"></span>
-                        <span class="fa fa-star checked"></span>
-                        <span class="fa fa-star checked"></span>
-                        <span class="fa fa-star checked"></span>
-                    </div>
-                    <p class="pt-3 testi_review">"Our tour with Dook Internation was just fantastic. We learnt so much about Vietnam history, culture and food, and of course tasted some amazing dishes along the way...”</p>
-                    <h4>Sumit Sharma</h4>
-                    <p>Customer</p>
-                </div>
-                <div class="col-md-6">
-                    <img src="{{asset('assets/images/Group48098714.png')}}">
-                </div>
-            </div>
-        </div>
-    </section>
+      @include('frontend.common.testimonial')
     <!-- blog section -->
-    <section class="bg-white">
+     <section class="bg-white">
         <div class="container">
             <div class="row mb-4 mt-4">
                 <div class="col-md-12 text-center">
                     <h4>{{$homeSettings->text_heading}}</h4>
                     <p class="color_gray pb-3">{{$homeSettings->text_sub_heading}}</p>
                 </div>
-                <div class="col-md-12">
+                <div class="col-md-12 color_gray">
                     {!!$homeSettings->description!!}
                 </div>
             </div>
@@ -643,49 +607,63 @@
                         <h6>STAY UPDATE WITH DOOK TIPS</h6>
                     </div>
                 </div>
-                <div class="col-md-6 d-flex justify-content-end">
+                 <div class="col-md-6 d-flex justify-content-end">
                     <div class="blog_section pb-4">
                         <h6>All Blogs Post <img src="{{asset('assets/images/arrow.png')}}"></h6>
                     </div>
-                </div>
-                    @foreach (getBlog() as $key=> $latestPost)
-                        @if ($key < 3)
-                            {{-- @dd($latestPost) --}}
-                            <div class="col-md-4">
-                                <div class="card">
-                                    <img src="{{$latestPost['image']}}" class="card-img-top" alt="...">
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-2">
-                                                <div class="blog_date text-center">
-                                                    <h4>{{date('d M',strtotime($latestPost['published_date']))}}</h4>
-                                                </div>
+                </div> 
+                 @foreach (getBlog() as $key=> $latestPost) 
+                    @if ($key < 3)
+                        <div class="col-md-4">
+                            <div class="card">
+                                <img src="{{$latestPost['image']}}" class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="blog_date text-center">
+                                                <h4>{{date('d M',strtotime($latestPost['published_date']))}}</h4>
                                             </div>
                                         </div>
-                                        <p>Travel <img src="{{asset('assets/images/icons/Rectangle19436.png')}}">  Admin <img src="{{asset('assets/images/icons/Rectangle19436.png')}}"> Coments (8)</p>
-                                        <h5 class="card-title">{{$latestPost['title']}}</h5>
-                                        <p class="card-text">{{$latestPost['short_description']}}</p>
-                                        <a href="javascript:void(0)" class="btn btn-danger">Read More</a>
                                     </div>
+                                    <p>Travel <img src="{{asset('assets/images/icons/Rectangle19436.png')}}">  Admin <img src="{{asset('assets/images/icons/Rectangle19436.png')}}"> Coments (8)</p>
+                                    <h5 class="card-title">{{$latestPost['title']}}</h5>
+                                    <p class="card-text"> {{ Str::limit($latestPost['short_description'], 100, '...') }}</p>
+                                    <a href="{{url('blog')}}/{{$latestPost['slug']}}/" target="_blank" class="btn btn-danger">Read More</a>
                                 </div>
                             </div>
-                        @endif
-                    @endforeach
+                        </div>
+                    @endif
+                @endforeach
                     
             </div>
         </div>
     </section>
+
     <!-- Quick Link Section -->
-    <div class="container" style="margin-bottom: 110px !important;">
+    <div class="container" style="margin-bottom: 85px !important;">
         <div class="row">
             <div class="col-md-12 footer_links">
-                <h6 class="mt-4">Quick Links</h6>
-                <p>Delhi Chennai Flights, Delhi Mumbai Flights, Delhi Goa Flights, Chennai Mumbai flights, Mumbai Hyderabad flights, Kolkata to Rupsi Flights, Rupsi to Guwahati Flights, Pasighat to Guwahati Flights, Delhi to Khajuraho Flights, Cochin to Agatti Island Flights, Hotels in Delhi, Hotels in Mumbai, Hotels In Goa, Hotels In Jaipur, Hotels In Ooty, Hotels In Udaipur, Hotels in Puri, Hotels In North Goa, Hotels In Rishikesh, Honeymoon Packages, Kerala Packages, Kashmir Packages, Ladakh Packages, Goa Packages, Thailand Packages, Sri Lanka Visa, Thailand Visa, Explore Goa, Explore Manali, Explore Shimla, Explore Jaipur, Explore Srinagar
-                </p>
-                <h6 class="mt-4">About the Site</h6>
-                <p>Customer Support, Payment Security, Privacy Policy, Cookie Policy, User Agreement, Terms of Service, Franchise Offices, Make A Payment, Work From Home, Escalation Channel, Report Security Issues</p>
-                <h6 class="mt-4">Important Links</h6>
-                <p>Cheap Flights, Flight Status, Kumbh Mela, Domestic Airlines, International Airlines, Indigo, Spicejet, GoAir, Air Asia, Air India, Indian Railways, Trip Ideas, Beaches, Honeymoon Destinations, Romantic Destinations, Popular Destinations, Resorts In Udaipur, Resorts In Munnar, Villas In Lonavala, Hotels in Thailand, Villas In Goa, Domestic Flight Offers, International Flight Offers, UAE Flight Offers, USA, UAE, Saudi Arabia, UK, Oman</p>
+                <h6 class="mt-4">Popular Countries</h6>
+                 <ul class="listInlinecoma" style="text-align: justify;">
+                    @foreach($countries as $key => $country)
+                    <li><a href="{{url('/')}}/{{$country->slug}}" class=""
+                            target="_blank">{{$country->name}}</a></li>
+                    @endforeach
+                </ul>
+                <h6 class="mt-4">Popular Destinations</h6>
+                 <ul class="listInlinecoma" style="text-align: justify;">
+                    @foreach($destinations as $key => $destination)
+                    <li><a href="{{url('destinations')}}/{{$destination->slug}}" class=""
+                            target="_blank">{{$destination->name}}</a></li>
+                    @endforeach
+                </ul>
+                <h6 class="mt-4">Popular Experiences</h6>
+                 <ul class="listInlinecoma" style="text-align: justify;">
+                        @foreach($experiences as $key => $experience)
+                        <li><a href="{{url('/')}}/{{$experience->slug}}" class=""
+                                target="_blank">{{$experience->name}}</a></li>
+                        @endforeach
+                    </ul>
             </div>
         </div>
     </div>
