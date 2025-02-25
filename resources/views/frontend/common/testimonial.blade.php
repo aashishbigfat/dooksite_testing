@@ -16,7 +16,7 @@
                     <p>Customer</p>
                 </div>
                 <div class="col-md-6">
-                    <img src="{{asset('assets/images/Group48098714.png')}}">
+                    <img src="{{asset('assets/images/Group48098714.png')}}" class="img-fluid" />
                 </div>
             </div>
         </div>

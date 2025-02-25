@@ -1,6 +1,6 @@
+  @foreach($departures as $departure)
+   <div class="col-md-4 mb-4"> 
     <div class="card">
-        <!-- <a href="{{ url($departure->slug1.'/'.$departure->slug2.'/'.$departure->slug3) }}" target="_blank"> -->
-
             <a href="{{ $departure->slug1 === 'group-tours' ? route('frontend.agentdeparture', ['slug' => $departure->slug2, 'id' => $departure->slug3]) : url($departure->slug1.'/'.$departure->slug2.'/'.$departure->slug3) }}" target="_blank">
             <img src="{{ $departure->image}}" class="card-img-top" alt="...">
 
@@ -50,4 +50,5 @@
             </div>
         </a>
     </div>
-
+  </div>
+ @endforeach

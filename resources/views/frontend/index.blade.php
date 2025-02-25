@@ -9,20 +9,20 @@
         <div class="row mt-4">
             <div class="col-md-6">
                 <div class="heading-section">
-                    <p class="my-0">{{$homeSettings->banner_title}}</p>
+                    <p class="my-0">FIND AWESOME FLIGHTS,HOTEL,TOUR AND PACKAGES</p>
                     <h2 class="fw-bold my-0">EXPLORE THE WORLD <br />TOGETHER</h2>
                     <span>Thinking of taking a breal from every day's life? Dont't worry,we take care of your trip.</span>
                 </div>
                 <div class="card py-4 px-4">
                     <ul class="nav nav-tabs" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link an_flight active" id="simple-tab-1" data-bs-toggle="tab" href="#tour" role="tab" aria-controls="simple-tabpanel-1" aria-selected="false"><img src="{{asset('assets/images/icons/globe1.png')}}" alt=""> Tours</a>
+                            <a class="nav-link an_flight active p-1 mx-1" id="simple-tab-1" data-bs-toggle="tab" href="#tour" role="tab" aria-controls="simple-tabpanel-1" aria-selected="false"><img src="{{asset('assets/images/icons/globe1.png')}}" alt=""> Tours</a>
                         </li>
-                           <li class="nav-item" role="presentation">
-                            <a class="nav-link  an_flight" id="simple-tab-0" data-bs-toggle="tab" href="#flight" role="tab" aria-controls="simple-tabpanel-0" aria-selected="true"><img src="{{asset('assets/images/icons/take-flight.png')}}" alt=""> Flights</a>
+                         <li class="nav-item" role="presentation">
+                            <a class="nav-link  an_flight p-1 mx-2" id="simple-tab-0" data-bs-toggle="tab" href="#flight" role="tab" aria-controls="simple-tabpanel-0" aria-selected="true"><img src="{{asset('assets/images/icons/take-flight.png')}}" alt=""> Flights</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link an_flight" id="simple-tab-2" data-bs-toggle="tab" href="#hotel" role="tab" aria-controls="simple-tabpanel-2" aria-selected="false"><img src="{{asset('assets/images/icons/hotel-construction-iconSvg-co.png')}}" alt=""> Hotels</a>
+                            <a class="nav-link an_flight p-1 mx-1" id="simple-tab-2" data-bs-toggle="tab" href="#hotel" role="tab" aria-controls="simple-tabpanel-2" aria-selected="false"><img src="{{asset('assets/images/icons/hotel-construction-iconSvg-co.png')}}" alt=""> Hotels</a>
                         </li>
                      
                     </ul>
@@ -37,16 +37,16 @@
                                 </ul>
                                 <form>
                                     <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="from_flight px-3 py-2">
+                                        <div class="col-md-6 col-6">
+                                            <div class="from_flight px-2 py-2">
                                                 <label for="exampleInputPassword1" class="form-label">From </label>
                                                 <img src="{{asset('assets/images/icons/take-flight1.png')}}" alt="" style="float: right;">
                                                 <input type="text" class="form-control" id="exampleInputPassword1" placeholder="New Delhi" style="margin-bottom: -7px;margin-top: -6px;">
                                                 <span>DEL, Indira Gandhi International Airport</span>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="from_flight px-3 py-2">
+                                        <div class="col-md-6 col-6">
+                                            <div class="from_flight px-2 py-2">
                                                 <label for="exampleInputPassword1" class="form-label">To </label>
                                                 <img src="{{asset('assets/images/icons/take-flightto-1.png')}}" alt="" style="float: right;">
                                                 <input type="text" class="form-control" id="exampleInputPassword1" placeholder="New Delhi" style="margin-bottom: -7px;margin-top: -6px;">
@@ -55,15 +55,15 @@
                                         </div>
                                         <div class="row mt-3 align-items-center">
                                             <div class="from_flight" style="display: flex;margin-left: 13px;">
-                                                <div class="col-md-6 border-end">
-                                                    <div class="">
+                                                <div class="col-md-6 border-end col-6">
+                                                    <div class=" px-1 py-1">
                                                         <label for="exampleInputPassword1" class="form-label">Journey date </label>
                                                         <input type="date" class="form-control" id="exampleInputPassword1" placeholder="05-12-2024" style="margin-bottom: -7px;margin-top: -6px;">
                                                         <span>Thursday</span>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
-                                                    <div class=" px-3 py-2">
+                                                <div class="col-md-6 col-6">
+                                                    <div class=" px-1 py-1">
                                                         <label for="exampleInputPassword1" class="form-label">Journey date </label>
                                                         <input type="date" class="form-control" id="exampleInputPassword1" placeholder="05-12-2024" style="margin-bottom: -7px;margin-top: -6px;">
                                                         <span>Thursday</span>
@@ -71,15 +71,15 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6 mt-3">
-                                            <div class="from_flight px-3 py-2">
+                                        <div class="col-md-6 mt-3 col-6">
+                                            <div class="from_flight px-2 py-2">
                                                 <label for="exampleInputPassword1" class="form-label">Passenger, Class</label>
                                                 <input type="text" class="form-control" id="exampleInputPassword1" placeholder="0 Passenger" style="margin-bottom: -7px;margin-top: -6px;">
                                                 <span>Business</span>
                                             </div>
                                         </div>
-                                        <div class="col-md-6 col-md-6 d-flex align-items-end justify-content-center">
-                                            <button class="btn btn-danger" type="submit">Search</button>
+                                        <div class="col-md-6 col-6 d-flex align-items-end justify-content-center">
+                                            <button class="btn btn-danger w-100" type="submit">Search</button>
                                         </div>
                                     </div>
                                 </form>
@@ -96,16 +96,16 @@
                                         </div>
                                     </div>
                                     <div class="row mt-3 align-items-center">
-                                        <div class="from_flight" style="display: flex;margin-left: 13px;">
-                                            <div class="col-md-6 border-end">
-                                                <div class="">
+                                          <div class="from_flight" style="display: flex;margin-left: 13px;">
+                                            <div class="col-md-6 border-end col-6">
+                                                <div class=" px-1 py-1">
                                                     <label for="exampleInputPassword1" class="form-label">Journey date </label>
                                                     <input type="date" class="form-control" id="exampleInputPassword1" placeholder="05-12-2024" style="margin-bottom: -7px;margin-top: -6px;">
                                                     <span>Thursday</span>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class=" px-3 py-2">
+                                            <div class="col-md-6 col-6">
+                                                <div class=" px-1 py-1">
                                                     <label for="exampleInputPassword1" class="form-label">Journey date </label>
                                                     <input type="date" class="form-control" id="exampleInputPassword1" placeholder="05-12-2024" style="margin-bottom: -7px;margin-top: -6px;">
                                                     <span>Thursday</span>
@@ -113,15 +113,15 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 mt-3">
+                                    <div class="col-md-6 mt-3 col-6">
                                         <div class="from_flight px-3 py-2">
                                             <label for="exampleInputPassword1" class="form-label">Passenger, Class</label>
                                             <input type="text" class="form-control" id="exampleInputPassword1" placeholder="0 Passenger" style="margin-bottom: -7px;margin-top: -6px;">
                                             <span>Business</span>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 col-md-6 d-flex align-items-end justify-content-center">
-                                        <button class="btn btn-danger" type="submit">Search</button>
+                                    <div class="col-md-6 col-6 d-flex align-items-end justify-content-center">
+                                        <button class="btn btn-danger w-100" type="submit">Search</button>
                                     </div>
                                 </div>
                             </form>
@@ -129,14 +129,14 @@
                         <div class="tab-pane" id="hotel" role="tabpanel" aria-labelledby="simple-tab-2">
                             <form>
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 col-6">
                                         <div class="from_flight px-3 py-2">
                                             <label for="exampleInputPassword1" class="form-label">Destination </label>
                                             <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Where are you going?" style="margin-bottom: -7px;margin-top: -6px;">
                                             <span>Where are you going?</span>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 col-6">
                                         <div class="from_flight px-3 py-2">
                                             <label for="exampleInputPassword1" class="form-label">Country </label>
                                             <input type="text" class="form-control" id="exampleInputPassword1" placeholder="India" style="margin-bottom: -7px;margin-top: -6px;">
@@ -144,16 +144,16 @@
                                         </div>
                                     </div>
                                     <div class="row mt-3 align-items-center">
-                                        <div class="from_flight" style="display: flex;margin-left: 13px;">
-                                            <div class="col-md-6 border-end">
-                                                <div class="">
+                                         <div class="from_flight" style="display: flex;margin-left: 13px;">
+                                            <div class="col-md-6 border-end col-6">
+                                                <div class=" px-1 py-1">
                                                     <label for="exampleInputPassword1" class="form-label">Journey date </label>
                                                     <input type="date" class="form-control" id="exampleInputPassword1" placeholder="05-12-2024" style="margin-bottom: -7px;margin-top: -6px;">
                                                     <span>Thursday</span>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class=" px-3 py-2">
+                                            <div class="col-md-6 col-6">
+                                                <div class=" px-1 py-1">
                                                     <label for="exampleInputPassword1" class="form-label">Journey date </label>
                                                     <input type="date" class="form-control" id="exampleInputPassword1" placeholder="05-12-2024" style="margin-bottom: -7px;margin-top: -6px;">
                                                     <span>Thursday</span>
@@ -161,15 +161,15 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 mt-3">
+                                    <div class="col-md-6 mt-3 col-6">
                                         <div class="from_flight px-3 py-2">
                                             <label for="exampleInputPassword1" class="form-label">Passenger, Class</label>
                                             <input type="text" class="form-control" id="exampleInputPassword1" placeholder="0 Passenger" style="margin-bottom: -7px;margin-top: -6px;">
                                             <span>Business</span>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 col-md-6 d-flex align-items-end justify-content-center">
-                                        <button class="btn btn-danger" type="submit">Search</button>
+                                    <div class="col-md-6 col-6 d-flex align-items-end justify-content-center">
+                                        <button class="btn btn-danger w-100" type="submit">Search</button>
                                     </div>
                                 </div>
                             </form>
@@ -178,141 +178,227 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="row">
-                    <div class="col-md-4">
+                <div class="row p-2">
+                    <div class="col-md-4 col-4 p-1">
+                         <a href="group-tours/{{$campaign[0]['DookSlug']}}/{{$campaign[0]['DookDepartureId']}}" target="_blank">
                         <div class="group_img">
-                            <img src="{{asset('assets/images/Img_1.png')}}" />
+                            <img src="{{asset('assets/images/Img_1.png')}}" class="img-fluid" />
                             <div class="tour_1">
-                                <p>Sunset Vibes Summer Gala on the East Coast Adventure</p>
+                                <p>{{ explode('-', $campaign[0]['Name'])[0] }}</p>
                                 <ul class="d-flex p-0 px-1">
-                                    <li><img src="{{asset('assets/images/inclusion/airfarewhite.png')}}" alt="" class="px-1 w-auto"></li>
-                                    <li><img src="{{asset('assets/images/inclusion/trekkingwhite-27045311.png')}}" alt="" class="px-1 w-auto"></li>
-                                    <li><img src="{{asset('assets/images/inclusion/sailboatwhite-17434651.png')}}" alt="" class="px-1 w-auto"></li>
+                                     @php
+                                        $inclusions = [];
+                                        if(array_key_exists(0 ,$campaign[0]['DepartureDateWithPrice'])):
+                                            foreach ($campaign[0]['DepartureDateWithPrice'][0]['Inclusion'] as $inclusion):
+                                                $inclusions[] = $inclusion;
+                                            endforeach;
+                                        endif;
+                                        $attractions  = array_filter($campaign[0]['Itinerary'], function ($item) {
+                                            return !is_null($item['Attraction']);
+                                        });
+                                    @endphp
+                                    @if (count(getInclusionByName($inclusions)) > 0)
+                                        @foreach (getInclusionByName($inclusions) as $inclusion)
+                                          <li><img src="{{env('AWS_BUCKET_URL')}}/inclusion/{{$inclusion->icon }}" alt=""  class="px-1 inc_icon"></li>
+                                        @endforeach
+                                    @endif     
                                 </ul>
-                                <p style="margin-top: -20px;"><small class="text-decoration-line-through">₹ 1,80,014</small> <span>₹ 1,60,014</span></p>
+                                <p style="margin-top: -20px;"><small class="text-decoration-line-through">₹{{ formatIndianNumber($campaign[0]['Price'] + (round($campaign[0]['Price'] * 0.05))) }}</small> <span>₹{{formatIndianNumber($campaign[0]['Price'])}}</span></p> 
+                                   
                                 <div class="flag">
                                     <img src="{{asset('assets/images/icons/Rectangleyellow19435.png')}}" class="w-auto">
-                                    <p class="flag1">6 Nights</p>
+                                    <p class="flag1">{{$campaign[0]['nights_only']}}</p>
                                 </div>
                             </div>
                         </div>
+                     </a>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-4 p-1">
+                         <a href="group-tours/{{$campaign[1]['DookSlug']}}/{{$campaign[1]['DookDepartureId']}}" target="_blank">
                         <div class="group_img">
-                            <img src="{{asset('assets/images/Img_2.png')}}" />
+                            <img src="{{asset('assets/images/Img_2.png')}}" class="img-fluid" />
                             <div class="tour_2">
-                                <p>Sunset Vibes Summer Gala on 
-                                    the East Coast Adventure
-                                </p>
+                               <p>{{ explode('-', $campaign[1]['Name'])[0] }}</p>
                                 <ul class="d-flex p-0 px-1">
-                                    <li><img src="{{asset('assets/images/inclusion/airfarewhite.png')}}" alt="" class="px-1 w-auto"></li>
-                                    <li><img src="{{asset('assets/images/inclusion/trekkingwhite-27045311.png')}}" alt="" class="px-1 w-auto"></li>
-                                    <li><img src="{{asset('assets/images/inclusion/sailboatwhite-17434651.png')}}" alt="" class="px-1 w-auto"></li>
+                                      @php
+                                        $inclusions = [];
+                                        if(array_key_exists(0 ,$campaign[0]['DepartureDateWithPrice'])):
+                                            foreach ($campaign[0]['DepartureDateWithPrice'][0]['Inclusion'] as $inclusion):
+                                                $inclusions[] = $inclusion;
+                                            endforeach;
+                                        endif;
+                                        $attractions  = array_filter($campaign[0]['Itinerary'], function ($item) {
+                                            return !is_null($item['Attraction']);
+                                        });
+                                    @endphp
+                                    @if (count(getInclusionByName($inclusions)) > 0)
+                                        @foreach (getInclusionByName($inclusions) as $inclusion)
+                                          <li><img src="{{env('AWS_BUCKET_URL')}}/inclusion/{{$inclusion->icon }}" alt=""  class="px-1 inc_icon"></li>
+                                        @endforeach
+                                    @endif 
                                 </ul>
-                                <p style="margin-top: -20px;"><small class="text-decoration-line-through">₹ 1,80,014</small> <span>₹ 1,60,014</span></p>
+                                <p style="margin-top: -20px;"><small class="text-decoration-line-through">₹{{ formatIndianNumber($campaign[1]['Price'] + (round($campaign[1]['Price'] * 0.05))) }}</small> <span>₹{{formatIndianNumber($campaign[1]['Price'])}}</span></p> 
+                                   
                                 <div class="flag">
                                     <img src="{{asset('assets/images/icons/Rectangleyellow19435.png')}}" class="w-auto">
-                                    <p class="flag1">6 Nights</p>
+                                    <p class="flag1">{{$campaign[1]['nights_only']}}</p>
                                 </div>
                             </div>
                         </div>
+                        </a>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-4 p-1">
+                         <a href="group-tours/{{$campaign[2]['DookSlug']}}/{{$campaign[2]['DookDepartureId']}}" target="_blank">
                         <div class="group_img">
-                            <img src="{{asset('assets/images/Img_3.png')}}" />
+                            <img src="{{asset('assets/images/Img_3.png')}}" class="img-fluid" />
                             <div class="tour_3">
-                                <p>Sunset Vibes Summer Gala on 
-                                    the East Coast Adventure
-                                </p>
+                               <p>{{ explode('-', $campaign[2]['Name'])[0] }}</p>
                                 <ul class="d-flex p-0 px-1">
-                                    <li><img src="{{asset('assets/images/inclusion/airfarewhite.png')}}" alt="" class="px-1 w-auto"></li>
-                                    <li><img src="{{asset('assets/images/inclusion/trekkingwhite-27045311.png')}}" alt="" class="px-1 w-auto"></li>
-                                    <li><img src="{{asset('assets/images/inclusion/sailboatwhite-17434651.png')}}" alt="" class="px-1 w-auto"></li>
+                                      @php
+                                        $inclusions = [];
+                                        if(array_key_exists(0 ,$campaign[0]['DepartureDateWithPrice'])):
+                                            foreach ($campaign[0]['DepartureDateWithPrice'][0]['Inclusion'] as $inclusion):
+                                                $inclusions[] = $inclusion;
+                                            endforeach;
+                                        endif;
+                                        $attractions  = array_filter($campaign[0]['Itinerary'], function ($item) {
+                                            return !is_null($item['Attraction']);
+                                        });
+                                    @endphp
+                                    @if (count(getInclusionByName($inclusions)) > 0)
+                                        @foreach (getInclusionByName($inclusions) as $inclusion)
+                                          <li><img src="{{env('AWS_BUCKET_URL')}}/inclusion/{{$inclusion->icon }}" alt=""  class="px-1 inc_icon"></li>
+                                        @endforeach
+                                    @endif 
                                 </ul>
-                                <p style="margin-top: -20px;"><small class="text-decoration-line-through">₹ 1,80,014</small> <span>₹ 1,60,014</span></p>
+                                <p style="margin-top: -20px;"><small class="text-decoration-line-through">₹{{ formatIndianNumber($campaign[2]['Price'] + (round($campaign[2]['Price'] * 0.05))) }}</small> <span>₹{{formatIndianNumber($campaign[2]['Price'])}}</span></p> 
+                                   
                                 <div class="flag">
                                     <img src="{{asset('assets/images/icons/Rectangleyellow19435.png')}}" class="w-auto">
-                                    <p class="flag1">6 Nights</p>
+                                    <p class="flag1">{{$campaign[2]['nights_only']}}</p>
                                 </div>
                             </div>
                         </div>
+                        </a>
                     </div>
                 </div>
-                <div class="row mt-4">
-                    <div class="col-md-4">
+                <div class="row mt-4 p-2">
+                    <div class="col-md-4 col-4 p-1">
+                         <a href="group-tours/{{$campaign[3]['DookSlug']}}/{{$campaign[3]['DookDepartureId']}}" target="_blank">
                         <div class="group_img4">
-                            <img src="{{asset('assets/images/Img_4.png')}}" />
-                            <div class="tour_1">
-                                <p>Sunset Vibes Summer Gala on 
-                                    the East Coast Adventure
-                                </p>
+                            <img src="{{asset('assets/images/Img_4.png')}}" class="img-fluid" />
+                             <div class="tour_1">
+                                <p>{{ explode('-', $campaign[3]['Name'])[0] }}</p>
                                 <ul class="d-flex p-0 px-1">
-                                    <li><img src="{{asset('assets/images/inclusion/airfarewhite.png')}}" alt="" class="px-1 w-auto"></li>
-                                    <li><img src="{{asset('assets/images/inclusion/trekkingwhite-27045311.png')}}" alt="" class="px-1 w-auto"></li>
-                                    <li><img src="{{asset('assets/images/inclusion/sailboatwhite-17434651.png')}}" alt="" class="px-1 w-auto"></li>
+                                       @php
+                                        $inclusions = [];
+                                        if(array_key_exists(0 ,$campaign[0]['DepartureDateWithPrice'])):
+                                            foreach ($campaign[0]['DepartureDateWithPrice'][0]['Inclusion'] as $inclusion):
+                                                $inclusions[] = $inclusion;
+                                            endforeach;
+                                        endif;
+                                        $attractions  = array_filter($campaign[0]['Itinerary'], function ($item) {
+                                            return !is_null($item['Attraction']);
+                                        });
+                                    @endphp
+                                    @if (count(getInclusionByName($inclusions)) > 0)
+                                        @foreach (getInclusionByName($inclusions) as $inclusion)
+                                          <li><img src="{{env('AWS_BUCKET_URL')}}/inclusion/{{$inclusion->icon }}" alt=""  class="px-1 inc_icon"></li>
+                                        @endforeach
+                                    @endif 
                                 </ul>
-                                <p style="margin-top: -20px;"><small class="text-decoration-line-through">₹ 1,80,014</small> <span>₹ 1,60,014</span></p>
+                                <p style="margin-top: -20px;"><small class="text-decoration-line-through">₹{{ formatIndianNumber($campaign[3]['Price'] + (round($campaign[3]['Price'] * 0.05))) }}</small> <span>₹{{formatIndianNumber($campaign[3]['Price'])}}</span></p> 
+                                   
                                 <div class="flag">
                                     <img src="{{asset('assets/images/icons/Rectangleyellow19435.png')}}" class="w-auto">
-                                    <p class="flag1">6 Nights</p>
+                                    <p class="flag1">{{$campaign[3]['nights_only']}}</p>
                                 </div>
                             </div>
                         </div>
+                        </a>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-4 p-1">
+                         <a href="group-tours/{{$campaign[4]['DookSlug']}}/{{$campaign[4]['DookDepartureId']}}" target="_blank">
                         <div class="group_img5">
-                            <img src="{{asset('assets/images/Img_5.png')}}" />
+                            <img src="{{asset('assets/images/Img_5.png')}}" class="img-fluid" />
                             <div class="tour_5">
-                                <p>Sunset Vibes Summer Gala on 
-                                    the East Coast Adventure
-                                </p>
+                                <p>{{ explode('-', $campaign[4]['Name'])[0] }}</p>
                                 <ul class="d-flex p-0 px-1">
-                                    <li><img src="{{asset('assets/images/inclusion/airfarewhite.png')}}" alt="" class="px-1 w-auto"></li>
-                                    <li><img src="{{asset('assets/images/inclusion/trekkingwhite-27045311.png')}}" alt="" class="px-1 w-auto"></li>
-                                    <li><img src="{{asset('assets/images/inclusion/sailboatwhite-17434651.png')}}" alt="" class="px-1 w-auto"></li>
+                                       @php
+                                        $inclusions = [];
+                                        if(array_key_exists(0 ,$campaign[0]['DepartureDateWithPrice'])):
+                                            foreach ($campaign[0]['DepartureDateWithPrice'][0]['Inclusion'] as $inclusion):
+                                                $inclusions[] = $inclusion;
+                                            endforeach;
+                                        endif;
+                                        $attractions  = array_filter($campaign[0]['Itinerary'], function ($item) {
+                                            return !is_null($item['Attraction']);
+                                        });
+                                    @endphp
+                                    @if (count(getInclusionByName($inclusions)) > 0)
+                                        @foreach (getInclusionByName($inclusions) as $inclusion)
+                                          <li><img src="{{env('AWS_BUCKET_URL')}}/inclusion/{{$inclusion->icon }}" alt=""  class="px-1 inc_icon"></li>
+                                        @endforeach
+                                    @endif 
                                 </ul>
-                                <p style="margin-top: -20px;"><small class="text-decoration-line-through">₹ 1,80,014</small> <span>₹ 1,60,014</span></p>
+                                <p style="margin-top: -20px;"><small class="text-decoration-line-through">₹{{ formatIndianNumber($campaign[4]['Price'] + (round($campaign[4]['Price'] * 0.05))) }}</small> <span>₹{{formatIndianNumber($campaign[4]['Price'])}}</span></p> 
+                                   
                                 <div class="flag">
                                     <img src="{{asset('assets/images/icons/Rectangleyellow19435.png')}}" class="w-auto">
-                                    <p class="flag1">6 Nights</p>
+                                    <p class="flag1">{{$campaign[4]['nights_only']}}</p>
                                 </div>
                             </div>
                         </div>
+                    </a>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-4 p-1">
+                         <a href="group-tours/{{$campaign[5]['DookSlug']}}/{{$campaign[5]['DookDepartureId']}}" target="_blank">
                         <div class="group_img6">
-                            <img src="{{asset('assets/images/Img_6.png')}}" />
+                            <img src="{{asset('assets/images/Img_6.png')}}" class="img-fluid" />
                             <div class="tour_2">
-                                <p>Sunset Vibes Summer Gala on 
-                                    the East Coast Adventure
-                                </p>
+                               <p>{{ explode('-', $campaign[5]['Name'])[0] }}</p>
                                 <ul class="d-flex p-0 px-1">
-                                    <li><img src="{{asset('assets/images/inclusion/airfarewhite.png')}}" alt="" class="px-1 w-auto"></li>
-                                    <li><img src="{{asset('assets/images/inclusion/trekkingwhite-27045311.png')}}" alt="" class="px-1 w-auto"></li>
-                                    <li><img src="{{asset('assets/images/inclusion/sailboatwhite-17434651.png')}}" alt="" class="px-1 w-auto"></li>
+                                      @php
+                                        $inclusions = [];
+                                        if(array_key_exists(0 ,$campaign[0]['DepartureDateWithPrice'])):
+                                            foreach ($campaign[0]['DepartureDateWithPrice'][0]['Inclusion'] as $inclusion):
+                                                $inclusions[] = $inclusion;
+                                            endforeach;
+                                        endif;
+                                        $attractions  = array_filter($campaign[0]['Itinerary'], function ($item) {
+                                            return !is_null($item['Attraction']);
+                                        });
+                                    @endphp
+                                    @if (count(getInclusionByName($inclusions)) > 0)
+                                        @foreach (getInclusionByName($inclusions) as $inclusion)
+                                          <li><img src="{{env('AWS_BUCKET_URL')}}/inclusion/{{$inclusion->icon }}" alt=""  class="px-1 inc_icon"></li>
+                                        @endforeach
+                                    @endif 
                                 </ul>
-                                <p style="margin-top: -20px;"><small class="text-decoration-line-through">₹ 1,80,014</small> <span>₹ 1,60,014</span></p>
+                                <p style="margin-top: -20px;"><small class="text-decoration-line-through">₹{{ formatIndianNumber($campaign[5]['Price'] + (round($campaign[5]['Price'] * 0.05))) }}</small> <span>₹{{formatIndianNumber($campaign[5]['Price'])}}</span></p> 
+                                   
                                 <div class="flag">
                                     <img src="{{asset('assets/images/icons/Rectangleyellow19435.png')}}" class="w-auto">
-                                    <p class="flag1">6 Nights</p>
+                                    <p class="flag1">{{$campaign[5]['nights_only']}}</p>
                                 </div>
                             </div>
                         </div>
+                    </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <section class="package_dest">
+    <section class="package_dest p-0 pt-3">
         <div class="container">
             <!-- GROUP TOURS -->
             <div class="row" style="margin-bottom: -100px;">
-                <div class="col-md-6">
+                <div class="col-md-6 col-7">
                     <div class="blog_section pb-4">
                         <h5>OUR GROUP TOURS</h5>
                     </div>
                 </div>
-                <div class="col-md-6 d-flex justify-content-end">
+                <div class="col-md-6 col-5 d-flex justify-content-end">
                     <div class="blog_section pb-4">
                         <h6>View All <img src="{{asset('assets/images/arrow.png')}}"></h6>
                     </div>
@@ -322,6 +408,7 @@
                         @foreach ($groupTours as $groupTour)
                             <div class="item">
                                 <div class="card">
+                                      <a href="group-tours/{{$groupTour['DookSlug']}}/{{$groupTour['DookDepartureId']}}" target="_blank">
                                     <img src="@if (array_key_exists(1, $groupTour['DookImage'])) {{$groupTour['DookImage'][1]}} @else {{asset('assets/images/maine-Image.jpg')}} @endif" class="card-img-top" alt="{{$groupTour['Name']}}">
                                     <div class="best_selling">
                                         @if ($groupTour['BestSellingPackage'])
@@ -374,6 +461,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                </a>
                                 </div>
                             </div>
                         @endforeach
@@ -433,7 +521,7 @@
                                         <h6>{{$departure->title}}</h6>
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <p>{{$departure->no_of_nights}} Nights</p>
+                                                <p>{{$departure->duration}}</p>
                                             </div>
                                             <div class="col-md-6 d-flex justify-content-end">
                                                 <span class="fa fa-star checked"></span>
@@ -590,7 +678,7 @@
     <!-- testimonial -->
       @include('frontend.common.testimonial')
     <!-- blog section -->
-     <section class="bg-white">
+     <section class="bg-white p-0">
         <div class="container">
             <div class="row mb-4 mt-4">
                 <div class="col-md-12 text-center">

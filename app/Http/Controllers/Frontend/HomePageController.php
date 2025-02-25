@@ -23,17 +23,24 @@ class HomePageController extends Controller
             "Username"=>env('AGENT_CONNECT_USERNAME'),
             "Password"=>env('AGENT_CONNECT_PASSWORD')
         ];
-        $apiUrl = env('AGENT_CONNECT_API_BASE_URL')."/departure/group-departure";
-        try{
-            $toursResponse =  Cache::remember('group-tours',86400, function () use($apiUrl,$header){
-                $response= Http::retry(3, 100)->withHeaders($header)->get($apiUrl);
+        $apiUrl = env('AGENT_CONNECT_API_BASE_URL')."/departure/group-departure";  
+        // try{
+        //     $toursResponse =  Cache::remember('group-tours',86400, function () use($apiUrl,$header){
+        //         $response= Http::retry(3, 100)->withHeaders($header)->get($apiUrl);
+        //         $res = $response->getBody()->getContents();
+        //         return  json_decode($res,true);
+        //     });
+        // }catch (Exception $e) {
+        //     Log::info("Api Error:-",['message'=>$e->getMessage(),"Api Url"=>$apiUrl]);
+        // }
+        try {
+                $response = Http::retry(3, 100)->withHeaders($header)->get($apiUrl);
                 $res = $response->getBody()->getContents();
-                return  json_decode($res,true);
-            });
-        }catch (Exception $e) {
-            Log::info("Api Error:-",['message'=>$e->getMessage(),"Api Url"=>$apiUrl]);
-        }
-        $groupTours = $toursResponse !=null?$toursResponse['Result']:null;
+                $toursResponse = json_decode($res, true);
+            } catch (Exception $e) {
+                Log::info("Api Error:-", ['message' => $e->getMessage(), "Api Url" => $apiUrl]);
+            }
+        $groupTours = $toursResponse !=null?$toursResponse['Result']:null; 
         if ($groupTours) {
             $bestSellingTours = collect($groupTours)->filter(function ($tour) {
                 return isset($tour['BestSellingPackage']) && $tour['BestSellingPackage'] === true;
@@ -42,8 +49,27 @@ class HomePageController extends Controller
                 return !(isset($tour['BestSellingPackage']) && $tour['BestSellingPackage'] === true);
             });        
             $groupTours = $bestSellingTours->merge($otherTours)->take(10)->all();
+             $campaign = collect($groupTours)->filter(function ($tour) {
+                return isset($tour['ForCampaign']) && $tour['ForCampaign'] === true;
+            })->map(function ($tour) {
+                if (isset($tour['DayNight'])) {
+                    if (preg_match('/(\d+)\s*Nights/', $tour['DayNight'], $matches)) {
+                        $tour['nights_only'] = "{$matches[1]} Nights"; 
+                    } else {
+                        $tour['nights_only'] = 'N/A';
+                    }
+                } else {
+                    $tour['nights_only'] = 'N/A';
+                }
+                return $tour;
+            })->take(6)->all();
+
         }
-        $departures = Departure::where(['dep_type'=>'package','status'=>1]) ->orderByDesc('featured')->orderBy('popular_at_home', 'DESC')->take(7)->get();
+        $departures = Departure::where(['dep_type'=>'package','status'=>1]) ->orderByDesc('featured')->orderBy('popular_at_home', 'DESC')->take(7)->get()->map(function ($departure) {
+        $departure->duration = "{$departure->no_of_days} Days {$departure->no_of_nights} Nights";
+        return $departure;
+        });
+
         $homeSettings = HomeSetting::with(['experinceOne','experinceTwo','experinceThree','experinceFour','experinceFive'])->first();
         $topDestinations = MegaMenuDestination::orderBy('order','ASC')->with(['destination' => function ($query) {
             $query->where('status','1');
@@ -64,6 +90,6 @@ class HomePageController extends Controller
         ->select('destinations.dest_name as name','destinations.slug_url as slug')
         ->orderBy('footer_destinations.orders','ASC')
         ->get();
-        return view('frontend.index',compact('groupTours','departures','homeSettings','topDestinations','countries','experiences','destinations','dook_special'));
+        return view('frontend.index',compact('groupTours','departures','homeSettings','topDestinations','countries','experiences','destinations','dook_special','campaign'));
     }
 }

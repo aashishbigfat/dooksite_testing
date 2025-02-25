@@ -15,23 +15,24 @@
       @include('frontend.common.package_filter')
     </div>
     <div class="col-md-9">
-      <div class="row">
-        <div class="col-md-6">
-          <p class="color_gray"> Tours Found</p>
+       <div class="sectionHeading">
+              <h2 class="text-capitalize">{{$departure_header->title}}</h2>
+              <p>{{$departure_header->sub_title}}</p>
+            </div>
+       <div class="row" id="tourPackages">
+                @include('frontend.common.tourpackage')
         </div>
-      </div>
-      <div class="row">
-      
-         @foreach($departures as $departure)
-        <div class="col-md-4 mb-4">          
-            @include('frontend.common.tourpackage')
-          </div>
-         @endforeach
-         
-  
-
-
-      </div>
+        
+        @if($departures->hasMorePages())
+            <div class="col-md-12 mt-4 text-center">
+                <div id="loader" class="loader">
+                    <div class="spinner-border text-danger" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+                <button id="loadMoreBtn" class="btn btn-danger">Load More</button>
+            </div>
+        @endif
     </div>
 
   </div>
@@ -40,4 +41,34 @@
 
 
 @include('frontend.common.testimonial')
+<script>
+    let page = 2; 
+
+    $('#loadMoreBtn').click(function() {
+        // Show the loader
+        $('#loader').show();
+        $('#loadMoreBtn').hide();
+
+        $.ajax({
+            url: "{{ url()->current() }}?page=" + page,
+            type: "GET",
+            success: function(data) {
+                $('#tourPackages').append(data.view);
+                page++;
+                if (!data.hasMorePages) {
+                    $('#loadMoreBtn').hide();
+                }
+                $('#loader').hide();
+                if (data.hasMorePages) {
+                    $('#loadMoreBtn').show();
+                }
+            },
+            error: function() {
+                alert('Error loading more packages');
+                $('#loader').hide();
+                $('#loadMoreBtn').show();
+            }
+        });
+    });
+</script>
 @endsection

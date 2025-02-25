@@ -21,7 +21,7 @@ use DB;
 
 class DepertureController extends Controller
 {
-    public function internationalTourPackages()
+  public function internationalTourPackages(Request $request)
     { 
         $keyword = request()->get('keyword', null); 
         $cacheKey = 'international_tour_packages_' . md5($keyword . request()->get('page', 1));
@@ -44,14 +44,16 @@ class DepertureController extends Controller
                         ->orWhere('countries.continent', 'LIKE', '%' . $keyword . '%');
                 });
             }
- 
+
             return $query->with(['hotelCategories' => function($query) {
                 $query->select('departure_id', 'price_inr', 'price_usd')->orderBy('price_inr', 'ASC')->limit(1); 
             }, 'inclusions' => function($query) {
                 $query->whereNotNull('icon')->select('name', 'icon')->distinct();
             }])->paginate(6);
         });
-         $totalTours = $departures->count(); 
+
+        // $totalTours = $departures->count();
+
         foreach ($departures as $departure) {
             $departure->poi_names = Cache::remember("departure_{$departure->id}_poi", 60, function() use ($departure) {
                 return DepartureDestinationPointOfInterest::where('departure_id', $departure->id)
@@ -60,7 +62,7 @@ class DepertureController extends Controller
                     ->distinct()
                     ->pluck('poi_name')->toArray();
             });
-
+            $departure->no_of_nights = "{$departure->no_of_days} Days {$departure->no_of_nights} Nights";
             $departure->title = ucwords(strtolower($departure->title));
             $departure->dimage = $departure->image;
             $departure->image = $departure->image ? env('AWS_BUCKET_URL') . '/package/' . $departure->image : url('images') . '/package-no-image.jpg';
@@ -85,16 +87,25 @@ class DepertureController extends Controller
                 return $inclusions;
             });
         }
+       if ($request->ajax()) {
+            return response()->json([
+                'view' => view('frontend.common.tourpackage', compact('departures'))->render(),
+                'hasMorePages' => $departures->hasMorePages()
+            ]);
+        }
         $departure_header = Cache::remember('departure_page_header', 60, function() {
             return DB::table('landing_departure_pages')
                 ->where('type', 'landing_departure')
                 ->select('title', 'sub_title', 'slug_url', 'banner_image', 'departure_recommend_description', 'meta_title', 'meta_keywords', 'meta_description', 'description')
                 ->first();
         });
-        return view('frontend.tours.international', compact('departure_header', 'departures', 'totalTours'));
+
+
+        return view('frontend.tours.international', compact('departure_header', 'departures'));
     }
 
-    public function domesticTourPackages()
+
+    public function domesticTourPackages(Request $request)
     {
         $keyword = request()->get('keyword', null); 
         $query = Departure::join('departure_destinations', 'departure_destinations.departure_id', '=', 'departures.id')
@@ -121,6 +132,7 @@ class DepertureController extends Controller
             $poiNames = DepartureDestinationPointOfInterest::where('departure_id', $departure->id)->where('status', 1)->limit(4)->distinct()->pluck('poi_name')->toArray();
             $departure->poi_names = $poiNames;
             $departure->title = ucwords(strtolower($departure->title));
+            $departure->no_of_nights = "{$departure->no_of_days} Days {$departure->no_of_nights} Nights";
             $departure->dimage = $departure->image;
             $departure->image = $departure->image ? env('AWS_BUCKET_URL') . '/package/' . $departure->image : url('images') . '/package-no-image.jpg';
             $departure->featured = $departure->featured ? 'Best Selling' : ''; 
@@ -141,9 +153,14 @@ class DepertureController extends Controller
             }
             $departure->inclusions = $inclusions;           
         }
-       
+        if ($request->ajax()) {
+            return response()->json([
+                'view' => view('frontend.common.tourpackage', compact('departures'))->render(),
+                'hasMorePages' => $departures->hasMorePages()
+            ]);
+        }
         $departure_header = DB::table('landing_departure_pages')
-            ->where('type', 'landing_departure')
+            ->where('type', 'landing_domestic')
             ->select('title', 'sub_title', 'slug_url', 'banner_image', 'departure_recommend_description', 'meta_title', 'meta_keywords', 'meta_description', 'description')
             ->first(); 
         return view('frontend.tours.domestic_tour_packages', compact('departure_header', 'departures','totalTours'));
@@ -314,7 +331,7 @@ class DepertureController extends Controller
     {
         $departure_header = DB::table('landing_departure_pages')
             ->where('type', 'landing_group_tours')
-            ->select('title','sub_title','slug_url','banner_image','departure_recommend_description','meta_title','meta_keywords','meta_description','description')
+            ->select('title', 'sub_title', 'slug_url', 'banner_image', 'departure_recommend_description', 'meta_title', 'meta_keywords', 'meta_description', 'description')
             ->first();
 
         $header = [
@@ -345,18 +362,16 @@ class DepertureController extends Controller
 
         $iconInclusions = IconInclusion::all()->keyBy('name');
         $departures = collect($departures)->map(function ($tour) use ($iconInclusions) {
-          $poi_names = [];
+            $poi_names = [];
             $tour['Itinerary'] = array_map(function($item) use (&$poi_names) {
                 $poi = $item['Attraction'] ?? []; 
                 $poi_names = array_merge($poi_names, $poi); 
-
                 return (object) [
                     'poi' => $poi,
                 ];
             }, $tour['Itinerary']);
 
-
-              $tour['poi'] = array_map(function ($poiItem) {
+            $tour['poi'] = array_map(function ($poiItem) {
                 return $poiItem['Name'];
             }, array_unique($poi_names, SORT_REGULAR));
 
@@ -368,24 +383,35 @@ class DepertureController extends Controller
                     'name' => $offer,
                     'icon' => $icon,
                 ];
-            }, $inclusions);  
+            }, $inclusions);
 
             return (object) [
                 'slug1' => 'group-tours',     
                 'slug2' => $tour['DookSlug'],   
                 'slug3' => $tour['DookDepartureId'],     
                 'image' => $tour['DookImage'][1],         
-                'title' =>  strtok($tour['Name'], '-'),             
+                'title' => strtok($tour['Name'], '-'),             
                 'featured' => $tour['BestSellingPackage'], 
                 'price' => $tour['MinimumPublishedPrice'],         
                 'no_of_nights' => $tour['DayNight'],    
                 'poi_names' => $tour['poi'],
                 'inclusions' => $mappedInclusions,
             ];
-        })->toArray();
+        });
+
+        $departures = $departures->forPage($request->page ?? 1, 10); 
+        $departures = new \Illuminate\Pagination\LengthAwarePaginator($departures, count($departures), 10, $request->page ?? 1);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'view' => view('frontend.common.tourpackage', compact('departures'))->render(),
+                'hasMorePages' => $departures->hasMorePages()
+            ]);
+        }
 
         return view('frontend.tours.group_tour', compact('departure_header', 'departures'));
     }
+
     public function agentdeparture(Request $request, $slug, $id)
     { 
         $header = [

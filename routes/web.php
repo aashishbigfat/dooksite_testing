@@ -49,7 +49,7 @@ Route::get('/blog/{post_slug}/', [BlogController::class,'blogdetail'])->name('bl
 
 // visa
 Route::get('/visa_dependency_country_list', [VisaController::class, 'visaDependencyCountryList'])->name('dependency_country_list');
-Route::get('/visa-consultation-services', [VisaController::class, 'visaindex'])->name('visas');
+Route::get('/visa-consultation-services', [VisaController::class, 'visaindex'])->name('visa-consultation-services');
 
  $routeN = url()->current();
   $basename = basename($routeN);

@@ -1,7 +1,7 @@
 $('.owl-carousel').owlCarousel({
   loop: true,
   margin: 10,
-  nav: true,
+  nav: false,
   navText: [
     "<img src='assets/images/icons/arrow(1).png'>",
     "<img src='assets/images/icons/arrow.png'>"
@@ -10,10 +10,10 @@ $('.owl-carousel').owlCarousel({
   autoplayHoverPause: true,
   responsive: {
     0: {
-      items: 1
+      items: 2
     },
     600: {
-      items: 3
+      items: 2
     },
     1000: {
       items: 4
