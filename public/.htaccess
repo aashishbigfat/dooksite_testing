@@ -1,21 +1,183 @@
+# ----------------------------------------------------------------------
+
+# Enable Compression
+
+# ----------------------------------------------------------------------
+
+<IfModule mod_deflate.c>
+
+AddOutputFilterByType DEFLATE text/plain
+AddOutputFilterByType DEFLATE text/html
+AddOutputFilterByType DEFLATE text/xml
+AddOutputFilterByType DEFLATE text/css
+AddOutputFilterByType DEFLATE text/javascript
+AddOutputFilterByType DEFLATE application/javascript
+AddOutputFilterByType DEFLATE application/x-javascript
+AddOutputFilterByType DEFLATE application/json
+AddOutputFilterByType DEFLATE application/xml
+AddOutputFilterByType DEFLATE application/rss+xml
+AddOutputFilterByType DEFLATE application/xhtml+xml
+AddOutputFilterByType DEFLATE image/svg+xml
+AddOutputFilterByType DEFLATE font/woff
+AddOutputFilterByType DEFLATE font/woff2
+
+</IfModule>
+AddType font/ttf .ttf
+# ----------------------------------------------------------------------
+
+# Browser Caching
+
+# ----------------------------------------------------------------------
+
+<IfModule mod_expires.c>
+
+ExpiresActive On
+
+# Images
+
+ExpiresByType image/jpg "access plus 1 year"
+ExpiresByType image/jpeg "access plus 1 year"
+ExpiresByType image/png "access plus 1 year"
+ExpiresByType image/gif "access plus 1 year"
+ExpiresByType image/webp "access plus 1 year"
+ExpiresByType image/svg+xml "access plus 1 year"
+
+# CSS / JS
+
+ExpiresByType text/css "access plus 1 month"
+ExpiresByType application/javascript "access plus 1 month"
+ExpiresByType text/javascript "access plus 1 month"
+
+# Fonts
+
+ExpiresByType font/woff "access plus 1 year"
+ExpiresByType font/woff2 "access plus 1 year"
+
+# Default
+
+ExpiresDefault "access plus 7 days"
+
+</IfModule>
+
+# ----------------------------------------------------------------------
+
+# Cache Control Headers
+
+# ----------------------------------------------------------------------
+
+
+<IfModule mod_headers.c>
+
+# FORCE for CSS/JS
+<FilesMatch "\.(css|js)$">
+Header always set Cache-Control "public, max-age=2592000"
+</FilesMatch>
+
+# FORCE for images + fonts
+<FilesMatch "\.(jpg|jpeg|png|gif|webp|svg|ico|woff|woff2|ttf|otf)$">
+Header always set Cache-Control "public, max-age=31536000, immutable"
+</FilesMatch>
+
+# HTML no cache
+<FilesMatch "\.(html|htm|php)$">
+Header always set Cache-Control "no-cache, no-store, must-revalidate"
+</FilesMatch>
+
+</IfModule>
+
+FileETag None
+
+# ----------------------------------------------------------------------
+
+# Redirect old visa URLs
+
+# ----------------------------------------------------------------------
+
+Redirect 301 /visa/kazakhstan /india-to-kazakhstan-visa
+Redirect 301 /visa/azerbaijan /india-to-azerbaijan-visa
+Redirect 301 /visa/uzbekistan /india-to-uzbekistan-visa
+Redirect 301 /visa/ukraine /india-to-ukraine-visa
+Redirect 301 /visa/georgia /india-to-georgia-visa
+Redirect 301 /visa/serbia /india-to-serbia-visa
+Redirect 301 /visa/tajikistan /india-to-tajikistan-visa
+Redirect 301 /visa/bulgaria /india-to-bulgaria-visa
+Redirect 301 /visa/croatia /india-to-croatia-visa
+Redirect 301 /visa/latvia /india-to-latvia-visa
+Redirect 301 /visa/lithuania /india-to-lithuania-visa
+Redirect 301 /visa/turkmenistan /india-to-turkmenistan-visa
+Redirect 301 /visa/moldova /india-to-moldova-visa
+Redirect 301 /visa/turkey /india-to-turkey-visa
+Redirect 301 /visa/bosnia-and-herzegovina /india-to-bosnia-and-herzegovina-visa
+Redirect 301 /visa/romania /india-to-romania-visa
+Redirect 301 /visa/russia /india-to-russia-visa
+Redirect 301 /visa/armenia /india-to-armenia-visa
+Redirect 301 /visa/belarus /india-to-belarus-visa
+Redirect 301 /visa/kyrgyzstan /india-to-kyrgyzstan-visa
+Redirect 301 /visa/estonia /india-to-estonia-visa
+Redirect 301 /visa/finland /india-to-finland-visa
+Redirect 301 /visa/albania /india-to-albania-visa
+Redirect 301 /visa/egypt /india-to-egypt-visa
+
+# ----------------------------------------------------------------------
+
+# Laravel Rewrite Rules
+
+# ----------------------------------------------------------------------
+
 <IfModule mod_rewrite.c>
-    <IfModule mod_negotiation.c>
-        Options -MultiViews -Indexes
-    </IfModule>
 
-    RewriteEngine On
+RewriteEngine On
 
-    # Handle Authorization Header
-    RewriteCond %{HTTP:Authorization} .
-    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+Options -MultiViews -Indexes
 
-    # Redirect Trailing Slashes If Not A Folder...
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_URI} (.+)/$
-    RewriteRule ^ %1 [L,R=301]
+# Force HTTPS + WWW
 
-    # Send Requests To Front Controller...
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^ index.php [L]
+# Force HTTPS + WWW (skip assets)
+RewriteCond %{HTTPS} !=on [OR]
+RewriteCond %{HTTP_HOST} !^www\. [NC]
+
+# ❗ Skip static files
+RewriteCond %{REQUEST_URI} !\.(css|js|jpg|jpeg|png|gif|webp|svg|woff|woff2|ttf|otf)$ [NC]
+
+RewriteRule ^ https://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Remove index.php
+
+RewriteCond %{THE_REQUEST} \s/index\.php [NC]
+RewriteRule ^index\.php$ / [R=301,L]
+
+# Authorization header
+
+RewriteCond %{HTTP:Authorization} .
+RewriteRule .\* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+# Blog trailing slash
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} ^/blog(?:/._)?[^/]$
+RewriteRule ^(._)$ /$1/ [R=301,L]
+
+# Remove trailing slash
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !^/blog/
+RewriteRule ^(.+)/$ /$1 [R=301,L]
+
+# Laravel
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [L]
+
+</IfModule>
+
+# ----------------------------------------------------------------------
+
+# PHP Handler (cPanel)
+
+# ----------------------------------------------------------------------
+
+<IfModule mime_module>
+AddHandler application/x-httpd-ea-php80 .php .php8 .phtml
 </IfModule>

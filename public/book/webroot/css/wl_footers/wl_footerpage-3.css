@@ -1,0 +1,205 @@
+#footer {
+    font-size: 14px;
+    background: var(--tts-buttton-bg);
+}
+
+#footer .footer-top {
+    padding: 60px 0 30px 0;
+    width: 100%;
+    background: url(../../../../webroot/img/footer/footer-bg.png) top center no-repeat;
+    background-size: cover;
+    position: relative;
+    background-color: #ffffffcf;
+}
+
+
+#footer .footer-top h4 {
+    font-size: 18px;
+    font-weight: bold;
+    color: #37517e;
+    position: relative;
+    padding-bottom: 12px;
+}
+
+
+#footer .footer-top .footer-widget ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+
+#footer .footer-top .footer-widget ul li+li {
+    margin-top: 10px;
+}
+
+#footer .footer-top .footer-widget ul li span {
+    font-weight: 500;
+}
+
+#footer .footer-top .footer-widget ul li a {
+    color: #777777;
+    transition: 0.3s;
+    position: relative;
+}
+#footer .footer-top .footer-widget ul li a:hover{
+    color: var(--tts-buttton-bg);
+}
+
+#footer .footer-widget .logo a {
+    display: block;
+}
+
+#footer .footer-widget .logo a img {
+    max-height: 50px;
+    object-fit: cover;
+}
+
+#footer .footer-widget .description {
+    font-size: 14px;
+    line-height: 25px;
+    margin-top: 20px
+}
+
+
+#footer .footer-top .footer-widget .social-default {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    justify-content: start;
+    margin: -5px;
+}
+
+#footer .footer-top .footer-widget .social-default li {
+    margin: 5px;
+}
+
+#footer .footer-top .footer-widget .social-default li a {
+    width: 48px;
+    background-color: #F6F6F6;
+    height: 48px;
+    line-height: 45px;
+    text-align: center;
+    display: inline-block;
+    border-radius: 100%;
+    transition: 0.3s;
+    color: #000000;
+    z-index: 2;
+    position: relative;
+}
+
+#footer .footer-top .footer-widget .social-default a i {
+    vertical-align: middle;
+}
+
+#footer .footer-top .footer-widget .social-default li a:hover {
+    color: var(--tts-buttton-txt);
+}
+
+#footer .footer-top .footer-widget .social-default li a::after {
+    position: absolute;
+    content: "";
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: var(--tts-buttton-bg);
+    transform: scale(0.5);
+    opacity: 0;
+    transition: 0.3s;
+    border-radius: 100%;
+}
+
+#footer .footer-top .footer-widget .social-default li a:hover::after {
+    transform: scale(1);
+    opacity: 1;
+}
+
+#footer .footer-top .footer-widget .social-default li a:hover::after i {
+    transform: scale(1);
+    opacity: 1;
+}
+
+
+#footer form.newsletter-form {
+    margin-top: 30px;
+
+}
+
+#footer form.newsletter-form .right-icon {
+    position: relative;
+    z-index: 2;
+    margin-bottom: 30px;
+    display: block;
+}
+
+#footer form.newsletter-form .right-icon label {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    top: 9px;
+    color: #000000;
+    transition: 0.3s;
+    z-index: -1;
+    letter-spacing: 0.5px;
+}
+
+#footer form.newsletter-form .right-icon input {
+    border: 0;
+    border-bottom: 2px solid #e6e3f1;
+    background-color: transparent;
+    padding-bottom: 8px;
+    padding-top: 20px;
+    border-radius: 0;
+    padding-left: 0;
+    padding-right: 0;
+    width: 100%;
+}
+
+#footer form.newsletter-form .right-icon input:focus {
+    border-color: var(--tts-buttton-bg);
+}
+
+#footer form.newsletter-form .right-icon::after {
+    content: "\2709";
+}
+
+#footer form.newsletter-form .right-icon::after {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: "feather" !important;
+}
+
+
+
+
+#footer form.newsletter-form .form-group button[type=submit] {
+    font-size: 16px;
+    padding: 10px 30px;
+    background: var(--tts-buttton-bg);
+    color: var(--tts-buttton-txt);
+    transition: 0.3s;
+    border-radius: 50px;
+    box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
+    border: 0;
+}
+#footer form.newsletter-form .form-group button[type=submit]:hover{
+    background-color: var(--tts-buttton-bg1);
+    color: var(--tts-buttton-txt1);
+}
+
+#footer .copyright {
+    text-align: center;
+    color: #fff;
+}
+
+@media only screen and (max-width: 600px) {
+    #footer .footer-widget{
+        margin-bottom: 30px;
+    }
+}

@@ -9,6 +9,7 @@ use App\Models\HotelCategory;
 use App\Models\Destination;
 use App\Models\Inclusion;
 use App\Models\Departure;
+use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -18,21 +19,21 @@ class PoiController extends Controller
     {
         $poi_check = DepartureDestinationPointOfInterest::where('reference_id', $id)->select('poi_name')->first();
         if (!$poi_check || !isset($poi_check->poi_name)) {
-            return redirect('/404');
+            return redirect('/');
         }
         $poi_url = $this->generatePoiUrl($poi_check->poi_name);
         if ($poi_url != $slug) {
-            return redirect('/404');
+            return redirect('/');
         }
         $poiID = $this->getPoiDetails($id);
         if (!$poiID) {
-            return redirect('/404');
+            return redirect('/');
         }
         $destination_country_names = $this->getDestinationCountry($poiID->destination_id);
         $poiID->destination_name = $destination_country_names->dest_name;
         $poiID->country_name = $destination_country_names->country_name;
          if ($poiID->image) {
-            $poiID->image = env('AWS_BUCKET_URL') . '/poi/' . $poiID->image;
+            $poiID->image = generateSignedUrl('poi/' . $poiID->image);
         } else {
             $poiID->image = url('images') . '/package-no-image.jpg';
         }
@@ -45,6 +46,12 @@ class PoiController extends Controller
         $poiID->meta_keywords = "";
         $departures = $this->getDepartures($poiID->poiId);
         $related_pois = $this->getRelatedPois($poiID->destination_id, $poiID->poiId);
+         if ($request->ajax()) {
+               return response()->json([
+                   'view' => view('frontend.common.tourpackage', compact('departures'))->render(),
+                   'hasMorePages' => $departures->hasMorePages()
+               ]);
+           }
 
         return view('frontend.poi.poi_detail', compact('poiID', 'departures', 'related_pois'));
     }
@@ -89,7 +96,7 @@ class PoiController extends Controller
         $departures = Departure::whereIn('id', $package_ids)
             ->where('status', 1)
             ->select('id', 'title', 'price_currency', 'price', 'price_currency_usd', 'price_usd', 'book_online', 'price_hide_show', 'no_of_days', 'no_of_nights', 'slug_url_pre as slug1', 'slug_url as slug2', 'dep_dook_ref_id as slug3', 'dep_type', 'image', 'featured')
-            ->paginate(3);
+            ->paginate(6);
 
         $departures->getCollection()->map(function ($departure) {
             $this->processDepartureImage($departure);
@@ -102,9 +109,10 @@ class PoiController extends Controller
     {
         $departure->title = ucwords(strtolower($departure->title));
         $departure->dimage = $departure->image;
-
+         $departure->no_of_nights = "{$departure->no_of_days} Days {$departure->no_of_nights} Nights";
+         $departure->colMd = "col-md-4 col-6";
         if ($departure->image) {
-            $departure->image = env('AWS_BUCKET_URL') . '/package/' . $departure->image;
+            $departure->image = generateSignedUrl('package/' . $departure->image);
         } else {
             $departure->image = url('images') . '/package-no-image.jpg';
         }
@@ -120,16 +128,38 @@ class PoiController extends Controller
             $departure->price_usd = $prices->price_usd;
         }
 
-        $inclusions = Inclusion::where('departure_id', $departure->id)
-            ->whereNotNull('icon')
-            ->select('name', 'icon')
-            ->distinct()
-            ->get()
+        $inclusions = Inclusion::join('icon_inclusions', 'inclusions.icon_inclusion_id', '=', 'icon_inclusions.id')
+                       ->where('inclusions.departure_id', $departure->id)
+                       ->whereNotNull('icon_inclusions.icon_old')
+                       ->select('icon_inclusions.name', 'icon_inclusions.icon') // Select name and icon from icon_inclusions
+                       // ->distinct()
+                       ->get()
             ->map(function ($inc) {
-                $inc->icon = env('AWS_BUCKET_URL') . "/inclusion/" . $inc->icon;
+                $inc->icon = generateSignedUrl("inclusion/" . $inc->icon);
                 return $inc;
             });
         $departure->inclusions = $inclusions;
+        $destinationId = DB::table('departure_destinations')
+                            ->where('departure_id', $departure->id)
+                            ->value('destination_id');
+
+                if ($destinationId) {
+                    $countryId = DB::table('destinations')
+                        ->where('id', $destinationId)
+                        ->value('country_id');
+
+                    if ($countryId) {
+                        $countryName = DB::table('countries')
+                            ->where('id', $countryId)
+                            ->value('country_name');
+
+                        $departure->country_name = $countryName ?: null;
+                    } else {
+                        $departure->country_name = null;
+                    }
+                } else {
+                    $departure->country_name = null;
+                }   
     }
 
     private function getRelatedPois($destination_id, $poiId)
@@ -139,7 +169,6 @@ class PoiController extends Controller
             ->where('status', 1)
             ->select('destination_id', 'reference_id as poiId', 'poi_name', 'image', 'description')
             ->distinct('destination_id')
-            ->limit(8)
             ->get()
             ->map(function ($poi) use ($destination_id) {
                 $this->processRelatedPoi($poi, $destination_id);
@@ -147,28 +176,42 @@ class PoiController extends Controller
             });
     }
     private function processRelatedPoi($poi, $destination_id)
-    {
-        $total_departures = DepartureDestinationPointOfInterest::where('reference_id', $poi->poiId)
-            ->select('departure_id')
-            ->get();
-        $poi->total_departures = count($total_departures);
-        $featured_array = [];
-        foreach ($total_departures as $departure) {
-            $featured_row = Departure::where('id', $departure->departure_id)
-                ->where('featured', 1)
-                ->select('id')
-                ->first();
-            if ($featured_row) {
-                $featured_array[] = $featured_row->id;
-            }
-        }
-        $poi->featured_departure = count($featured_array);
-        $poi->poi_url = $this->generatePoiUrl($poi->poi_name);
-        if ($poi->image) {
-            $poi->image = env('AWS_BUCKET_URL') . '/poi/' . $poi->image;
-        } else {
-            $poi->image = url('images') . '/poi-no-image.jpg';
-        }
+{
+    // TOTAL ACTIVE DEPARTURES
+    $poi->total_departures = DepartureDestinationPointOfInterest::join(
+            'departures',
+            'departures.id',
+            '=',
+            'departure_destination_point_of_interests.departure_id'
+        )
+        ->where('departure_destination_point_of_interests.reference_id', $poi->poiId)
+        ->where('departures.status', 1)
+        ->count();
+
+    // FEATURED PACKAGE DEPARTURES
+    $poi->featured_departure = DepartureDestinationPointOfInterest::join(
+            'departures',
+            'departures.id',
+            '=',
+            'departure_destination_point_of_interests.departure_id'
+        )
+        ->where('departure_destination_point_of_interests.reference_id', $poi->poiId)
+        ->where('departures.status', 1)
+        ->where('departures.featured', 1)
+        ->where('departures.dep_type', 'package')
+        ->distinct('departures.id')
+        ->count('departures.id');
+
+    // POI URL
+    $poi->poi_url = $this->generatePoiUrl($poi->poi_name);
+
+    // IMAGE
+    if (!empty($poi->image)) {
+        $poi->image = generateSignedUrl('poi/' . $poi->image);
+    } else {
+        $poi->image = url('images') . '/poi-no-image.jpg';
     }
+}
+
 
 }

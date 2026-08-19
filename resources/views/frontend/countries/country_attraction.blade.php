@@ -1,133 +1,124 @@
 @extends('frontend.layouts.master')
 @push('title') {{$country_poi_detail->meta_title}}@endpush
 @push('meta_tag')<meta name="keywords" content="{{$country_poi_detail->meta_keywords}}">
-<meta name="description" content="{{$country_poi_detail->meta_description}}">@endpush 
+<meta name="description" content="{{$country_poi_detail->meta_description}}">
+<meta property="og:description" content="{{$country_poi_detail->meta_description}}">
+<meta name="twitter:description" content="{{$country_poi_detail->meta_description}}">
+@endpush 
 
 @section('content')
+ <section class="breadcrumb-section">
+      <div class="container">
+        <div class="breadcrumb-nav animate-fade-up">
+          <div class="breadcrumb-item">
+            <a href="/"><i class="fas fa-home"></i>Home</a>
+          </div>
+          <span class="breadcrumb-separator">/</span>
+          <div class="breadcrumb-item">
+            <a href="{{route('frontend.countries')}}">Countries</a>
+          </div>
+          <span class="breadcrumb-separator">/</span>
+          <div class="breadcrumb-item">
+            <span class="breadcrumb-current">{{$country_poi_detail->countryName}}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Page Header Content -->
+    <section class="page-header-content">
+      <div class="container">
+        <div class="animate-fade-up delay-100">
+          <h1 class="page-title mt-0">{{$country_poi_detail->title}}</h1>
+          <p class="page-subtitle">
+          {{$country_poi_detail->subTitle}}
+          </p>
+        </div>
+      </div>
+    </section>
 
  <div class="container mb-4">
-      <div class="row">
-          <div class="col-md-12">
-              <p class="color_gray"><a href="/" class="text-danger">Home</a> /<a href="/" class="text-danger">Countries </a> / {{$country_poi_detail->countryName}}</p>
-          </div>
+      <div class="row mt-4 mb-4">          
           <div class="col-md-12 mt-3 mb-4 attract_desc">
-        
-            <h6>{{$country_poi_detail->country_attraction_slug_url}}</h6>
             <p>{!! $country_poi_detail->attraction_description !!}</p>
               <hr>
-
-            <h5> {{$country_poi_detail->attraction_heading}}</h5>
-           <div class="row" id="poiContainer">
-              @foreach($poi_array as $key => $poiArray)
-                <div class="col-md-3 attract_card mb-4 mt-4 poiItem">
-                  <img src="{{$poiArray->image}}" alt="" class="image">
-                  <div class="overlay">
-                    <div class="text">
-                      <h5>{{$poiArray->poi_name}}</h5>
-                      <p>{{$poiArray->description}}</p>
-                    </div>
-                  </div>               
-                </div>
-              @endforeach
-              @foreach($existing_pois as $key => $existing_poi)
-                <div class="col-md-3 attract_card mb-4 mt-4 poiItem">
-                  <img src="{{$existing_poi->image}}" alt="" class="image">
-                  <div class="overlay">
-                    <div class="text">
-                      <h5>{{$existing_poi->poi_name}}</h5>
-                      <p>{{$existing_poi->description}}</p>
-                    </div>
-                  </div>               
-                </div>
-              @endforeach
+              <div class="heading">
+            <h2> {{$country_poi_detail->attraction_heading}}</h2>
             </div>
-
-            <div class="col-md-12 mt-4 d-flex">
-              <ul style="list-style-type: none;" class="p-0 d-flex justify-content-center" id="pagination">
-                <li><a href="javascript:void(0)" class="border p-2 text-dark rounded text-white bg-danger" id="prev">&lt;</a></li>
-                <li><a href="javascript:void(0)" class="border p-2 text-dark rounded mx-2 text-white bg-danger" id="next">&gt;</a></li>
-              </ul>
+           <div class="row mt-4" >
+              <div class="masonry-container" id="tourPackages">
+                @include('frontend.poi.partial_card')
             </div>
+            </div>           
+               {{--<div class="col-md-12 mt-4 text-center">
+                    <div id="loader" class="loader">
+                        <div class="spinner-border text-danger" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <button id="loadMoreBtn" class="load_more_btn"><i class="fas fa-plus me-2"></i> Load More</button>
+                </div>    --}}        
           </div>
           <hr>
-          <div class="col-md-12 mt-4">
-            <h5>Things to Do in {{$country_poi_detail->countryName}}</h5>
+          <div class="col-md-12 mt-4 heading">
+            <h2>Things to Do in {{$country_poi_detail->countryName}}</h2>
             <p>Do what makes you happy</p>
              
             <div class="containerGridWrapper">
               @foreach($experience_row as $key => $experience_row)
               <a href="{{url('/')}}/{{$experience_row->slug}}" class="thingstodo-picture">
                 <div class="wrapperImageContainer">
-                  <img src="{{ $experience_row->image }}" />
+                  <img src="{{ $experience_row->image }}" alt="{{ $experience_row->name }}" />
                   <p> {{ $experience_row->name }}</p>
                 </div>
               </a>
               @endforeach
-            </div>
-            
-
-            
+            </div>                     
           </div>
-         
-       </div>
     </div>
+</div>
+
    @include('frontend.common.testimonial')
+
 <script>
-  const itemsPerPage = 8; 
-  let currentPage = 1;
-  const poiItems = document.querySelectorAll('.poiItem');
-  const totalItems = poiItems.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage); 
-  function showPage(page) {
-    const startIndex = (page - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
+   let page = 2;
 
-    poiItems.forEach(item => item.style.display = 'none');
-    for (let i = startIndex; i < endIndex; i++) {
-      if (poiItems[i]) {
-        poiItems[i].style.display = 'block';
-      }
-    }
-    const paginationLinks = document.querySelectorAll('#pagination a');
-    paginationLinks.forEach(link => {
-      link.classList.remove('active');
+$('#loadMoreBtn').click(function() {
+    // Show the loader and hide the button
+    $('#loader').show();
+    $('#loadMoreBtn').hide();
+
+    $.ajax({
+        url: "{{ url()->current() }}?page=" + page,  // Add the page query parameter to the URL
+        type: "GET",
+        success: function(data) {
+            // Append the new tour packages to the existing ones
+            $('#tourPackages').append(data.view);
+
+            // Increment the page number
+            page++;
+
+            // If there are no more pages, hide the "Load More" button
+            if (!data.hasMorePages) {
+                $('#loadMoreBtn').hide();
+            }
+
+            // Hide the loader
+            $('#loader').hide();
+
+            // If there are more pages, show the "Load More" button
+            if (data.hasMorePages) {
+                $('#loadMoreBtn').show();
+            }
+        },
+        error: function() {
+            // Handle error
+            alert('Error loading more packages');
+            $('#loader').hide();
+            $('#loadMoreBtn').show();
+        }
     });
-    paginationLinks[page].classList.add('active');
-    document.getElementById('prev').classList.toggle('disabled', currentPage === 1);
-    document.getElementById('next').classList.toggle('disabled', currentPage === totalPages);
-  }
-  function createPagination() {
-    const paginationContainer = document.getElementById('pagination');
-    const pageLinks = paginationContainer.querySelectorAll('.page-link');
-    pageLinks.forEach(link => link.remove());
-    for (let i = 1; i <= totalPages; i++) {
-      const pageLink = document.createElement('li');
-      pageLink.innerHTML = `<a href="javascript:void(0)" class="border p-2 text-dark rounded page-link" data-page="${i}">${i}</a>`;
-      paginationContainer.insertBefore(pageLink, document.getElementById('next'));
-    }
-  }
-  showPage(1);
-  document.getElementById('prev').addEventListener('click', () => {
-    if (currentPage > 1) {
-      currentPage--;
-      showPage(currentPage);
-    }
-  });
-  document.getElementById('next').addEventListener('click', () => {
-    if (currentPage < totalPages) {
-      currentPage++;
-      showPage(currentPage);
-    }
-  });
-
-  document.querySelectorAll('#pagination .page-link').forEach((link) => {
-    link.addEventListener('click', (event) => {
-      event.preventDefault();
-      currentPage = parseInt(link.dataset.page); 
-      showPage(currentPage);
-    });
-  });
-  createPagination();
-
+});
 </script>
+
 @endsection

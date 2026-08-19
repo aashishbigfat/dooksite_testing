@@ -1,0 +1,52 @@
+<section id="breadcrumbs" class="breadcrumbs">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>Offers</h2>
+            <ol>
+                <li>
+                    <a href="<?php echo site_url('/') ?>">Home</a>
+                </li>
+                <li>Offers</li>
+            </ol>
+        </div>
+    </div>
+</section>
+<?php if ($offers_list) { ?>
+    <section class="offer-area">
+        <div class="container">
+            <div class="offer-slider">
+                <div class="row popular-section">
+                    <?php $count  =  1;
+                    foreach ($offers_list as $servicekey => $offers_data) {   ?>
+                        <?php
+                        foreach ($offers_data as $offer) {
+                        ?>
+                            <div class="col-lg-3 col-sm-6">
+                                <div class="popular-box">
+                                    <div class="popular_img bg-size" style="background-image: url('<?php echo root_url . 'uploads/offers/thumbnail/' . $offer['image'] ?>">
+
+                                    </div>
+                                    <div class="special-content">
+                                        <a href="<?php echo  $offer['url'] != null && $offer['url'] != '' ? $offer['url'] : 'javascript:void(0);'; ?>">
+                                            <h5><?php echo $offer['title'] ?></h5>
+                                        </a>
+
+                                        <p><?php echo $offer['description'] ?></p>
+                                    </div>
+                                </div>
+                            </div>
+                    <?php
+                            $count = $count + 1;
+                            if ($count > 4) {
+                                break;
+                            }
+                        }
+                        if ($count > 4) {
+                            break;
+                        }
+                    } ?>
+                </div>
+            </div>
+        </div>
+    </section>
+<?php } ?>

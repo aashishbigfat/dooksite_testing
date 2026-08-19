@@ -1,106 +1,165 @@
 @extends('frontend.layouts.master')
 @push('title') {{$destination_header->meta_title}}@endpush
 @push('meta_tag')<meta name="keywords" content="{{$destination_header->meta_keywords}}">
-<meta name="description" content="{{$destination_header->meta_description}}">@endpush 
+<meta name="description" content="{{$destination_header->meta_description}}">
+<meta property="og:description" content="{{$destination_header->meta_description}}">
+<meta name="twitter:description" content="{{$destination_header->meta_description}}">
+@endpush 
 
 @section('content')
+<style type="text/css">
+    .destination-image{
+        width: 100% !important;
+        height: 100% !important;
+        border-radius: 0% !important;
+    }
+</style>
     <!-- home section -->
-   <div class="container">
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <p class="color_gray"><a href="/" class="text-danger">Home</a> / Destinations</p>
-            <h4>Dream, explore, and discover with DOOK!</h4>
-      
-        <div id="destination-list">
-       
-            @include('frontend.destination.destination_card', ['top_destinations' => $top_destinations])
-
+     <!-- home section -->
+    <div class="overflow-hidden">
+     <section class="breadcrumb-section">
+      <div class="container">
+        <div class="breadcrumb-nav animate-fade-up">
+          <div class="breadcrumb-item">
+            <a href="/"><i class="fas fa-home"></i>Home</a>
+          </div>
+          <span class="breadcrumb-separator">/</span>
+          <div class="breadcrumb-item">
+            <span class="breadcrumb-current">Destinations</span>
+          </div>
         </div>
-           <!-- Pagination Links -->
-            <div class="col-md-12 mt-4">
-                    <ul style="list-style-type: none;" class="p-0 d-flex">
-                        @if ($top_destinations->onFirstPage())
-                           
-                        @else
-                            <!-- Add previous button -->
-                            <li>
-                                <a href="{{ $top_destinations->previousPageUrl() }}" class="border p-2 text-dark rounded">Previous</a>
-                            </li>
-                        @endif
-                        
-                        @foreach(range(1, $top_destinations->lastPage()) as $page)
-                            <li>
-                                <a href="{{ $top_destinations->url($page) }}" class="border p-2 text-dark rounded {{ $top_destinations->currentPage() == $page ? 'active' : '' }}">
-                                    {{ $page }}
-                                </a>
-                            </li>
-                        @endforeach
-                        
-                        @if ($top_destinations->hasMorePages())
-                            <li>
-                                <a href="{{ $top_destinations->nextPageUrl() }}" class="border p-2 text-dark rounded">Next</a>
-                            </li>
-                        @endif
-                    </ul>
-                </div>
-          </div>
-          <hr>
-           <div class="col-md-12">
-             <h2 class="text-capitalize">Destinations Around The World with Dook</h2>
-            <p>If it is a place worth visiting at least once in a lifetime, we surely cover it.</p>
-              
-                <div id="destination">
-                    <div class="row">
-                    @foreach ($destinationData as $destinationData)
-                            <div class="col-md-4 mt-3">
-                                <div class=" shadow-sm rounded position-relative">
-                                    <div class="destination-sec-country ml-2">                                      
-                                        <div class="destination">
-                                            @foreach ($destinationData->experiences as $index => $experience)
-                                                @if ($index % 5 == 0 && $index != 0)
-                                                    </div> 
-                                                    <div class="destination" style="margin-top: 30px;"> 
-                                                @endif
+      </div>
+    </section>
 
-                                                <p>{{ $experience }}</p>
-                                            @endforeach
-                                        </div>                                         
-                                    </div> 
-                                    <img class="card-img-top" src="{{ $destinationData->image }}" alt="Card image cap">
-                                    <div class="dest_card">
-                                       <div class="row test align-items-center">
-                                        <div class="col-md-6">
-                                         <h5 class="m-0">{{ $destinationData->dest_name }}<br><span>{{$destinationData->total_departure}} Tours</span></h5> 
-                                          </div>
-                                           <div class="col-md-6 d-flex justify-content-end">                                
-                                            <a href="{{ url('/')}}/destinations/{{$destinationData->slug_url}}" target="_blank" class="btn btn-danger py-1 fs-12">See Details</a>
-                                       </div>
-                                        </div>
-                                    </div>
-                                </div>
+    <!-- Page Header Content -->
+    <section class="page-header-content">
+      <div class="container">
+        <div class="animate-fade-up delay-100">
+          <h1 class="page-title mt-0">Fascinating Holiday Destinations</h1>
+          <p class="page-subtitle">
+         Dream, explore, and discover with DOOK!
+          </p>
+        </div>
+      </div>
+    </section>
+
+   <div class="container">
+<!--     <div class="row mt-4">
+        <div class="col-md-12 mb-3"> -->
+        
+            <div class="row mt-4" id="tourPackages">
+              <!-- Destination Card 1 -->
+               @include('frontend.destination.destination_card', ['top_destinations' => $top_destinations])
+            </div>
+            @if($top_destinations->hasMorePages())
+                    <div class="col-md-12 mt-4 text-center">
+                        <div id="loader" class="loader">
+                            <div class="spinner-border text-danger" role="status">
+                                <span class="sr-only">Loading...</span>
                             </div>
-                        @endforeach
+                        </div>
+                        <button id="loadMoreBtn" class="load_more_btn"><i class="fas fa-plus me-2"></i> Load More Destinations</button>
                     </div>
+                @endif 
 
+          <!-- </div> -->
+          <hr>
+          <div class="row">
+           <div class="col-md-12 mb-3">
+            <div class="sectionHeading heading mt-3">
+                 <h2 class="text-capitalize my-1">Destinations Around The World with Dook</h2>
+                <p>If it is a place worth visiting at least once in a lifetime, we surely cover it.</p>
+            </div>
+                <div class="row" id="desti">
+                @include('frontend.destination.destinationdata', ['destinationData' => $destinations])
                 </div>
-                <!-- Pagination Links -->
-                <div class="col-md-12 mt-4">
-                   
+                 @if($destinations->hasMorePages())
+                <div class="col-md-12 mt-4 text-center">
+                    <div id="destinationloader" class="loader">
+                        <div class="spinner-border text-danger" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <button id="loadMoreBtndestination" class="load_more_btn"><i class="fas fa-plus me-2"></i> Load More Destinations</button>
                 </div>
+            @endif             
           </div>
+        </div>
           <hr>
           <div class="row">
            
-            <div class="col-md-12 country_about">             
+            <div class="col-md-12 color_gray desc">             
               {!! $destination_header->description !!}
             </div>
            
           </div>
-    </div>
+   <!--  </div>
+</div> -->
 </div>
-
     <!-- testimonial -->
   @include('frontend.common.testimonial')
 
+<script>
+$(document).ready(function () {
+    let page = 2;
+    let destinationPage = 2;
 
+    $('#loadMoreBtn').click(function () {
+        $('#loader').show();
+        $('#loadMoreBtn').hide();
+
+        $.ajax({
+            url: "{{ url()->current() }}",
+            type: "GET",
+            data: { page: page },
+            success: function (data) {
+                console.log("Top Destinations Response:", data);
+                $('#tourPackages').append(data.top_destinations);
+                page++;
+
+                if (!data.topHasMorePages) {
+                    $('#loadMoreBtn').hide();
+                } else {
+                    $('#loadMoreBtn').show();
+                }
+                $('#loader').hide();
+            },
+            error: function () {
+                alert('Error loading more destinations');
+                $('#loader').hide();
+                $('#loadMoreBtn').show();
+            }
+        });
+    });
+
+    $('#loadMoreBtndestination').click(function () {
+        $('#destinationloader').show();
+        $('#loadMoreBtndestination').hide();
+
+        $.ajax({
+            url: "{{ url()->current() }}",
+            type: "GET",
+            data: { page: destinationPage },
+            success: function (data) {
+                console.log("Destination Data Response:", data);
+                $('#desti').append(data.destinationData);
+                destinationPage++;
+
+                if (!data.destinationHasMorePages) {
+                    $('#loadMoreBtndestination').hide();
+                } else {
+                    $('#loadMoreBtndestination').show();
+                }
+                $('#destinationloader').hide();
+            },
+            error: function () {
+                alert('Error loading more destinations');
+                $('#destinationloader').hide();
+                $('#loadMoreBtndestination').show();
+            }
+        });
+    });
+});
+
+</script>
 @endsection

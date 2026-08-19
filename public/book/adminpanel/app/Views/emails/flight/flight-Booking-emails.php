@@ -1,0 +1,140 @@
+<!-- <table class="template-width" align="center" border="0" cellpadding="0" cellspacing="0"
+    style="margin: 30px auto; background-color: #fff; border: 1px solid #ddd; border-radius: 10px;  box-shadow: 0px 0px 14px -4px rgba(0, 0, 0, 0.2705882353); width:600px; font-family: 'Poppins', sans-serif;">
+    <tbody>
+        <tr>
+            <td style="padding: 10px 20px;">
+                <h3 style="font-size: 20px; text-align: center; margin-top: 0; margin-bottom: 0px; text-transform: capitalize;"> <?php echo $sms_type; ?></h3>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 10px 20px;">
+                <h3 style="font-size: 13px; margin-top: 0; margin-bottom: 0px; text-transform: capitalize;">
+                    <strong><?php echo $Subject; ?></strong>
+                </h3>
+            </td>
+        </tr>
+
+        <tr>
+            <td style="padding: 10px 20px;">
+                <?php echo $message; ?>
+            </td>
+        </tr>
+
+        <tr>
+            <td style="padding: 10px 20px;">
+                <p style="text-align: left; margin: 0; padding-bottom: 0px; font-size: 13px;">
+                    <span> <span>Thanks &amp; Regards,</span> <br> <span><?php echo super_admin_website_setting['company_name'] ?></span> </span>
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 10px 20px; text-align: center;">
+                <h3 style="font-size: 13px; margin-top: 0; margin-bottom: 0px; text-transform: capitalize;">Note: This is an auto generated email, please do not reply</h3>
+            </td>
+        </tr>
+
+        <td style="background-color: rgb(0, 0, 0); padding: 10px 20px; text-align: center; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+            <h5 style="font-size: 13px; margin-top: 0; margin-bottom: 0px; text-transform: capitalize; color: #ffffff;"> Need More help? We are Here, Ready to Talk. </h5>
+            <table align="center" cellpadding="0" cellspacing="0">
+                <tbody>
+                    <tr>
+                        <td>
+                            <a href="tel:<?php echo super_admin_website_setting['support_no'] ?>" style="color: white; padding-right: 15px; font-size: 13px;">
+                                <img src="<?php echo root_url . 'uploads/icons/' . 'call-icon.png' ?>" style="width: 12px; margin-right: 3px;margin-bottom: -1px;"> <?php echo super_admin_website_setting['support_no'] ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="mailto:<?php echo super_admin_website_setting['support_email'] ?>" style="color: white; font-size: 13px;">
+                                <img src="<?php echo root_url . 'uploads/icons/' . 'email-icon.png' ?>" style=" width: 15px; margin-right: 3px; margin-bottom: -3px; ">
+                                <?php echo super_admin_website_setting['support_email'] ?>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+    </tbody>
+</table> -->
+
+
+
+
+<div>
+    <center style="padding:20px; width: 925px;margin:auto; border: 1px solid #C7C7C7; height: auto; position: absolute; top: 50%; left: 50%; background: #fff;  transform: translate(-50%, -50%);  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); font-family: 'Poppins', sans-serif;">
+        <tr>
+            <td style="width:100%;">
+                <p style="text-align: center; text-transform: uppercase; font-size: 18px;"><?php echo $sms_type; ?></p>
+            </td>
+        </tr>
+        <table style=" text-align: left; width:100%; padding: 10px; border-collapse: collapse;">
+            <tr>
+                <td style="width: 100%; padding: 10px 6px;">
+                    <h3 style="color: #333; margin: 0px 0;">
+                        <strong><?php echo $Subject; ?></strong>
+                    </h3>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?php echo $message; ?>
+                </td>
+            </tr>
+        </table>
+
+        <table style=" text-align: left; width:100%; padding: 10px; border-collapse: collapse;">
+            <tr>
+                <td style="width: 100%; padding: 10px;">
+                    <p style="text-align: left; margin: 0;  padding-bottom: 0px;">
+                        <span> <span>Thanks &amp; Regards,</span> <br> <span>Team <span
+                                    class="il"><?php echo super_admin_website_setting['company_name'] ?></span></span> </span>
+                    </p>
+                    <h4 style="text-align: center; "> Note: This is an auto generated email, please do not reply </h4>
+                </td>
+            </tr>
+        </table>
+        <table style="width: 100%; background-color: #3e3e3e;">
+            <tbody>
+                <tr>
+                    <td style=" padding: 10px 10px 10px 10px; color: #ff1010;  font-weight: normal; text-align: center; ">
+                        <h3 style="color: #fff; margin-top: 0px; text-align: center; margin-bottom: 0;">
+                            <span> <span style="color: #fff; font-size: 12px; font-weight: 500;"> Need More help? We are Here, Ready to Talk. </span> </span>
+                        </h3>
+                        <h2 style="margin: 0px; text-align: center; padding: 0; font-weight: 500; line-height: 1;">
+                            <span style="font-size: 12px; color: #fff; margin-right: 30px;">
+                                <a href="tel:<?php echo super_admin_website_setting['support_no'] ?>"
+                                    style="color: #fff;" target="_blank">
+                                    <img src="<?php echo root_url . 'uploads/icons/' . 'call-icon.png' ?>"
+                                        style="vertical-align: middle; margin-right: 5px; width: 15px;"
+                                        alt="phone.png" class="CToWUd"
+                                        data-bit="iit"> <?php echo super_admin_website_setting['support_no'] ?>
+                                </a>
+                            </span>
+                            <span>
+                                <a href="mailto:<?php echo super_admin_website_setting['support_email'] ?>"
+                                    style="color: #fff; font-size: 12px;" target="_blank"> <img
+                                        src="<?php echo root_url . 'uploads/icons/' . 'email-icon.png' ?>"
+                                        style="vertical-align: middle; margin-right: 5px; width: 15px;"
+                                        alt="mail.png" class="CToWUd" data-bit="iit"> <span
+                                        class="il"><?php echo super_admin_website_setting['support_email'] ?></span>.
+                                </a>
+                            </span>
+                        </h2>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </center>
+
+</div>
+
+
+
+
+<style>
+    @media print {
+        body {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+    }
+</style>

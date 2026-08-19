@@ -1,0 +1,279 @@
+#footer {
+    font-size: 14px;
+    background: var(--tts-buttton-bg1);
+    border-top: 1px solid #dedede;
+}
+
+#footer .footer-top {
+    padding: 100px 0 50px 0;
+    background: var(--bg-white);
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+#footer .footer-top .footer-widget {
+    margin-bottom: 40px;
+}
+
+#footer .footer-top .footer-widget h4 {
+    font-size: 16px;
+    font-weight: bold;
+    color: #000000;
+    position: relative;
+    padding-bottom: 12px;
+}
+
+#footer .footer-top .footer-widget h4::after {
+    position: absolute;
+    content: "";
+    bottom: 0;
+    left: 0;
+    border-top: none;
+    height: 3px;
+    width: 100px;
+    background-image: linear-gradient(to right, var(--tts-buttton-bg), transparent);
+}
+
+#footer .footer-top .footer-widget ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#footer .footer-top .footer-widget ul li+li {
+    margin-top: 10px;
+}
+
+#footer .footer-top .footer-widget ul li span {
+    font-weight: 500;
+}
+
+#footer .footer-top .footer-widget ul li a {
+    color: #000000;
+    transition: 0.3s;
+    position: relative;
+}
+
+#footer .footer-top .footer-widget ul li a:hover {
+    color: var(--tts-buttton-bg);
+}
+
+#footer .footer-widget .logo a img {
+    max-height: 50px;
+    object-fit: cover;
+}
+
+#footer .footer-widget .description {
+    font-size: 14px;
+    line-height: 25px;
+    margin-top: 20px;
+}
+
+#footer .footer-top .footer-widget .social-default {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    justify-content: start;
+}
+
+#footer .footer-top .footer-widget .social-default li {
+    margin: 5px;
+}
+
+#footer .footer-top .footer-widget .social-default li a {
+    width: 48px;
+    background-color: #F6F6F6;
+    height: 48px;
+    line-height: 45px;
+    text-align: center;
+    display: inline-block;
+    border-radius: 100%;
+    transition: 0.3s;
+    color: #000000;
+    z-index: 2;
+}
+
+#footer .footer-top .footer-widget .social-default li a:hover {
+    color: var(--tts-buttton-txt);
+}
+
+#footer .footer-top .footer-widget .social-default li a::after {
+    position: absolute;
+    content: "";
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: var(--tts-buttton-bg1);
+    transform: scale(0.5);
+    opacity: 0;
+    transition: 0.3s;
+    border-radius: 100%;
+}
+
+#footer .footer-top .footer-widget .social-default li a:hover::after {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.footer_newsletter .footer-bottom {
+    margin-bottom: -60px;
+    background-color: var(--tts-buttton-bg);
+    border-radius: 10px;
+    background-size: 95% 95%;
+    padding: 30px 30px;
+    position: relative;
+    z-index: 3;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.footer_newsletter .footer-bottom .newsletter-title {
+    color: #fff;
+    margin-bottom: 0;
+    font-size: 25px;
+}
+
+.footer_newsletter .footer-bottom .newsletter-form {
+    gap: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.footer_newsletter .footer-bottom .form-control {
+    background-color: #ffffff;
+    border-color: #ffffff;
+    border-radius: 4px 0 0 4px;
+    color: #4D5765;
+    height: 55px;
+    padding: 0 25px;
+    padding-right: 45px;
+    border: 1px solid transparent;
+}
+
+.footer_newsletter .footer-bottom .SUBCRIBE_BTN {
+    border-radius: 0 4px 4px 0;
+    min-width: 155px;
+    padding: 20px;
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+    vertical-align: middle;
+    display: inline-block;
+    border: none;
+    text-transform: uppercase;
+    text-align: center;
+    background-color: var(--tts-buttton-bg1);
+    color: var(--tts-buttton-txt1);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1;
+}
+
+.footer_newsletter .footer-bottom .SUBCRIBE_BTN:hover {
+    color: var(--tts-buttton-txt1);
+}
+
+.footer_newsletter .footer-bottom .SUBCRIBE_BTN:before {
+    content: "";
+    position: absolute;
+    height: 100%;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    background-color: var(--tts-buttton-bg);
+    border: 1px solid #fff;
+    opacity: 0;
+    z-index: -1;
+    transition: all 0.4s ease-out;
+    border-radius: inherit;
+}
+
+.footer_newsletter .footer-bottom .SUBCRIBE_BTN:hover::before,
+.footer_newsletter .footer-bottom .SUBCRIBE_BTN.active::before {
+    width: 100%;
+    opacity: 1;
+}
+
+/* Laptop/Desktop (769px to 1200px) */
+@media only screen and (max-width: 1200px) and (min-width: 769px) {
+
+    .footer_newsletter .footer-bottom {
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .footer_newsletter .footer-bottom .newsletter-title {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+
+    .footer_newsletter .footer-bottom .form-control {
+        width: 100%;
+        padding-right: 25px;
+    }
+
+    .footer_newsletter .footer-bottom .SUBCRIBE_BTN {
+        width: 100%;
+        margin-top: 10px;
+    }
+}
+
+/* Tablet (481px to 768px) */
+@media only screen and (max-width: 768px) and (min-width: 481px) {
+    .footer_newsletter .footer-bottom {
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .footer_newsletter .footer-bottom .newsletter-title {
+        font-size: 1.25rem;
+        margin-bottom: 15px;
+    }
+
+    .footer_newsletter .footer-bottom .form-control {
+        width: 100%;
+        padding-right: 20px;
+    }
+
+    .footer_newsletter .footer-bottom .SUBCRIBE_BTN {
+        width: 100%;
+    }
+}
+
+/* Mobile (320px to 480px) */
+@media only screen and (max-width: 480px) {
+    .footer_newsletter .footer-bottom{
+        flex-wrap: wrap;
+    }
+
+    .footer_newsletter .footer-bottom .newsletter-title {
+        font-size: 1rem;
+        margin-bottom: 10px;
+        display: none;
+    }
+    .footer_newsletter .footer-bottom .newsletter-form{
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+    .footer_newsletter .footer-bottom .form-control {
+        padding: 0.375rem 0.75rem;
+        border-radius: 0;
+    }
+
+    .footer_newsletter .footer-bottom .SUBCRIBE_BTN {
+        width: 100%;
+        border-radius: 0;
+        margin-top: 0px;
+    }
+}

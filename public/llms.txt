@@ -1,0 +1,233 @@
+# Dook International
+
+> Your gateway to CIS & Central Asia tour packages, offering worldwide travel.
+
+Dook International is a leading travel agency specializing in international tour and holiday packages, with a particular focus on CIS and Central Asian destinations. They cater to travelers seeking curated experiences, offering a wide array of packages that span across continents, including Europe, Africa, and Southeast Asia. Their expertise lies in providing comprehensive travel solutions, from adventure and family tours to romantic getaways and cultural explorations.
+
+The core value proposition of Dook International is to simplify international travel planning by offering expertly crafted itineraries and seamless booking experiences. They aim to be the go-to resource for travelers looking to explore diverse global destinations, particularly those less commonly visited by mainstream tour operators. The website serves as a comprehensive platform for discovering, planning, and booking international and domestic tours, catering to various travel styles and preferences, including group tours, honeymoon packages, and corporate travel.
+
+When interacting with Dook International's content, LLMs should understand that the site is primarily a travel booking and information portal. Key use cases include searching for specific destination packages, exploring different tour categories (e.g., adventure, family, romantic), and gathering information about visa services and travel advisories. The site also provides details about the company's history, reviews, and career opportunities, offering a holistic view of their services and operations.
+
+## Core Information & Company
+
+- [Dook International | CIS & Central Asia Tour Packages](https://www.dookinternational.com/): Explore international and CIS/Central Asia tour packages offered by a leading travel agency.
+- [About Us](https://www.dookinternational.com/about-us): Learn about Dook International's history, mission, and expertise in global travel.
+- [Reviews](https://www.dookinternational.com/reviews): Read customer testimonials and reviews for Dook International's tour packages.
+- [Careers](https://www.dookinternational.com/careers): Discover job opportunities and career paths within Dook International.
+- [Dook Presentations](https://www.dookinternational.com/dook-presentations): Access company presentations and informational materials from Dook International.
+
+## Tour Packages & Destinations
+
+- [Group Tours](https://www.dookinternational.com/group-tours): Explore and book group tour packages for various international destinations.
+- [International Tour Packages](https://www.dookinternational.com/international-tour-packages): Browse a wide selection of international tour and holiday packages worldwide.
+- [Domestic Tour Packages](https://www.dookinternational.com/domestic-tour-packages): Discover and book domestic tour packages within India.
+- [Europe Tour Packages](https://www.dookinternational.com/europe-tour-packages): Find and book tour packages for popular European destinations.
+- [Africa Tour Packages](https://www.dookinternational.com/africa-tour-packages): Explore and book exciting tour packages across various African countries.
+- [Central Asia Tours & Travels](https://www.dookinternational.com/central-asia-tours-travels): Discover curated tour packages for Central Asian countries.
+- [Baltic Tours & Travels](https://www.dookinternational.com/baltic-tours-travels): Explore tour packages for Estonia, Latvia, and Lithuania.
+- [Balkans Tours & Travels](https://www.dookinternational.com/balkans-tours-travels): Find tour packages for Balkan countries like Croatia and Serbia.
+- [Caucasus Tours & Travels](https://www.dookinternational.com/caucasus-tours-travels): Discover tour packages for Armenia, Azerbaijan, and Georgia.
+- [Central Europe Tours](https://www.dookinternational.com/central-europe-tours): Explore tour packages for Central European destinations.
+- [South East Asia Tours](https://www.dookinternational.com/south-east-asia-tours): Browse tour packages for popular Southeast Asian countries.
+- [South Asia Tours](https://www.dookinternational.com/south-asia-tours): Discover tour packages for South Asian destinations like India and Nepal.
+- [Regions](https://www.dookinternational.com/regions): Overview of all travel regions covered by Dook International.
+- [Almaty Package](https://www.dookinternational.com/kazakhstan/almaty-package/0000691): Details for a specific tour package to Almaty, Kazakhstan.
+- [Azerbaijan Tour Packages](https://www.dookinternational.com/azerbaijan-tour-packages): Explore and book tour packages for Azerbaijan.
+- [Kazakhstan Tour Packages](https://www.dookinternational.com/kazakhstan-tour-packages): Discover and book tour packages for Kazakhstan.
+- [Russia Tour Packages](https://www.dookinternational.com/russia-tour-packages): Find and book tour packages for various destinations in Russia.
+- [Uzbekistan Tashkent Tour Packages](https://www.dookinternational.com/uzbekistan-tashkent-tour-packages): Explore tour packages for Tashkent, Uzbekistan.
+- [Kyrgyzstan Tour Packages](https://www.dookinternational.com/kyrgyzstan-tour-packages): Discover and book tour packages for Kyrgyzstan.
+- [Armenia Tour Packages](https://www.dookinternational.com/armenia-tour-packages): Find and book tour packages for Armenia.
+- [Georgia Tour Packages](https://www.dookinternational.com/georgia-tour-packages): Explore and book tour packages for Georgia.
+- [Turkey Tour Packages](https://www.dookinternational.com/turkey-tour-packages): Discover and book tour packages for Turkey.
+- [Serbia Tour Packages](https://www.dookinternational.com/serbia-tour-packages): Find and book tour packages for Serbia.
+- [Countries](https://www.dookinternational.com/countries): List of all countries for which Dook International offers tour packages.
+- [Tbilisi Batumi Group Tour](https://www.dookinternational.com/group-tours/tbilisi-batumi/2000062): Details for a group tour package covering Tbilisi and Batumi, Georgia.
+- [Baku Tours](https://www.dookinternational.com/destinations/baku-tours): Explore tour packages and information for Baku, Azerbaijan.
+- [Almaty Tours](https://www.dookinternational.com/destinations/almaty-tours): Discover tour packages and information for Almaty, Kazakhstan.
+- [Bishkek Tours](https://www.dookinternational.com/destinations/bishkek-tours): Find tour packages and information for Bishkek, Kyrgyzstan.
+- [Istanbul Tours](https://www.dookinternational.com/destinations/istanbul-tours): Explore tour packages and information for Istanbul, Turkey.
+- [Tashkent Tours](https://www.dookinternational.com/destinations/tashkent-tours): Discover tour packages and information for Tashkent, Uzbekistan.
+- [Moscow Tours](https://www.dookinternational.com/destinations/moscow-tours): Find tour packages and information for Moscow, Russia.
+- [Yerevan Tours](https://www.dookinternational.com/destinations/yerevan-tours): Explore tour packages and information for Yerevan, Armenia.
+- [Tbilisi Tours](https://www.dookinternational.com/destinations/tbilisi-tours): Discover tour packages and information for Tbilisi, Georgia.
+- [Belgrade Tours](https://www.dookinternational.com/destinations/belgrade-tours): Find tour packages and information for Belgrade, Serbia.
+- [Destinations](https://www.dookinternational.com/destinations): Browse all available travel destinations offered by Dook International.
+- [Baku 4 Nights - Land of Fire Tour Package](https://www.dookinternational.com/azerbaijan/baku-4-nights---land-of-fire-tour-package/000988): Details for a 4-night 'Land of Fire' tour package in Baku, Azerbaijan.
+- [Moscow, Saint Petersburg, Murmansk 7 Nights/8 Days](https://www.dookinternational.com/russia/moscow-saintpetersburg-murmansk-7-nights-8-days/0000360): Information on an 8-day tour package covering Moscow, St. Petersburg, and Murmansk.
+- [Bishkek 4 Nights and 5 Days Package](https://www.dookinternational.com/kyrgyzstan/bishkek-4-nights-and-5-days-package/0000102): Details for a 5-day/4-night tour package to Bishkek, Kyrgyzstan.
+- [Almaty and Baku Tour 4 Nights Package](https://www.dookinternational.com/azerbaijan/almaty-and-baku-tour-4-nights-package/0000169): Details for a 4-night package combining Almaty and Baku.
+- [Georgia 4 Nights and 5 Days Package](https://www.dookinternational.com/georgia/georgia-4-nights-and-5-days-package/0000109): Details for a 5-day/4-night tour package covering Georgia.
+- [Armenia 4 Nights Package](https://www.dookinternational.com/armenia/4-nights-package/0000521): Details for a 4-night tour package to Armenia.
+- [Uzbekistan Tashkent Package](https://www.dookinternational.com/uzbekistan/tashkent-package/0000697): Details for a tour package to Tashkent, Uzbekistan.
+- [Ukraine Tour Packages](https://www.dookinternational.com/ukraine-tour-packages): Explore tour packages for Ukraine.
+- [Turkmenistan Tour Packages](https://www.dookinternational.com/turkmenistan-tour-packages): Discover tour packages for Turkmenistan.
+- [Croatia Tour Packages](https://www.dookinternational.com/croatia-tour-packages): Find tour packages for Croatia.
+- [Estonia Tour Packages](https://www.dookinternational.com/estonia-tour-packages): Explore tour packages for Estonia.
+- [Latvia Tour Packages](https://www.dookinternational.com/latvia-tour-packages): Discover tour packages for Latvia.
+- [Lithuania Tour Packages](https://www.dookinternational.com/lithuania-tour-packages): Find tour packages for Lithuania.
+- [Moldova Tour Packages](https://www.dookinternational.com/moldova-tour-packages): Explore tour packages for Moldova.
+- [Bosnia and Herzegovina Tour Packages](https://www.dookinternational.com/bosnia-and-herzegovina-tour-packages): Discover tour packages for Bosnia and Herzegovina.
+- [Czech Republic Tour Packages](https://www.dookinternational.com/czech-republic-tour-packages): Find tour packages for the Czech Republic.
+- [Egypt Tour Packages](https://www.dookinternational.com/egypt-tour-packages): Explore tour packages for Egypt.
+- [Nepal Tour Packages](https://www.dookinternational.com/nepal-tour-packages): Discover tour packages for Nepal.
+- [Mongolia Tour Packages](https://www.dookinternational.com/mongolia-tour-packages): Find tour packages for Mongolia.
+- [India Tour Packages](https://www.dookinternational.com/india-tour-packages): Explore tour packages for India.
+- [Romania Tour Packages](https://www.dookinternational.com/romania-tour-packages): Discover tour packages for Romania.
+- [Bhutan Tour Packages](https://www.dookinternational.com/bhutan-tour-packages): Find tour packages for Bhutan.
+- [Saudi Arabia Tour Packages](https://www.dookinternational.com/saudi-arabia-tour-packages): Explore tour packages for Saudi Arabia.
+- [Sri Lanka Tour Packages](https://www.dookinternational.com/sri-lanka-tour-packages): Discover tour packages for Sri Lanka.
+- [Montenegro Tour Packages](https://www.dookinternational.com/montenegro-tour-packages): Find tour packages for Montenegro.
+- [Poland Tour Packages](https://www.dookinternational.com/poland-tour-packages): Explore tour packages for Poland.
+- [Philippines Tour Packages](https://www.dookinternational.com/philippines-tour-packages): Discover tour packages for the Philippines.
+- [Brazil Tour Packages](https://www.dookinternational.com/brazil-tour-packages): Find tour packages for Brazil.
+- [Maldives Tour Packages](https://www.dookinternational.com/maldives-tour-packages): Explore tour packages for the Maldives.
+- [Seychelles Tour Packages](https://www.dookinternational.com/seychelles-tour-packages): Discover tour packages for Seychelles.
+- [Jordan Tour Packages](https://www.dookinternational.com/jordan-tour-packages): Find tour packages for Jordan.
+- [Israel Tour Packages](https://www.dookinternational.com/israel-tour-packages): Explore tour packages for Israel.
+- [Palestinian Territories Tour Packages](https://www.dookinternational.com/palestinian-territories-tour-packages): Discover tour packages for Palestinian Territories.
+- [Iran Tour Packages](https://www.dookinternational.com/iran-tour-packages): Find tour packages for Iran.
+- [Canada Tour Packages](https://www.dookinternational.com/canada-tour-packages): Explore tour packages for Canada.
+- [Liechtenstein Tour Packages](https://www.dookinternational.com/liechtenstein-tour-packages): Discover tour packages for Liechtenstein.
+- [Zimbabwe Tour Packages](https://www.dookinternational.com/zimbabwe-tour-packages): Find tour packages for Zimbabwe.
+- [Kenya Tour Packages](https://www.dookinternational.com/kenya-tour-packages): Explore tour packages for Kenya.
+- [Mozambique Tour Packages](https://www.dookinternational.com/mozambique-tour-packages): Discover tour packages for Mozambique.
+- [Mali Tour Packages](https://www.dookinternational.com/mali-tour-packages): Find tour packages for Mali.
+- [Morocco Tour Packages](https://www.dookinternational.com/morocco-tour-packages): Explore tour packages for Morocco.
+- [Gibraltar Tour Packages](https://www.dookinternational.com/gibraltar-tour-packages): Discover tour packages for Gibraltar.
+- [Slovakia Tour Packages](https://www.dookinternational.com/slovakia-tour-packages): Find tour packages for Slovakia.
+- [Hungary Tour Packages](https://www.dookinternational.com/hungary-tour-packages): Explore tour packages for Hungary.
+- [Ireland Tour Packages](https://www.dookinternational.com/ireland-tour-packages): Discover tour packages for Ireland.
+- [Isle of Man Tour Packages](https://www.dookinternational.com/isle-of-man-tour-packages): Find tour packages for the Isle of Man.
+- [Colombia Tour Packages](https://www.dookinternational.com/colombia-tour-packages): Explore tour packages for Colombia.
+- [Australia Tour Packages](https://www.dookinternational.com/australia-tour-packages): Discover tour packages for Australia.
+- [New Zealand Tour Packages](https://www.dookinternational.com/new-zealand-tour-packages): Find tour packages for New Zealand.
+- [Uganda Tour Packages](https://www.dookinternational.com/uganda-tour-packages): Explore tour packages for Uganda.
+- [Vatican City Tour Packages](https://www.dookinternational.com/vatican-city-tour-packages): Discover tour packages for Vatican City.
+- [Hong Kong Tour Packages](https://www.dookinternational.com/hong-kong-tour-packages): Find tour packages for Hong Kong.
+- [Slovenia Tour Packages](https://www.dookinternational.com/slovenia-tour-packages): Explore tour packages for Slovenia.
+- [Norway Tour Packages](https://www.dookinternational.com/norway-tour-packages): Discover tour packages for Norway.
+- [Sweden Tour Packages](https://www.dookinternational.com/sweden-tour-packages): Find tour packages for Sweden.
+- [Denmark Tour Packages](https://www.dookinternational.com/denmark-tour-packages): Explore tour packages for Denmark.
+- [Macau Tour Packages](https://www.dookinternational.com/macau-tour-packages): Discover tour packages for Macau.
+- [United States Tour Packages](https://www.dookinternational.com/united-states-tour-packages): Find tour packages for the United States.
+- [Dushanbe Tours](https://www.dookinternational.com/destinations/dushanbe-tours): Explore tour packages and information for Dushanbe, Tajikistan.
+- [Minsk Tours](https://www.dookinternational.com/destinations/minsk-tours): Discover tour packages and information for Minsk, Belarus.
+- [Sofia Tours](https://www.dookinternational.com/destinations/sofia-tours): Find tour packages and information for Sofia, Bulgaria.
+- [Tirana Tours](https://www.dookinternational.com/destinations/tirana-tours): Explore tour packages and information for Tirana, Albania.
+- [Helsinki Tours](https://www.dookinternational.com/destinations/helsinki-tours): Discover tour packages and information for Helsinki, Finland.
+- [Riga Tours](https://www.dookinternational.com/destinations/riga-tours): Find tour packages and information for Riga, Latvia.
+- [Tallinn Tours](https://www.dookinternational.com/destinations/tallinn-tours): Explore tour packages and information for Tallinn, Estonia.
+- [Vilnius Tours](https://www.dookinternational.com/destinations/vilnius-tours): Discover tour packages and information for Vilnius, Lithuania.
+- [Dubai Tours](https://www.dookinternational.com/destinations/dubai-tours): Find tour packages and information for Dubai, UAE.
+- [Bali Tours](https://www.dookinternational.com/destinations/bali-tours): Explore tour packages and information for Bali, Indonesia.
+- [Paris Tours](https://www.dookinternational.com/destinations/paris-tours): Discover tour packages and information for Paris, France.
+- [Madrid Tours](https://www.dookinternational.com/destinations/madrid-tours): Find tour packages and information for Madrid, Spain.
+- [Amsterdam Tours](https://www.dookinternational.com/destinations/amsterdam-tours): Explore tour packages and information for Amsterdam, Netherlands.
+- [Lisbon Tours](https://www.dookinternational.com/destinations/lisbon-tours): Discover tour packages and information for Lisbon, Portugal.
+- [Zurich Tours](https://www.dookinternational.com/destinations/zurich-tours): Find tour packages and information for Zurich, Switzerland.
+- [Venice Tours](https://www.dookinternational.com/destinations/venice-tours): Explore tour packages and information for Venice, Italy.
+- [Brussels Tours](https://www.dookinternational.com/destinations/brussels-tours): Discover tour packages and information for Brussels, Belgium.
+- [Bangkok Tours](https://www.dookinternational.com/destinations/bangkok-tours): Find tour packages and information for Bangkok, Thailand.
+- [Phuket Tours](https://www.dookinternational.com/destinations/phuket-tours): Explore tour packages and information for Phuket, Thailand.
+- [Krabi Tours](https://www.dookinternational.com/destinations/krabi-tours): Discover tour packages and information for Krabi, Thailand.
+- [Kuala Lumpur Tours](https://www.dookinternational.com/destinations/kuala-lumpur-tours): Find tour packages and information for Kuala Lumpur, Malaysia.
+- [Tajikistan Tour Packages](https://www.dookinternational.com/tajikistan-tour-packages): Explore tour packages for Tajikistan.
+- [Belarus Tour Packages](https://www.dookinternational.com/belarus-tour-packages): Discover tour packages for Belarus.
+- [Bulgaria Tour Packages](https://www.dookinternational.com/bulgaria-tour-packages): Find tour packages for Bulgaria.
+- [Albania Tour Packages](https://www.dookinternational.com/albania-tour-packages): Explore tour packages for Albania.
+- [Finland Tour Packages](https://www.dookinternational.com/finland-tour-packages): Discover tour packages for Finland.
+- [United Kingdom Tour Packages](https://www.dookinternational.com/united-kingdom-tour-packages): Find tour packages for the United Kingdom.
+- [Indonesia Tour Packages](https://www.dookinternational.com/indonesia-tour-packages): Explore tour packages for Indonesia.
+- [Singapore Tour Packages](https://www.dookinternational.com/singapore-tour-packages): Discover tour packages for Singapore.
+- [Thailand Tour Packages](https://www.dookinternational.com/thailand-tour-packages): Find tour packages for Thailand.
+- [Malaysia Tour Packages](https://www.dookinternational.com/malaysia-tour-packages): Explore tour packages for Malaysia.
+- [UAE Tour Packages](https://www.dookinternational.com/uae-tour-packages): Discover tour packages for the United Arab Emirates.
+- [South Africa Tour Packages](https://www.dookinternational.com/south-africa-tour-packages): Find tour packages for South Africa.
+- [Tanzania Tour Packages](https://www.dookinternational.com/tanzania-tour-packages): Explore tour packages for Tanzania.
+- [Madagascar Tour Packages](https://www.dookinternational.com/madagascar-tour-packages): Discover tour packages for Madagascar.
+- [Greece Tour Packages](https://www.dookinternational.com/greece-tour-packages): Find tour packages for Greece.
+- [Mauritius Tour Packages](https://www.dookinternational.com/mauritius-tour-packages): Explore tour packages for Mauritius.
+- [France Tour Packages](https://www.dookinternational.com/france-tour-packages): Discover tour packages for France.
+- [Spain Tour Packages](https://www.dookinternational.com/spain-tour-packages): Find tour packages for Spain.
+- [Switzerland Tour Packages](https://www.dookinternational.com/switzerland-tour-packages): Explore tour packages for Switzerland.
+- [Netherlands Tour Packages](https://www.dookinternational.com/netherlands-tour-packages): Discover tour packages for the Netherlands.
+- [Germany Tour Packages](https://www.dookinternational.com/germany-tour-packages): Find tour packages for Germany.
+- [Belgium Tour Packages](https://www.dookinternational.com/belgium-tour-packages): Explore tour packages for Belgium.
+- [Austria Tour Packages](https://www.dookinternational.com/austria-tour-packages): Discover tour packages for Austria.
+- [Portugal Tour Packages](https://www.dookinternational.com/portugal-tour-packages): Find tour packages for Portugal.
+- [Italy Tour Packages](https://www.dookinternational.com/italy-tour-packages): Explore tour packages for Italy.
+- [Vietnam Tour Packages](https://www.dookinternational.com/vietnam-tour-packages): Discover tour packages for Vietnam.
+- [Cambodia Tour Packages](https://www.dookinternational.com/cambodia-tour-packages): Find tour packages for Cambodia.
+- [South Korea Tour Packages](https://www.dookinternational.com/south-korea-tour-packages): Explore tour packages for South Korea.
+- [Japan Tour Packages](https://www.dookinternational.com/japan-tour-packages): Discover tour packages for Japan.
+
+## Tour Experiences & Themes
+
+- [Island Tours](https://www.dookinternational.com/island-tours): Explore island getaway tour packages.
+- [Honeymoon Tours](https://www.dookinternational.com/honeymoon-tours): Discover romantic honeymoon tour packages.
+- [Adventure Tours](https://www.dookinternational.com/adventure-tours): Find exciting adventure tour packages.
+- [Family Tours](https://www.dookinternational.com/family-tours): Explore family-friendly tour packages.
+- [Nature Tours](https://www.dookinternational.com/nature-tours): Discover tours focused on natural landscapes and beauty.
+- [Nightlife Tours](https://www.dookinternational.com/nightlife-tours): Explore tour packages with a focus on nightlife experiences.
+- [Romantic Tours](https://www.dookinternational.com/romantic-tours): Find romantic tour packages for couples.
+- [Beach Tours](https://www.dookinternational.com/beach-tours): Discover beach vacation tour packages.
+- [Hill Station Tours](https://www.dookinternational.com/hill-station-tours): Explore tour packages to scenic hill stations.
+- [Experiences](https://www.dookinternational.com/experiences): Browse unique travel experiences offered by Dook International.
+- [Activities](https://www.dookinternational.com/activities): Discover various activities available for travelers.
+- [Corporate MICE Tours](https://www.dookinternational.com/corporate-mice-tours): Explore corporate travel, incentive, and event packages.
+- [Shopping Tours](https://www.dookinternational.com/shopping-tours): Find tour packages focused on shopping experiences.
+- [Wildlife Tours](https://www.dookinternational.com/wildlife-tours): Discover wildlife and safari tour packages.
+- [Traditional Cultural Tours](https://www.dookinternational.com/traditional-cultural-tours): Explore tours focused on cultural immersion and traditions.
+- [Health & Wellness Tours](https://www.dookinternational.com/health-wellness-tours): Find tour packages focused on health and wellness retreats.
+- [Water Sports Tours](https://www.dookinternational.com/water-sports-tours): Discover tour packages featuring water sports activities.
+- [Spirituality Tours](https://www.dookinternational.com/spirituality-tours): Explore tour packages focused on spiritual journeys.
+- [Cruise and Rail Tours](https://www.dookinternational.com/cruise-and-rail-tours): Find tour packages combining cruise and rail travel.
+- [Food and Wine Tours](https://www.dookinternational.com/food-and-wine-tours): Discover culinary and wine-focused tour packages.
+- [Festival and Events Tours](https://www.dookinternational.com/festival-and-events-tours): Explore tour packages centered around festivals and events.
+- [Leisure Tours](https://www.dookinternational.com/leisure-tours): Find relaxed and leisurely tour packages.
+- [Heritage & Historical Tours](https://www.dookinternational.com/heritage-historical-tours): Discover tours focused on heritage sites and history.
+- [Luxury Tours](https://www.dookinternational.com/luxury-tours): Explore premium and luxury travel packages.
+- [Road Tours](https://www.dookinternational.com/road-tours): Find self-drive or guided road trip packages.
+- [Sports Tours](https://www.dookinternational.com/sports-tours): Discover tour packages for sporting events and activities.
+- [Extreme Tours](https://www.dookinternational.com/extreme-tours): Explore high-thrill adventure and extreme sports tours.
+- [Bachelor Party Destinations](https://www.dookinternational.com/bachelor-party-destinations): Find destinations and packages for bachelor parties.
+- [Cruise Tour Packages](https://www.dookinternational.com/cruise-tour-packages): Explore and book cruise tour packages.
+- [Destination Wedding Packages](https://www.dookinternational.com/destination-wedding-packages): Discover packages for destination weddings.
+- [Corporate Tour Packages](https://www.dookinternational.com/corporate-tour-packages): Find specialized tour packages for corporate groups.
+- [Inbound Tour Packages](https://www.dookinternational.com/inbound-tour-packages): Explore tour packages for travelers visiting India.
+- [Once in a Lifetime Tours](https://www.dookinternational.com/once-in-a-lifetime-tours): Discover unique, bucket-list travel experiences.
+- [Ladies Special Tour Packages](https://www.dookinternational.com/ladies-special-tour-packages): Find tour packages designed specifically for women.
+
+## Services & Booking
+
+- [Visa Consultation Services](https://www.dookinternational.com/visa-consultation-services): Learn about visa consultation and assistance services offered.
+- [Book Flight](https://www.dookinternational.com/book/flight): Access the flight booking portal.
+- [Book Hotel](https://www.dookinternational.com/book/hotel): Access the hotel booking portal.
+- [Book Bus](https://www.dookinternational.com/book/bus): Access the bus booking portal.
+
+## Information & Support
+
+- [Blog](https://www.dookinternational.com/blog): Read travel articles, tips, and destination guides.
+- [Contact Us](https://www.dookinternational.com/contact-us): Find contact information and ways to reach Dook International.
+- [FAQs](https://www.dookinternational.com/faqs): Find answers to frequently asked questions about travel and services.
+- [Privacy Policy](https://www.dookinternational.com/privacy-policy): Review Dook International's privacy policy.
+- [Terms and Conditions](https://www.dookinternational.com/terms-and-conditions): Understand the terms and conditions for using Dook International's services.
+- [Registration](https://www.dookinternational.com/registration): Register for an account with Dook International.
+
+## Search Results
+
+- [Search Results for Almaty](https://www.dookinternational.com/search?searchKeyword=Almaty): View search results for 'Almaty' on Dook International.
+- [Search Results for Moscow](https://www.dookinternational.com/search?searchKeyword=Moscow): View search results for 'Moscow' on Dook International.
+- [Search Results for Armenia](https://www.dookinternational.com/search?searchKeyword=Armenia): View search results for 'Armenia' on Dook International.
+- [Search Results for Georgia](https://www.dookinternational.com/search?searchKeyword=Georgia): View search results for 'Georgia' on Dook International.
+- [Search Results for Russia](https://www.dookinternational.com/search?searchKeyword=Russia): View search results for 'Russia' on Dook International.
+
+## Agent Portal
+
+- [Agent Login](https://agent.dookinternational.com/login): Log in to the Dook International agent portal.
+- [Register Agency](https://agent.dookinternational.com/login/register-agency): Register a new agency with the Dook International portal.
+
+## LLM Content
+
+- [LLMs TXT](https://www.dookinternational.com//llms.txt): Access the llms.txt file for website information.

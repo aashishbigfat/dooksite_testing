@@ -1,0 +1,154 @@
+.offcanvassiderbar .navbar {
+    background-color: #fff;
+}
+
+.offcanvassiderbar .navbar .navbar-brand img {
+    height: 60px;
+}
+.offcanvassiderbar .navbar .container{
+    display: inline-block;
+}
+.offcanvassiderbar .loginbtn{
+    margin-right: 5px;
+}
+.offcanvassiderbar .loginbtn .dropdown-toggle{
+    color: var(--tts-buttton-txt);
+}
+.offcanvassiderbar .navbar-toggler, .offcanvassiderbar .loginbtn{
+    border: 0;
+    background: var(--tts-buttton-bg);
+    color: var(--tts-buttton-txt);
+    transition: all 0.4s;
+    outline: none !important;
+    line-height: 1;
+    cursor: pointer;
+    text-align: right;
+    padding: 12px 12px;
+    border-radius: 2px;
+    height: 40px;
+}
+
+.offcanvas-header .offcanvas-logo img {
+    height: 40px;
+}
+
+.offcanvas-header .btn-close {
+    position: absolute;
+    left: -56px;
+    top: 8px;
+    font-size: 1.2rem;
+    background: var(--tts-buttton-bg);
+    color: var(--tts-buttton-txt);
+    width: 40px;
+    height: 40px;
+    border-radius: 0;
+    z-index: 1;
+}
+
+
+.reservations {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.reservations .text {
+    margin-left: 20px;
+}
+
+.reservations .text p {
+    font-size: 14px;
+    margin: 0;
+    display: block;
+}
+
+.reservations .text a {
+    font-size: 14px;
+    color: #000000;
+    letter-spacing: 1px;
+    transition: all 0.5s ease;
+}
+
+.cappa-menu-footer {
+    position: relative;
+    padding: 20px 0px 0px 0px;
+    color: #999;
+}
+
+.cappa-menu-footer div.reservation {
+    margin: 0;
+    top: 0;
+    left: 0px;
+    height: 60%;
+    z-index: 9;
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.cappa-menu-footer a {
+    color: var(--tts-buttton-bg);;
+}
+
+.cappa-menu-footer div.reservation .icon {
+    position: absolute;
+    left: 0;
+    /* top: -50px; */
+    width: 50px;
+    height: 50px;
+    border: 1px solid var(--tts-buttton-bg);;
+    -webkit-animation: pulse 2s infinite;
+    animation: pulse 2s infinite;
+    border-radius: 100%;
+}
+
+.cappa-menu-footer div.reservation a .icon i {
+    color: var(--tts-buttton-bg);;
+    font-size: 24px;
+}
+
+.cappa-menu-footer div.reservation .call {
+    color: #222;
+    font-weight: 400;
+    font-size: 14px;
+    margin-top: 0px;
+    margin-left: 60px;
+}
+
+.cappa-menu-footer div.reservation .call span {
+    font-size: 14px;
+    color: var(--tts-buttton-bg);;
+}
+.offcanvassiderbar .offcanvas-backdrop.show{
+    opacity: 0.8;
+}
+
+.offcanvassiderbar .offcanvas, 
+.offcanvassiderbar .offcanvas-xxl, 
+.offcanvassiderbar .offcanvas-xl, 
+.offcanvassiderbar .offcanvas-lg, 
+.offcanvassiderbar .offcanvas-md, 
+.offcanvassiderbar .offcanvas-sm{
+    max-width: 300px;
+}
+
+@media only screen and (max-width: 600px) {
+    .offcanvassiderbar .navbar .navbar-brand img{
+        height: 30px;
+    }
+}
+
+
+.offcanvas-body .has-megamenu .dropdown-menu{
+    padding: 10px 20px;
+}
+
+.offcanvas-body .has-megamenu .dropdown-menu ul{
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+.offcanvas-body .has-megamenu .dropdown-menu ul a{
+    color: inherit;
+    font-size: 13px;
+}

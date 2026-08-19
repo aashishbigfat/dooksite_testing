@@ -1,118 +1,174 @@
-<div class="accordion " id="accordionExample">
-    <div class="accordion-item bg_accordion rounded">
-        <h2 class="accordion-header" id="headingOne">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
-                aria-expanded="true" aria-controls="collapseOne">
-                Filter by Price
-            </button>
-        </h2>
-        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
-            data-bs-parent="#accordionExample">
-            <div class="accordion-body">
-                <input type="text" class="js-range-slider" name="my_range" value="" data-skin="round" data-type="double"
-                    data-min="0" data-max="1000" data-grid="false" />
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="from_flight px-2 bg-light">
-                            <label for="exampleInputPassword1" class="form-label m-0">Min Price </label>
-                            <input type="text" maxlength="4" value="0" class="from-control w-100 bg-transparent from" />
-                        </div>
+<!-- Mobile Filter Toggle -->
+<button class="mobile-filter-toggle" onclick="toggleMobileFilter()">
+    <i class="fas fa-filter"></i> Filter Options
+</button>
+
+<!-- Filter Overlay -->
+<div class="filter-overlay" onclick="closeMobileFilter()"></div>
+<!-- Filter Sidebar -->
+<div class="filter-sidebar" id="filterSidebar">
+    <button class="close-btn" onclick="closeMobileFilter()" style="display: none">
+        <i class="fas fa-times"></i>
+    </button>
+
+    <!-- Price Filter -->
+    <div class="filter-section">
+        <div class="filter-header" onclick="toggleFilter('price')">
+            <h3>Filter by Price</h3>
+            <i class="fas fa-chevron-up"></i>
+        </div>
+        <div class="filter-content" id="price">
+            <input type="text" class="js-range-slider" name="my_range" value="" data-skin="round" data-type="double"
+                data-min="{{ $minPrice ?? '0' }}" data-max="{{ $maxPrice ?? $maxPrice1 }}" data-grid="false" />
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="from_flight px-2 bg-light">
+                        <label for="minPrice" class="form-label m-0">Min Price </label>
+                        <input id="minPrice" type="number" maxlength="4" value="{{ $minPrice ?? '0' }}"
+                            class="from-control w-100 bg-transparent from" />
                     </div>
-                    <div class="col-md-6">
-                        <div class="from_flight px-2 bg-light">
-                            <label for="exampleInputPassword1" class="form-label m-0">Max Price </label>
-                            <input type="text" maxlength="4" value="1000"
-                                class="from-control w-100 bg-transparent to" />
-                        </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="from_flight px-2 bg-light">
+                        <label for="maxPrice" class="form-label m-0">Max Price </label>
+                        <input id="maxPrice" type="number" maxlength="4" value="{{ $maxPrice ?? '' }}"
+                            class="from-control w-100 bg-transparent to" />
                     </div>
-                    <div class="col-md-6 mt-3">
-                        <p><b>Clear</b></p>
-                    </div>
-                    <div class="col-md-6 mt-3 d-flex justify-content-end">
-                        <button class="btn btn-danger" style="font-size: 11px;height: 30px;width: 70px;">Apply</button>
-                    </div>
+                </div>
+                <div class="filter-buttons">
+                    <button class=" btn-clear-filter btn-clear">Clear</button>
+
+                    <button class="btn-apply-price-filter btn-apply">Apply</button>
                 </div>
             </div>
         </div>
     </div>
-    <div class="accordion-item mt-4 rounded bg_accordion">
-        <h2 class="accordion-header" id="headingTwo">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo"
-                aria-expanded="false" aria-controls="collapseTwo">
-                Flights
-            </button>
-        </h2>
-        <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo"
-            data-bs-parent="#accordionExample">
-            <div class="accordion-body">
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                    <label class="form-check-label" for="exampleCheck1">With Flight</label>
+
+    <!-- Flights Filter -->
+    <div class="filter-section">
+        <div class="filter-header" onclick="toggleFilter('flights')">
+            <h3>Flights</h3>
+            <i class="fas fa-chevron-up"></i>
+        </div>
+        <div class="filter-content" id="flights">
+            <div class="filter-options">
+                <div class="filter-option">
+                    <input type="checkbox" class="form-check-input flight-filter" id="with_flight" name="flight_filter"
+                        value="with_flight" {{ request()->get('flight_filter') == 'with_flight' ? 'checked' : '' }}>
+                    <label for="with-flight">With Flight</label>
                 </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                    <label class="form-check-label" for="exampleCheck1">With Out Flight</label>
+                <div class="filter-option">
+                    <input type="checkbox" class="form-check-input flight-filter" id="without_flight"
+                        name="flight_filter" value="without_flight" {{ request()->get('flight_filter') ==
+                    'without_flight' ? 'checked' : '' }}>
+                    <label for="without-flight">Without Flight</label>
                 </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                    <label class="form-check-label" for="exampleCheck1">Both</label>
+                <div class="filter-option">
+                    <input type="checkbox" class="form-check-input flight-filter" id="both_flight" name="both_flight"
+                        value="both_flight" {{ request()->get('both_flight') ? 'checked' : '' }}>
+                    <label for="both">Both</label>
                 </div>
             </div>
         </div>
     </div>
-    <div class="accordion-item mt-4  bg_accordion rounded">
-        <h2 class="accordion-header" id="headingThree">
-            <button class="accordion-button " type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree"
-                aria-expanded="false" aria-controls="collapseThree">
-                Destination
-            </button>
-        </h2>
-        <div id="collapseThree" class="accordion-collapse show" aria-labelledby="headingThree"
-            data-bs-parent="#accordionExample">
-            <div class="accordion-body">
-                <p>Country</p>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                    <label class="form-check-label" for="exampleCheck1">Sri Lanka</label>
-                </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                    <label class="form-check-label" for="exampleCheck1">Japan</label>
-                </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                    <label class="form-check-label" for="exampleCheck1">Nepal</label>
-                </div>
-            </div>
+
+    <!-- Destination Filter -->
+    <div class="filter-section">
+        <div class="filter-header" onclick="toggleFilter('destinations')">
+            <h3>Destination</h3>
+            <i class="fas fa-chevron-up"></i>
         </div>
-    </div>
-    <div class="accordion-item mt-4  bg_accordion rounded">
-        <h2 class="accordion-header" id="headingThree1">
-            <button class="accordion-button " type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree1"
-                aria-expanded="false" aria-controls="collapseThree1">
-                Duration
-            </button>
-        </h2>
-        <div id="collapseThree1" class="accordion-collapse show" aria-labelledby="headingThree1"
-            data-bs-parent="#accordionExample">
-            <div class="accordion-body">
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                    <label class="form-check-label" for="exampleCheck1">0 - 2 hours</label>
+        <div class="filter-content" id="destinations"
+            style="overflow-y: scroll;height: 200px;scrollbar-width: thin;scrollbar-color: #dc3545 #f1f1f1;">
+            <div class="filter-options">
+                @foreach ($destinations as $destinations)
+                <div class="filter-option">
+                    <input type="checkbox" class="destinations-filter" id="{{ $destinations->id }}"
+                        name="destinations[]" value="{{ $destinations->dest_name }}" {{
+                        in_array($destinations->dest_name, $selectedDestinations) ? 'checked' : '' }}>
+                    <label class="form-check-label" for="{{ $destinations->id }}">{{ $destinations->dest_name }}</label>
                 </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                    <label class="form-check-label" for="exampleCheck1">2 -4 hours</label>
-                </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                    <label class="form-check-label" for="exampleCheck1">4 -8 hours</label>
-                </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                    <label class="form-check-label" for="exampleCheck1">Fullday(+8 hours)</label>
-                </div>
+                @endforeach
             </div>
         </div>
     </div>
 </div>
+
+
+{{-- price Filtering --}}
+<script>
+    $(document).ready(function () {
+        $(".js-range-slider").ionRangeSlider({
+            type: "double", // Enables dual thumb (Min and Max)
+            skin: "round",
+            min: {{ $minPrice ?? 0 }},
+            max: {{ $maxPrice ?? $maxPrice1 }},
+            from: {{ $minPrice ?? 0 }},
+            to: {{ $maxPrice ?? $maxPrice1 }},
+            grid: true,
+            onFinish: function (data) {
+                $("#minPrice").val(data.from);
+                $("#maxPrice").val(data.to);
+            }
+        });
+
+        // Apply Price Filter
+        $(".btn-apply-price-filter").on("click", function () {
+            let minPrice = $("#minPrice").val();
+            let maxPrice = $("#maxPrice").val();
+            let currentUrl = window.location.href.split('?')[0];
+            window.location.href = currentUrl + "?min_price=" + minPrice + "&max_price=" + maxPrice;
+        });
+
+        // Clear Filter
+        $(".btn-clear-filter").on("click", function () {
+            let currentUrl = window.location.href.split('?')[0];
+            window.location.href = currentUrl;
+        });
+    });
+</script>
+
+{{-- flight filtering --}}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll(".flight-filter").forEach(function(checkbox) {
+            checkbox.addEventListener("change", function() {
+                let url = new URL(window.location.href);
+                // Uncheck other checkboxes when one is selected
+                document.querySelectorAll(".flight-filter").forEach(cb => {
+                    if (cb !== this) cb.checked = false;
+                });
+                // Set the selected filter in the URL
+                if (this.checked) {
+                    url.searchParams.set("flight_filter", this.value);
+                } else {
+                    url.searchParams.delete("flight_filter");
+                }
+                window.location.href = url.toString();
+            });
+        });
+    });
+</script>
+
+{{-- Countries filter --}}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll(".destinations-filter").forEach(function(checkbox) {
+            checkbox.addEventListener("change", function() {
+                let selectedDestinations = [];
+                document.querySelectorAll(".destinations-filter:checked").forEach(function(
+                    checkedBox) {
+                    selectedDestinations.push(checkedBox.value);
+                });
+                let url = new URL(window.location.href);
+                if (selectedDestinations.length > 0) {
+                    url.searchParams.set("destinations", selectedDestinations.join(
+                        ","));
+                } else {
+                    url.searchParams.delete("destinations");
+                }
+                window.location.href = url.toString();
+            });
+        });
+    });
+</script>

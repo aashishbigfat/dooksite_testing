@@ -1,67 +1,103 @@
 @extends('frontend.layouts.master')
 @push('title') {{$country_header->meta_title}}@endpush
 @push('meta_tag')<meta name="keywords" content="{{$country_header->meta_keywords}}">
-<meta name="description" content="{{$country_header->meta_description}}">@endpush 
+<meta name="description" content="{{$country_header->meta_description}}">
+<meta property="og:description" content="{{$country_header->meta_description}}">
+<meta name="twitter:description" content="{{$country_header->meta_description}}">
+@endpush 
 
 @section('content')
     <!-- home section -->
-   <div class="container">
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <p class="color_gray"><a href="/" class="text-danger">Home</a> / Countries</p>
+     <section class="breadcrumb-section">
+      <div class="container">
+        <div class="breadcrumb-nav animate-fade-up">
+          <div class="breadcrumb-item">
+            <a href="/"><i class="fas fa-home"></i>Home</a>
+          </div>
+          <span class="breadcrumb-separator">/</span>
+          <div class="breadcrumb-item">
+            <span class="breadcrumb-current">Countries</span>
+          </div>
         </div>
-        <div id="countries-list">
-            @include('frontend.countries.countries_card', ['countries' => $countries])
-        </div>
+      </div>
+    </section>
 
-        <!-- Pagination Links -->
-        <div class="col-md-12 mt-4 mb-4">
-            <ul style="list-style-type: none;" class="p-0 d-flex pagination" id="pagination-links">
-            </ul>
+    <!-- Page Header Content -->
+    <section class="page-header-content">
+      <div class="container">
+        <div class="animate-fade-up delay-100">
+          <h1 class="page-title mt-0">{{$country_header->title}}</h1>
+          <p class="page-subtitle">
+          {{$country_header->sub_title}}
+          </p>
+        </div>
+      </div>
+    </section>
+    
+   <div class="container">
+    <div class="row mt-4 mb-4">       
+         <div class="col-md-12">
+           <div class="row" id="countriesList">
+                    @include('frontend.countries.countries_card')
+                </div>
+                <div id="countriesLoadMoreBtn">
+                    @if($countries->hasMorePages())
+                        <div class="col-md-12 mt-4 text-center">
+                            <div id="loader2" class="loader" style="display:none;">
+                                <div class="spinner-border text-danger" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                            <button id="loadMoreCountriesBtn" class="load_more_btn"><i class="fas fa-plus me-2"></i> Load More Countries</button>
+                        </div>
+                    @endif
+                </div>
         </div>
     </div>
+     <hr>
+          <div class="row">
+           
+            <div class="col-md-12 color_gray desc">             
+             {!! $country_header->description !!}
+            </div>
+           
+          </div>
 </div>
-
     <!-- testimonial -->
   @include('frontend.common.testimonial')
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function() {
-        var totalPages = {{$countries->lastPage()}};
-        var currentPage = {{$countries->currentPage()}};
-        var maxPagesToShow = 3;        
-        function updatePagination() {
-            var startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
-            var endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
-            var paginationHtml = '';
-            if (currentPage > 1) {
-                paginationHtml += '<li><a href="javascript:void(0)" class="border p-2 text-white bg-danger rounded" data-page="' + (currentPage - 1) + '"> < </a></li>';
-            }
-            for (var i = startPage; i <= endPage; i++) {
-                paginationHtml += '<li><a href="javascript:void(0)" class="border p-2 text-dark rounded ' + (i === currentPage ? 'active' : '') + '" data-page="' + i + '">' + i + '</a></li>';
-            }
-            if (currentPage < totalPages) {
-                paginationHtml += '<li><a href="javascript:void(0)" class="border p-2 text-white bg-danger rounded" data-page="' + (currentPage + 1) + '"> > </a></li>';
-            }
+     // For Countries (similar behavior)
+  let countryPage = 2;
+  $('#loadMoreCountriesBtn').click(function() {
+      $('#loader2').show();
+      $('#loadMoreCountriesBtn').hide();
+      
+      $.ajax({
+          url: "{{ url()->current() }}?page=" + countryPage,
+          type: "GET",
+          success: function(data) {
+              $('#countriesList').append(data.countries);
+              countryPage++;
 
-            $('#pagination-links').html(paginationHtml);
-        }
-        $('#pagination-links').on('click', 'a', function(e) {
-            e.preventDefault();
-            var page = $(this).data('page');
-            $.ajax({
-                url: "{{ route('frontend.countries.paginate') }}",
-                data: { page: page },
-                type: 'GET',
-                success: function(response) {
-                    $('#countries-list').html(response);
-                    currentPage = page;
-                    updatePagination();
-                }
-            });
-        });
-        updatePagination();
-    });
+              // Check if there are more countries
+              if (!data.hasMoreCountries) {
+                  $('#loadMoreCountriesBtn').hide();
+                  $('#noMoreCountriesMsg').show(); // Show the "No more countries" message
+              } else {
+                  $('#loadMoreCountriesBtn').show();
+              }
+
+              // Hide the loader
+              $('#loader2').hide();
+          },
+          error: function() {
+              alert('Error loading more countries');
+              $('#loader2').hide();
+              $('#loadMoreCountriesBtn').show();
+          }
+      });
+  });
 </script>
 @endsection

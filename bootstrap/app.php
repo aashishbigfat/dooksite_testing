@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Middleware\EnsureTrailingSlash;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -14,8 +14,20 @@ return Application::configure(basePath: dirname(__DIR__))
         }
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->append(EnsureTrailingSlash::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
-    })->create();
+        $exceptions->render(function (Throwable $e, $request) {
+            if ($e instanceof HttpException) {
+                $status = $e->getStatusCode();
+
+                if (in_array($status, [400, 404, 500])) {
+                    return redirect()->route('frontend.index');
+                }
+            }
+
+            // Handle all unexpected errors too
+            return redirect()->route('frontend.index');
+        });
+    })
+    ->create();

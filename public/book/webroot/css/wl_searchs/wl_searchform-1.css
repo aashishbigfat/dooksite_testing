@@ -1,0 +1,1792 @@
+.search-form {
+    position: relative;
+}
+
+/*=========hero==carousel=====*/
+.hero-banner {
+    position: relative;
+    z-index: 1;
+    height: 450px;
+}
+
+.hero-banner:before {
+    content: "";
+    background: linear-gradient(45deg, rgb(166 43 57) 0%, rgb(29 54 114) 100%);
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: -1;
+}
+
+.hero-banner .carousel-item {
+    height: 450px;
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    padding: 0 32px;
+    transition: background-image 1s ease-in-out;
+    width: 100%;
+    z-index: 1;
+}
+
+.hero-banner .carousel-item:before {
+    content: "";
+    background: linear-gradient(45deg, rgba(86, 58, 250, 0.1) 0%, rgba(242, 184, 39, 0.1) 100%);
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: -1;
+}
+
+@media (max-width:991px){
+    .hero-banner,  .hero-banner .carousel-item{
+        height: 60vh;
+    }
+}
+
+/*=========search_form=======*/
+.search_form_section {
+    position: absolute;
+    bottom: 20px;
+    right: 0;
+    z-index: 2;
+    width: 100%;
+}
+
+.tts_product_box {
+    width: 100%;
+    border-radius: 10px;
+    background: rgb(255, 255, 255);
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 15px;
+    color: #070A10ff;
+    padding: 20px;
+}
+
+.search_tabs {
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: none;
+    border: none;
+    border-radius: 0;
+    width: 100%;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
+    margin-top: -70px;
+}
+
+.search_form_section .search_tabs li {
+    list-style: none;
+    float: left;
+    position: relative;
+    margin-right: 10px;
+}
+
+.search_form_section .search_tabs li a {
+    color: #000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgb(255, 255, 255);
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 15px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    height: 70px;
+    width: 90px;
+    border-radius: 7px;
+    transition: all 0.5s ease;
+    font-weight: 400;
+}
+
+.search_form_section .search_tabs li a i {
+    font-size: 20px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.search_form_section .search_tabs li a:hover {
+    box-shadow: 0 13px 21px -1px rgba(0, 0, 0, .3);
+    transform: translateY(-7%);
+}
+
+.search_form_section .search_tabs li a.current {
+    background: var(--tts-buttton-bg);
+    color: var(--tts-buttton-txt);
+}
+
+.flight-search {
+    padding: 0 0px 15px;
+    width: 100%;
+}
+
+.search-title h2 {
+    font-size: 20px;
+    margin: 0;
+}
+
+/*=========flight======*/
+.flight_search_border {
+    border-top: 1px solid #ebebeb;
+    border-bottom: 1px solid #ebebeb;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    width: 100%;
+}
+
+.flight_search_border li {
+    position: relative;
+    padding: 8px 15px 8px 15px;
+    line-height: 1;
+    transition: background-color .5s linear;
+}
+
+.flight_search_border li:hover {
+    background-color: #f1f7ff;
+}
+
+.flight_search_border li::after {
+    content: '';
+    width: 1px;
+    height: 70%;
+    background: #ebebeb;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+}
+
+.flight_search_border li.from,
+.flight_search_border li.to {
+    width: calc(((100% - 190px)/ 5) + 60px);
+    cursor: pointer;
+}
+
+.flight_search_border li.depart,
+.flight_search_border li.return {
+    width: calc(((100% - 190px)/ 5) - 40px);
+    cursor: pointer;
+    position: relative;
+}
+
+.flight_search_border li.travellers {
+    width: calc(((100% - 190px)/ 5) - 40px);
+    cursor: pointer;
+}
+
+.flight_search_border li:last-child {
+    min-width: 190px;
+}
+
+.flight_search_border li.btnarea {
+    text-align: center;
+    width: 190px;
+    display: flex;
+    place-content: center flex-end;
+    align-items: center;
+}
+
+.flight_search_border li.btnarea::after,
+.flight_search_border li.travellers::after {
+    display: none;
+}
+
+.flight_search_border li.btnarea .oneway_search_btn {
+    width: 100%;
+    line-height: 36px;
+    background: var(--tts-buttton-bg);
+    text-transform: capitalize;
+    color: var(--tts-buttton-txt);
+    border: 1px solid var(--tts-buttton-bg);
+    padding: 12px 15px;
+    font-size: 18px;
+    font-weight: 700;
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, .2), 0 0 0 0 rgba(0, 0, 0, .14), 0 0 0 0 rgba(0, 0, 0, .12);
+}
+
+.flight_search_border li.btnarea .oneway_search_btn:hover {
+    background-color: var(--tts-buttton-bg1);
+    color: var(--tts-buttton-txt1);
+    border: 1px solid var(--tts-buttton-bg1);
+}
+
+.flight_search_border .form-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #363636;
+    text-transform: uppercase;
+    display: block;
+    white-space: nowrap;
+    margin: 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.flight_search_border .form-control,
+.tts__traveller_select {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+    color: #000;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+    cursor: pointer;
+    border-radius: 0;
+}
+
+.flight_search_border .form-control:focus,
+.tts__traveller_select:focus {
+    box-shadow: none;
+    outline: 0;
+}
+
+/*=========flight end======*/
+.guest-text,
+.rooms-text {
+    font-size: 15px;
+    font-weight: normal;
+    color: #000;
+    margin: 0;
+    width: 95%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.flight_search_border .flight_text_p {
+    font-size: 13px;
+    color: #000;
+    margin: 0;
+    width: 95%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.flight_search_border li h6 {
+    font-size: 30px;
+    font-weight: 700;
+    margin: 0;
+    color: #000;
+}
+
+.flight_search_border li h6 span {
+    font-weight: 400;
+    font-size: 14px;
+}
+
+.flight_search_border li p.cabinclass {
+    font-size: 13px;
+    color: #000;
+    margin: 0;
+    width: 95%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 13px;
+}
+
+.tts__dropdown__menu__right {
+    background: rgb(255, 255, 255);
+    box-shadow: rgba(119, 119, 119, 0.2) 0px 2px 8px;
+    border-radius: 0;
+    height: 300px;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+}
+
+.tts__dropdown__menu__right h5 {
+    font-size: 14px;
+    color: rgb(20, 24, 35);
+}
+
+.tts__traveller__select h5 {
+    font-size: 14px;
+    line-height: 16px;
+    color: rgb(20, 24, 35);
+    margin: 0;
+    font-weight: 500;
+}
+
+.GwMit {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 36px;
+    background: rgb(255, 255, 255);
+    margin-left: auto;
+    border: 1px solid #ced4da;
+}
+
+.tts_product_box .tts__inputradio_label {
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.tts__counter {
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background-color: var(--tts-buttton-bg1);
+    color: var(--tts-buttton-txt1);
+}
+
+.tts_traveller__counter_span {
+    width: 40px !important;
+    font-size: 13px;
+    text-align: center;
+    border: 0;
+}
+
+.makeflex {
+    display: flex;
+    align-items: center;
+}
+
+.makeflex span {
+    margin-right: 15px;
+}
+
+.makeflex .search_filters {
+    position: relative;
+    border-radius: 4px;
+    color: var(--second-bg-color);
+}
+
+.makeflex .form-check-inline {
+    font-size: 13px;
+}
+
+.makeflex .form-check-inline .form-check-input {
+    margin-top: 6px;
+}
+
+.makeflex .form-check-border {
+    border-right: 1px solid #9b9b9b;
+    padding-right: 1rem;
+    margin-right: 1rem;
+}
+
+.makeflex .search_filters input[type=checkbox] {
+    margin-top: 6px;
+    border-radius: 50%;
+}
+
+.makeflex .form-check-inline label {
+    margin-bottom: 0;
+}
+
+.tts__interchange__arrow {
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    background: #fff;
+    z-index: 51;
+    transform: translate(-50%, -50%);
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flight-mult-city .flight_search_border li.from,
+.flight-mult-city .flight_search_border li.to {
+    width: 25%;
+}
+
+.flight-mult-city .flight_search_border li.depart {
+    width: 20%;
+}
+
+.flight-mult-city .flight_search_border li.travellers {
+    width: 25%;
+}
+
+.flight-mult-city .flight_search_border li.search-flight {
+    width: 25% !important;
+}
+
+.flight-mult-city .flight_search_border li.search-flight .add-city {
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    color: #002543;
+    border: 1px solid #002543;
+    border-radius: 999px;
+    text-align: center;
+    padding: 0 10px;
+    height: 28px;
+    line-height: 28px;
+    background: #fff;
+    margin-left: 10px;
+    width: 130px;
+}
+
+/*=========bus======*/
+.flight_search_border li.cityHotel {
+    width: calc(((100% - 190px)/ 4) - 6px);
+    cursor: pointer;
+}
+
+.flight_search_border li.checkin {
+    width: calc(((100% - 190px)/ 4) - 70px);
+    cursor: pointer;
+}
+
+.flight_search_border li.checkout {
+    width: calc(((100% - 190px)/ 4) - 70px);
+    cursor: pointer;
+    position: relative;
+}
+
+.flight_search_border li.roomsGuests {
+    width: calc(((100% - 190px)/ 4) - 37px);
+    cursor: pointer;
+}
+
+/* .flight_search_border li.country{
+    width: calc(((100% - 190px)/ 4) - 80px);
+    cursor: pointer;
+    } */
+.flight_search_border li.country {
+    width: calc(((100% - 190px)/ 4) - 84px);
+    cursor: pointer;
+}
+
+.flight_search_border li.country .tts__traveller_select option {
+    font-size: 13px;
+    padding: 10px;
+}
+
+.tts__dropdown__menu__right .tts__add__room,
+.tts__remove__room {
+    font-size: 15px;
+    font-weight: 700;
+    color: #000;
+    text-transform: capitalize;
+}
+
+/*=========bus======*/
+.flight_search_border li.cityBus {
+    width: calc(((100% - 190px)/ 4) + 95px);
+    cursor: pointer;
+}
+
+.flight_search_border li.travelDate {
+    width: calc(((100% - 190px)/ 4) + 70px);
+    cursor: pointer;
+}
+
+/*=========holiday======*/
+.flight_search_border li.destination {
+    width: calc(100% - 190px);
+    cursor: pointer;
+}
+
+/*=========Visa======*/
+.flight_search_border li.destination-visa {
+    width: calc(((100% - 190px)/ 4) + 50px);
+}
+
+.flight_search_border li.visatype {
+    width: calc(((100% - 190px)/ 4) - 50px);
+}
+
+.flight_search_border li.trveller {
+    width: calc(((100% - 190px)/ 4) + 10px);
+}
+
+.flight_search_border li.traveldate {
+    width: calc(((100% - 190px)/ 4) - 10px);
+}
+
+.flight_search_border li select option {
+    font-size: 14px;
+}
+
+/*=========cruise======*/
+.flight_search_border li.destination {
+    width: calc(100% - 190px);
+    cursor: pointer;
+}
+
+.flight_search_border li.destination-cruise {
+    width: calc(((100% - 190px)/ 4) + 50px);
+}
+
+.flight_search_border li.cityarea {
+    width: calc(((100% - 190px)/ 4) - 50px);
+}
+
+.flight_search_border li.cruiseline {
+    width: calc(((100% - 190px)/ 4) + 10px);
+}
+
+.flight_search_border li.ship {
+    width: calc(((100% - 190px)/ 4) - 10px);
+}
+
+/*=========cruise End======*/
+
+@media only screen and (min-width: 200px) and (max-width: 768px) {
+    .search-title h2 {
+        display: none;
+    }
+
+    .search_form_section .search_tabs li a {
+        width: 60px !important;
+        height: 50px !important;
+        font-size: 10px;
+    }
+
+    .search_form_section .search_tabs {
+        margin-top: -50px !important;
+        display: block;
+        text-align: center;
+    }
+
+    .search_form_section .search_tabs li a i {
+        font-size: 16px !important;
+        margin: 0;
+    }
+
+    .search_form_section .search_tabs li {
+        float: none !important;
+        display: inline-block;
+        font-size: 12px;
+        margin-right: 0 !important;
+        margin-bottom: 5px;
+    }
+
+    .flight_search_border li.from,
+    .flight_search_border li.to,
+    .flight_search_border li.depart,
+    .flight_search_border li.return {
+        width: 50% !important;
+    }
+
+    .flight_search_border li.travellers {
+        width: 100% !important;
+    }
+
+    .flight-mult-city .flight_search_border li.search-flight {
+        width: 100% !important;
+    }
+
+    .flight_search_border li {
+        border-bottom: 1px solid #ebebeb;
+    }
+
+    .flight_search_border li.to:after,
+    .flight_search_border li.return:after,
+    .flight_search_border li.travelDate:after,
+    .flight_search_border li.destination::after,
+    .flight_search_border li.visatype::after,
+    .flight_search_border li.traveldate::after,
+    .flight_search_border li.carto::after,
+    .flight_search_border li.carreturn::after,
+    .flight_search_border li.carpickup::after,
+    .flight_search_border li.cityarea::after,
+    .flight_search_border li.ship::after,
+    .activity-location::after {
+        display: none;
+    }
+
+    .flight_search_border li.cityBus:nth-child(2):after {
+        display: none;
+    }
+
+    .flight_search_border .form-control,
+    .tts__traveller_select {
+        font-size: 17px !important;
+    }
+
+    .makeflex {
+        display: block !important;
+    }
+
+    .makeflex .search_filters {
+        display: flex;
+        white-space: nowrap;
+        overflow: auto;
+    }
+
+    .flight_search_border li.cityHotel,
+    .flight_search_border li.checkin,
+    .flight_search_border li.checkout,
+    .flight_search_border li.roomsGuests,
+    .flight_search_border li.cityBus,
+    .flight_search_border li.destination-visa,
+    .flight_search_border li.visatype,
+    .flight_search_border li.trveller,
+    .flight_search_border li.traveldate,
+    .flight_search_border li.destination-cruise,
+    .flight_search_border li.cityarea,
+    .flight_search_border li.cruiseline,
+    .flight_search_border li.ship {
+        width: 50% !important;
+    }
+
+    .flight_search_border li.country,
+    .flight_search_border li.travelDate,
+    .flight_search_border li.destination {
+        width: 100% !important;
+    }
+
+    .flight_search_border .form-label {
+        font-size: 12px !important;
+        font-weight: normal !important;
+    }
+
+    .hero-banner,
+    .hero-banner .carousel-item {
+        height: 250px;
+    }
+
+    .search_form_section {
+        position: relative;
+    }
+
+    .search-check-label {
+        font-size: 12px;
+    }
+
+    .flight_search_border li.btnarea {
+        width: 100%;
+    }
+}
+
+
+
+
+/*calendar*/
+.ui-widget.ui-widget-content.calendarOuter{
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    list-style: none;
+    overflow-y: auto;
+    font-family: "Noto Sans", serif !important;
+  }
+  
+  .calendarOuter .ui-widget-header .ui-icon{
+    background-image: unset;
+  }
+  
+  .ui-datepicker.calendarOuter .ui-widget-header{
+    background: var(--tts-buttton-bg);
+    color: var(--tts-buttton-txt);
+    border: none;
+    border-radius: 8px;
+  }
+  
+  .ui-datepicker.calendarOuter .ui-datepicker-prev::after {
+    content: "\f100";
+    top: 5px;
+    left: 5px;
+    position: absolute;
+    font-family: "Font Awesome 6 Pro";
+    color: #fff;
+  }
+  
+  .ui-datepicker.calendarOuter .ui-datepicker-next::after {
+    content: "\f101";
+    top: 5px;
+    right: 5px;
+    position: absolute;
+    font-family: "Font Awesome 6 Pro";
+    color: #fff;
+  }
+  
+  .ui-datepicker.calendarOuter .ui-datepicker-header .ui-corner-all,
+  .ui-datepicker.calendarOuter .ui-datepicker-header .ui-state-hover {
+    cursor: pointer;
+    border: 0;
+    background: none;
+    font-weight: 600;
+    top: 3px;
+  }
+  
+  .ui-datepicker.calendarOuter td span,
+  .ui-datepicker.calendarOuter td a {
+    display: block;
+    padding: 0.2em;
+    text-align: center;
+    text-decoration: none;
+  }
+  
+  .calendarOuter .ui-state-default,
+  .ui-widget-content.calendarOuter .ui-state-default{
+    border: none;
+    border-radius: 8px;
+  }
+  
+  .calendarOuter.ui-state-highlight, .ui-widget-content.calendarOuter .ui-state-highlight {
+    border: none;
+    background: var(--tts-buttton-bg1);
+    color: var(--tts-buttton-txt1);
+  }
+  
+  .calendarOuter .ui-state-active,
+  .ui-widget-content.calendarOuter .ui-state-active{
+    background: var(--tts-buttton-bg);
+    color: var(--tts-buttton-txt);
+  }
+  
+  
+
+/* UI Autocomplete */
+.ui-autocomplete.tts-autocomplete {
+    position: absolute;
+    z-index: 1090;
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    list-style: none;
+    max-height: 300px;
+    width: 450px !important;
+    overflow-y: auto;
+    font-family: "Noto Sans", serif !important;
+}
+
+/* Menu item wrapper */
+.tts-autocomplete .ui-menu-item-wrapper {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 16px;
+    width: 100%;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+
+/* Left section with city and airport code */
+.tts-autocomplete .dest_left {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    font-family: "Noto Sans", serif !important;
+}
+
+.dest_left .city {
+    font-weight: bold;
+    font-family: "Noto Sans", serif !important;
+}
+
+.dest_left .airpotcode {
+    font-size: 12px;
+    font-family: "Noto Sans", serif !important;
+}
+
+/* Right section with airport code and flag */
+.tts-autocomplete .ui-menu-item-wrapper div:last-child {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tts-autocomplete .aircode {
+    font-size: 12px;
+    font-family: "Noto Sans", serif !important;
+}
+
+
+.tts-autocomplete .flag {
+    width: 20px;
+    height: 15px;
+    border-radius: 2px;
+    background-repeat: no-repeat;
+    display: inline-block;
+    background-image: url(../../../webroot/img/country-flag.png);
+    position: relative;
+}
+
+/* Scrollbar Styling */
+.tts-autocomplete::-webkit-scrollbar {
+    width: 6px;
+}
+
+.tts-autocomplete::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 3px;
+}
+
+.tts-autocomplete::-webkit-scrollbar-thumb:hover {
+    background-color: #aaa;
+}
+
+/* Datepicker specific styles */
+.tts-autocomplete.ui-datepicker .ui-datepicker-header .ui-corner-all,
+.tts-autocomplete.ui-datepicker .ui-datepicker-header .ui-state-hover {
+    cursor: pointer;
+    border: 0;
+    background: none;
+    font-weight: 600;
+    top: 3px;
+}
+
+/* Datepicker day styling */
+.tts-autocomplete.ui-datepicker td span,
+.tts-autocomplete.ui-datepicker td a {
+    display: block;
+    padding: 0.2em;
+    text-align: center;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+/* Highlight and active states */
+.tts-autocomplete .ui-state-highlight,
+.tts-autocomplete.ui-widget-content .ui-state-highlight {
+    border: none;
+    background: var(--tts-buttton-bg);
+    color: #ffffff;
+}
+
+.tts-autocomplete .ui-state-active,
+.tts-autocomplete.ui-widget-content .ui-state-active {
+    background: var(--tts-buttton-bg);
+    color: #ffffff;
+}
+
+.tts-autocomplete .ui-state-active:hover,
+.tts-autocomplete.ui-widget-content .ui-state-active:hover {
+    background: var(--tts-buttton-bg);
+    color: #ffffff;
+}
+
+
+/*@@@@@@@@@@@@@@@@@@ position flag images @@@@@@@@@@@@@@@@@@@@@@*/
+
+.ad {
+    background-position: 0 -352px
+}
+
+.ae {
+    background-position: 0 -368px
+}
+
+.af {
+    background-position: 0 -384px
+}
+
+.ag {
+    background-position: 0 -400px
+}
+
+.ai {
+    background-position: 0 -416px
+}
+
+.al {
+    background-position: 0 -432px
+}
+
+.am {
+    background-position: 0 -448px
+}
+
+.an {
+    background-position: 0 -464px
+}
+
+.ao {
+    background-position: 0 -480px
+}
+
+.aq {
+    background-position: 0 -496px
+}
+
+.ar {
+    background-position: 0 -512px
+}
+
+.as {
+    background-position: 0 -528px
+}
+
+.at {
+    background-position: 0 -544px
+}
+
+.au {
+    background-position: 0 -560px
+}
+
+.aw {
+    background-position: 0 -576px
+}
+
+.az {
+    background-position: 0 -592px
+}
+
+.ba {
+    background-position: 0 -608px
+}
+
+.bb {
+    background-position: 0 -624px
+}
+
+.bd {
+    background-position: 0 -640px
+}
+
+.be {
+    background-position: 0 -656px
+}
+
+.bf {
+    background-position: 0 -672px
+}
+
+.bg {
+    background-position: 0 -688px
+}
+
+.bh {
+    background-position: 0 -704px
+}
+
+.bi {
+    background-position: 0 -720px
+}
+
+.bj {
+    background-position: 0 -736px
+}
+
+.bm {
+    background-position: 0 -752px
+}
+
+.bn {
+    background-position: 0 -768px
+}
+
+.bo {
+    background-position: 0 -784px
+}
+
+.br {
+    background-position: 0 -800px
+}
+
+.bs {
+    background-position: 0 -816px
+}
+
+.bt {
+    background-position: 0 -832px
+}
+
+.bw {
+    background-position: 0 -848px
+}
+
+.by {
+    background-position: 0 -864px
+}
+
+.bz {
+    background-position: 0 -880px
+}
+
+.ca {
+    background-position: 0 -896px
+}
+
+.cg {
+    background-position: 0 -912px
+}
+
+.cf {
+    background-position: 0 -928px
+}
+
+.cd {
+    background-position: 0 -944px
+}
+
+.ch {
+    background-position: 0 -960px
+}
+
+.ci {
+    background-position: 0 -976px
+}
+
+.ck {
+    background-position: 0 -992px
+}
+
+.cl {
+    background-position: 0 -1008px
+}
+
+.cm {
+    background-position: 0 -1024px
+}
+
+.cn {
+    background-position: 0 -1040px
+}
+
+.co {
+    background-position: 0 -1056px
+}
+
+.cr {
+    background-position: 0 -1072px
+}
+
+.cu {
+    background-position: 0 -1088px
+}
+
+.cv {
+    background-position: 0 -1104px
+}
+
+.cy {
+    background-position: 0 -1120px
+}
+
+.cz {
+    background-position: 0 -1136px
+}
+
+.de {
+    background-position: 0 -1152px
+}
+
+.dj {
+    background-position: 0 -1168px
+}
+
+.dk {
+    background-position: 0 -1184px
+}
+
+.dm {
+    background-position: 0 -1200px
+}
+
+.do {
+    background-position: 0 -1216px
+}
+
+.dz {
+    background-position: 0 -1232px
+}
+
+.ec {
+    background-position: 0 -1248px
+}
+
+.ee {
+    background-position: 0 -1264px
+}
+
+.eg {
+    background-position: 0 -1280px
+}
+
+.eh {
+    background-position: 0 -1296px
+}
+
+.er {
+    background-position: 0 -1312px
+}
+
+.es {
+    background-position: 0 -1328px
+}
+
+.et {
+    background-position: 0 -1344px
+}
+
+.fi {
+    background-position: 0 -1360px
+}
+
+.fj {
+    background-position: 0 -1376px
+}
+
+.fm {
+    background-position: 0 -1392px
+}
+
+.fo {
+    background-position: 0 -1408px
+}
+
+.fr {
+    background-position: 0 -1424px
+}
+
+.ga {
+    background-position: 0 -1440px
+}
+
+.gb {
+    background-position: 0 -1456px
+}
+
+.gd {
+    background-position: 0 -1472px
+}
+
+.ge {
+    background-position: 0 -1488px
+}
+
+.gg {
+    background-position: 0 -1504px
+}
+
+.gh {
+    background-position: 0 -1520px
+}
+
+.gi {
+    background-position: 0 -1536px
+}
+
+.gl {
+    background-position: 0 -1552px
+}
+
+.gm {
+    background-position: 0 -1568px
+}
+
+.gn {
+    background-position: 0 -1584px
+}
+
+.gp {
+    background-position: 0 -1600px
+}
+
+.gq {
+    background-position: 0 -1616px
+}
+
+.gr {
+    background-position: 0 -1632px
+}
+
+.gt {
+    background-position: 0 -1648px
+}
+
+.gu {
+    background-position: 0 -1664px
+}
+
+.gw {
+    background-position: 0 -1680px
+}
+
+.gy {
+    background-position: 0 -1696px
+}
+
+.hk {
+    background-position: 0 -1712px
+}
+
+.hn {
+    background-position: 0 -1728px
+}
+
+.hr {
+    background-position: 0 -1744px
+}
+
+.ht {
+    background-position: 0 -1760px
+}
+
+.hu {
+    background-position: 0 -1776px
+}
+
+.id {
+    background-position: 0 -1792px
+}
+
+.mc {
+    background-position: 0 -1792px
+}
+
+.ie {
+    background-position: 0 -1808px
+}
+
+.il {
+    background-position: 0 -1824px
+}
+
+.im {
+    background-position: 0 -1840px
+}
+
+.in {
+    background-position: 0 -1856px
+}
+
+.iq {
+    background-position: 0 -1872px
+}
+
+.ir {
+    background-position: 0 -1888px
+}
+
+.is {
+    background-position: 0 -1904px
+}
+
+.it {
+    background-position: 0 -1920px
+}
+
+.je {
+    background-position: 0 -1936px
+}
+
+.jm {
+    background-position: 0 -1952px
+}
+
+.jo {
+    background-position: 0 -1968px
+}
+
+.jp {
+    background-position: 0 -1984px
+}
+
+.ke {
+    background-position: 0 -2000px
+}
+
+.kg {
+    background-position: 0 -2016px
+}
+
+.kh {
+    background-position: 0 -2032px
+}
+
+.ki {
+    background-position: 0 -2048px
+}
+
+.km {
+    background-position: 0 -2064px
+}
+
+.kn {
+    background-position: 0 -2080px
+}
+
+.kp {
+    background-position: 0 -2096px
+}
+
+.kr {
+    background-position: 0 -2112px
+}
+
+.kw {
+    background-position: 0 -2128px
+}
+
+.ky {
+    background-position: 0 -2144px
+}
+
+.kz {
+    background-position: 0 -2160px
+}
+
+.la {
+    background-position: 0 -2176px
+}
+
+.lb {
+    background-position: 0 -2192px
+}
+
+.lc {
+    background-position: 0 -2208px
+}
+
+.li {
+    background-position: 0 -2224px
+}
+
+.lk {
+    background-position: 0 -2240px
+}
+
+.lr {
+    background-position: 0 -2256px
+}
+
+.ls {
+    background-position: 0 -2272px
+}
+
+.lt {
+    background-position: 0 -2288px
+}
+
+.lu {
+    background-position: 0 -2304px
+}
+
+.lv {
+    background-position: 0 -2320px
+}
+
+.ly {
+    background-position: 0 -2336px
+}
+
+.ma {
+    background-position: 0 -2352px
+}
+
+.md {
+    background-position: 0 -2368px
+}
+
+.me {
+    background-position: 0 -2384px
+}
+
+.mg {
+    background-position: 0 -2400px
+}
+
+.mh {
+    background-position: 0 -2416px
+}
+
+.mk {
+    background-position: 0 -2432px
+}
+
+.ml {
+    background-position: 0 -2448px
+}
+
+.mm {
+    background-position: 0 -2464px
+}
+
+.mn {
+    background-position: 0 -2480px
+}
+
+.mo {
+    background-position: 0 -2496px
+}
+
+.mq {
+    background-position: 0 -2512px
+}
+
+.mr {
+    background-position: 0 -2528px
+}
+
+.ms {
+    background-position: 0 -2544px
+}
+
+.mt {
+    background-position: 0 -2560px
+}
+
+.mu {
+    background-position: 0 -2576px
+}
+
+.mv {
+    background-position: 0 -2592px
+}
+
+.mw {
+    background-position: 0 -2608px
+}
+
+.mx {
+    background-position: 0 -2624px
+}
+
+.my {
+    background-position: 0 -2640px
+}
+
+.mz {
+    background-position: 0 -2656px
+}
+
+.na {
+    background-position: 0 -2672px
+}
+
+.nc {
+    background-position: 0 -2688px
+}
+
+.ne {
+    background-position: 0 -2704px
+}
+
+.ng {
+    background-position: 0 -2720px
+}
+
+.ni {
+    background-position: 0 -2736px
+}
+
+.nl {
+    background-position: 0 -2752px
+}
+
+.no {
+    background-position: 0 -2768px
+}
+
+.np {
+    background-position: 0 -2784px
+}
+
+.nr {
+    background-position: 0 -2800px
+}
+
+.nz {
+    background-position: 0 -2816px
+}
+
+.om {
+    background-position: 0 -2832px
+}
+
+.pa {
+    background-position: 0 -2848px
+}
+
+.pe {
+    background-position: 0 -2864px
+}
+
+.pf {
+    background-position: 0 -2880px
+}
+
+.pg {
+    background-position: 0 -2896px
+}
+
+.ph {
+    background-position: 0 -2912px
+}
+
+.pk {
+    background-position: 0 -2928px
+}
+
+.pl {
+    background-position: 0 -2944px
+}
+
+.pr {
+    background-position: 0 -2960px
+}
+
+.ps {
+    background-position: 0 -2976px
+}
+
+.pt {
+    background-position: 0 -2992px
+}
+
+.pw {
+    background-position: 0 -3008px
+}
+
+.py {
+    background-position: 0 -3024px
+}
+
+.qa {
+    background-position: 0 -3040px
+}
+
+.re {
+    background-position: 0 -3056px
+}
+
+.ro {
+    background-position: 0 -3072px
+}
+
+.rs {
+    background-position: 0 -3088px
+}
+
+.ru {
+    background-position: 0 -3104px
+}
+
+.rw {
+    background-position: 0 -3120px
+}
+
+.sa {
+    background-position: 0 -3136px
+}
+
+.sb {
+    background-position: 0 -3152px
+}
+
+.sc {
+    background-position: 0 -3168px
+}
+
+.sd {
+    background-position: 0 -3184px
+}
+
+.se {
+    background-position: 0 -3200px
+}
+
+.sg {
+    background-position: 0 -3216px
+}
+
+.si {
+    background-position: 0 -3232px
+}
+
+.sk {
+    background-position: 0 -3248px
+}
+
+.sl {
+    background-position: 0 -3264px
+}
+
+.sm {
+    background-position: 0 -3280px
+}
+
+.sn {
+    background-position: 0 -3296px
+}
+
+.so {
+    background-position: 0 -3312px
+}
+
+.sr {
+    background-position: 0 -3328px
+}
+
+.st {
+    background-position: 0 -3344px
+}
+
+.sv {
+    background-position: 0 -3360px
+}
+
+.sy {
+    background-position: 0 -3376px
+}
+
+.sz {
+    background-position: 0 -3392px
+}
+
+.tc {
+    background-position: 0 -3408px
+}
+
+.td {
+    background-position: 0 -3424px
+}
+
+.tg {
+    background-position: 0 -3440px
+}
+
+.th {
+    background-position: 0 -3456px
+}
+
+.tj {
+    background-position: 0 -3472px
+}
+
+.tl {
+    background-position: 0 -3488px
+}
+
+.tm {
+    background-position: 0 -3504px
+}
+
+.tn {
+    background-position: 0 -3520px
+}
+
+.to {
+    background-position: 0 -3536px
+}
+
+.tr {
+    background-position: 0 -3552px
+}
+
+.tt {
+    background-position: 0 -3568px
+}
+
+.tv {
+    background-position: 0 -3584px
+}
+
+.tw {
+    background-position: 0 -3600px
+}
+
+.tz {
+    background-position: 0 -3616px
+}
+
+.ua {
+    background-position: 0 -3632px
+}
+
+.ug {
+    background-position: 0 -3648px
+}
+
+.us {
+    background-position: 0 -3664px
+}
+
+.uy {
+    background-position: 0 -3680px
+}
+
+.uz {
+    background-position: 0 -3696px
+}
+
+.va {
+    background-position: 0 -3712px
+}
+
+.vc {
+    background-position: 0 -3728px
+}
+
+.ve {
+    background-position: 0 -3744px
+}
+
+.vg {
+    background-position: 0 -3760px
+}
+
+.vi {
+    background-position: 0 -3776px
+}
+
+.vn {
+    background-position: 0 -3792px
+}
+
+.vu {
+    background-position: 0 -3808px
+}
+
+.ws {
+    background-position: 0 -3824px
+}
+
+.ye {
+    background-position: 0 -3840px
+}
+
+.za {
+    background-position: 0 -3856px
+}
+
+.zm {
+    background-position: 0 -3872px
+}
+
+.zw {
+    background-position: 0 -3872px
+}
+
+
+/*@@@@@@@@@@@@@@@@@@ position flag images @@@@@@@@@@@@@@@@@@@@@@*/
+
+
+@media (max-width:480px){
+    .ui-autocomplete.tts-autocomplete{
+        width: 300px !important;
+        left: auto !important;
+        right: 0 !important;
+    }
+}

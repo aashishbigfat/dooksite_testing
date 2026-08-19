@@ -1,0 +1,516 @@
+.hero-banner .carousel {
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    position: relative;
+}
+
+.hero-banner .carousel-item {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    z-index: 1;
+    transition-duration: 0.4s;
+    height: 100vh;
+}
+
+.hero-banner .carousel-item::before {
+    content: "";
+    background-color: rgba(0, 0, 0, 0);
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+}
+
+.hero-banner {
+    position: relative;
+    color: #fff;
+    padding: 0;
+}
+
+.hero-banner .masthead__bg {
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 0px);
+    background-color: #13357B;
+}
+
+.hero-banner .masthead__bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.searchoffer_text {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--tts-buttton-bg) !important;
+    border-radius: 100%;
+    color: var(--tts-buttton-txt);
+}
+
+.hero-banner .search_title .search_divider {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%)
+}
+
+.hero-banner .search_title .search_divider .fill-primary {
+    fill: var(--tts-buttton-bg);
+}
+
+.form-check-input:checked {
+    background: var(--tts-buttton-bg);
+    border-color: var(--tts-buttton-bg);
+}
+
+.search-form .flight-type {
+    margin-bottom: 10px;
+}
+
+.search-form .flight-type .form-check-label {
+    font-weight: 500;
+    color: #ffffff;
+}
+
+.search-form .flight-type .form-check-label .form-check-input {
+    margin-top: 6.5px;
+    box-shadow: none;
+    border: 2px solid #ffffff;
+}
+
+.search-form .form-group {
+    position: relative;
+    padding: 10px 15px;
+    border-radius: 0px;
+    border: 1px solid #ededed;
+    margin-bottom: 20px;
+}
+
+.search-form .form-group label {
+    color: #ffffff;
+    margin: 0;
+}
+
+.search-form .tts__dropdown__menu__right .tts__inputradio_label {
+    cursor: pointer;
+    line-height: 25px;
+    font-size: 14px;
+    color: #5e5e5e;
+}
+
+.search-form .form-control,
+.search-form .form-select.tts__traveller_select {
+    border-radius: 12px;
+    padding: 5px 0px;
+    box-shadow: none;
+    color: #ffffff;
+    background: transparent;
+    border: none;
+    font-size: 19px;
+    font-weight: 500;
+}
+
+.search-form .form-select.tts__traveller_select option {
+    font-size: 14px;
+    padding: 5px 15px !important;
+}
+
+.search-form .form-group i {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    font-size: 28px;
+    color: #fff;
+}
+
+.search-form .form-group .flight_text_p,
+.passenger-class-name {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    color: #ffffff;
+    height: 25px;
+}
+
+.search-form-swap {
+    position: absolute;
+    right: -33px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    z-index: 1;
+}
+
+.search-form-swap i {
+    background: var(--tts-buttton-bg);
+    font-size: 19px !important;
+    position: unset !important;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    line-height: 35px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    color: var(--tts-buttton-bg);
+}
+
+.search-form-date {
+    display: flex;
+}
+
+.search-form .search-btn {
+    position: relative;
+}
+
+.search-form .search-btn .theme-btn {
+    width: 100%;
+    overflow: hidden;
+    border: 5px solid #fff;
+    border-radius: 50px;
+}
+
+.theme-btn::before {
+    content: "";
+    height: 100%;
+    width: 100%;
+    background: var(--tts-buttton-bg1);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateY(-50%) translateX(-50%) scale(0);
+    transition: 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: -1;
+    border-radius: 50px;
+}
+
+.theme-btn:hover::before {
+    transform: translateY(-50%) translateX(-50%) scale(1);
+}
+
+.theme-btn {
+    font-size: 16px;
+    color: var(--tts-buttton-txt);
+    padding: 11px 20px;
+    transition: all 0.5s;
+    text-transform: capitalize;
+    position: relative;
+    border-radius: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: center;
+    overflow: hidden;
+    border: none;
+    background: var(--tts-buttton-bg);
+    box-shadow: 0 3px 24px rgb(0 0 0 / 12%);
+    z-index: 1;
+}
+
+.theme-btn span {
+    margin-right: 5px;
+}
+
+.search-form .passenger-total {
+    border-radius: 12px;
+    padding: 5px 0px;
+    color: #ffffff;
+    font-size: 19px;
+    font-weight: 500;
+}
+
+.search-form .passenger-box .dropdown-menu {
+    background: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 15px 10px;
+    width: 100%;
+    left: -15px !important;
+    margin-top: 15px !important;
+    box-shadow: 0 0 40px 5px rgb(0 0 0 / 5%);
+}
+
+.search-form .passenger-box .dropdown-menu .dropdown-item {
+    padding: 0;
+}
+
+.search-form .passenger-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 5px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, .05);
+}
+
+.search-form .passenger-item H6 {
+    margin: 0;
+    font-size: 14px;
+}
+
+.search-form .form-group p {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    color: #ffffff;
+    font-size: 13px;
+    margin: 0;
+}
+
+.search-form .passenger-qty {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid #13357B;
+}
+
+.search-form .passenger-qty .tts__counter {
+    border: none;
+    width: 35px;
+    height: 35px;
+    line-height: 35px;
+    border-radius: 0px;
+    background: #13357B;
+    text-align: center;
+}
+
+.search-form .passenger-qty .tts__counter i {
+    position: unset !important;
+    font-size: 14px !important;
+}
+
+.search-form .passenger-qty .tts_traveller__counter_span {
+    width: 25px;
+    text-align: center;
+    border: none;
+    outline: none;
+    font-weight: 500;
+    color: #000000;
+}
+
+.search-form .passenger-box .dropdown-item:hover,
+.search-form .passenger-box .dropdown-item:focus {
+    background: transparent;
+}
+
+.search-form .multicity-btn {
+    padding-top: 31px;
+    padding-bottom: 31px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    color: #ffffff;
+}
+
+.makeflex {
+    display: flex;
+    align-items: center;
+}
+
+.makeflex span {
+    margin-right: 15px;
+}
+
+.makeflex .search_filters {
+    position: relative;
+    border-radius: 4px;
+    color: var(--second-bg-color);
+}
+
+.makeflex .form-check-inline {
+    font-size: 13px;
+}
+
+.makeflex .form-check-inline .form-check-input {
+    margin-top: 6px;
+}
+
+.makeflex .form-check-border {
+    border-right: 1px solid #9b9b9b;
+    padding-right: 1rem;
+    margin-right: 1rem;
+}
+
+.makeflex .search_filters input[type=checkbox] {
+    margin-top: 6px;
+    border-radius: 50%;
+}
+
+.makeflex .form-check-inline label {
+    margin-bottom: 0;
+}
+
+/* =====================
+    date picker
+    ===================== */
+.ui-widget.ui-widget-content {
+    border: none;
+    padding: 8px;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 3px 24px rgb(0 0 0 / 10%);
+    font-family: inherit;
+}
+
+.ui-widget-header .ui-icon {
+    background-image: unset;
+}
+
+.ui-datepicker .ui-widget-header {
+    background: var(--tts-buttton-bg1);
+    color: #fff;
+    border: none;
+}
+
+.ui-datepicker .ui-datepicker-prev::after {
+    content: "\f100";
+    left: 5px;
+    position: absolute;
+    font-family: "FontAwesome";
+    color: #fff;
+}
+
+.ui-datepicker .ui-datepicker-next::after {
+    content: "\f101";
+    right: 5px;
+    position: absolute;
+    font-family: "FontAwesome";
+    color: #fff;
+}
+
+.ui-datepicker .ui-datepicker-header .ui-corner-all,
+.ui-datepicker .ui-datepicker-header .ui-state-hover {
+    cursor: pointer;
+    border: 0;
+    background: none;
+    font-weight: 600;
+    top: 3px;
+}
+
+.ui-datepicker td span,
+.ui-datepicker td a {
+    display: block;
+    padding: 0.2em;
+    text-align: center;
+    text-decoration: none;
+}
+
+.ui-state-default,
+.ui-widget-content .ui-state-default {
+    border: none;
+    border-radius: 8px;
+}
+
+.ui-state-highlight,
+.ui-widget-content .ui-state-highlight {
+    border: none;
+    background: var(--tts-buttton-bg);
+    color: var(--tts-buttton-txt);
+}
+
+.ui-state-active,
+.ui-widget-content .ui-state-active {
+    background: var(--tts-buttton-bg1);
+    color: var(--tts-buttton-txt1);
+}
+
+/* ===================
+    time picker css 
+    ====================== */
+.ui-timepicker.ui-widget.ui-widget-content {
+    box-shadow: none;
+}
+
+.ui-timepicker-standard {
+    border: none !important;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 40px 5px rgb(0 0 0 / 5%);
+    z-index: 2 !important;
+}
+
+.ui-timepicker-standard a {
+    border: none !important;
+    transition: none !important;
+    border-radius: 8px;
+}
+
+.ui-timepicker-standard a#ui-active-item,
+.ui-timepicker-standard a:hover {
+    background: var(--tts-buttton-bg1);
+    color: #fff;
+}
+
+.tts-autocomplete {
+    margin-top: 55px;
+}
+
+#ui-datepicker-div {
+    margin-top: 35px;
+}
+
+@media (max-width: 991px) {
+    .search-nav {
+        border-radius: 20px;
+    }
+
+    .search-nav .search_tabs {
+        justify-content: center;
+    }
+
+    .hero-banner .info,
+    .hero-banner .carousel,
+    .hero-banner .carousel-item {
+        height: 100vh;
+    }
+
+    .hero-banner .info h2 {
+        font-size: 40px;
+    }
+
+    .search-wrapper .tab-content {
+        border-radius: 20px;
+    }
+
+    .search-form-swap {
+        right: 40%;
+        top: 96px;
+        transform: translateX(-40%);
+    }
+
+    .search_filters {
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        width: 100%;
+        overflow: auto;
+    }
+
+    .search-nav .tab-link a {
+        border: 1px solid #dedede;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .ui-datepicker-multi-2 .ui-datepicker-group {
+        width: 100%;
+    }
+
+    .ui-datepicker-multi .ui-datepicker-group {
+        float: none;
+    }
+
+    #ui-datepicker-div {
+        width: 300px !important;
+        z-index: 9999 !important;
+    }
+}
+

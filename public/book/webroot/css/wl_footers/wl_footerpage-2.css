@@ -1,0 +1,219 @@
+.footer3 {
+    background: var(--footer-Bg);
+    color: #212121;
+    font-size: 14px;
+}
+
+.footer3 .footer-top {
+    border-top: 1px solid #ededed;
+}
+
+.footer3 .footer-top .footer-info {
+    padding: 30px 30px 30px 30px;
+    border-right: 1px solid #ededed;
+    height: 100%;
+}
+
+.footer3 .footer-top .footer-info img {
+    height: 50px;
+    margin-bottom: 30px;
+    width: 100%;
+    object-fit: contain;
+}
+
+.footer3 ul li.icon-box {
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 6px;
+    background-color: #f4f4f4;
+    position: relative;
+}
+
+.footer3 ul li.icon-box i.info-icons {
+    float: left;
+    color: var(--tts-buttton-bg);
+    font-size: 40px;
+}
+
+.footer3 ul li.icon-box h4 {
+    margin-left: 70px;
+    font-weight: 400;
+    font-size: 15px;
+}
+
+.footer3 ul li.icon-box h2 {
+    margin-left: 70px;
+    font-size: 18px;
+    margin-bottom: 0;
+    font-weight: 500;
+}
+
+
+.footer3 ul li.icon-box .social-links {
+    text-align: center;
+}
+
+.footer3 ul li.icon-box .social-links a {
+    font-size: 14px;
+    display: inline-block;
+    color: #fff;
+    margin-right: 4px;
+    border-radius: 4px;
+    text-align: center;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+
+.footer3 ul li.icon-box .social-links a.facebook {
+    background-color: #2f55a4;
+}
+
+.footer3 ul li.icon-box .social-links a.instagram {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+}
+
+.footer3 ul li.icon-box .social-links a.twitter {
+    background-color: #1DA1F2;
+}
+
+.footer3 ul li.icon-box .social-links a.linkedin {
+    background-color: #0A66C2;
+}
+
+.footer3 ul li.icon-box .social-links a.youtube {
+    background-color: #CD201F;
+}
+
+.footer3 .footerlink {
+    padding: 30px 30px 30px 30px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.footer3 .footerlink h4 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #000;
+    position: relative;
+    padding-bottom: 15px;
+    margin-bottom: 30px;
+}
+
+.footer3 .footerlink h4::after {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--tts-buttton-bg);
+    bottom: 0;
+    left: 0;
+}
+
+.footer3 .footer-top .footer-links {
+    margin-bottom: 30px;
+}
+
+.footer3 .footer-top .footer-links ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer3 .footer-top .footer-links ul li {
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+}
+
+.footer3 .footer-top .footer-links ul li:first-child {
+    padding-top: 0;
+}
+
+.footer3 .footer-top .footer-links ul a {
+    color: #323232;
+    transition: 0.3s;
+    display: inline-block;
+    line-height: 1;
+    font-weight: 500;
+}
+
+.footer3 .footer-top .footer-links ul a:hover {
+    color: var(--tts-buttton-bg);
+}
+
+.footer3 .footer-top .footernewsletter {
+    background-color: var(--tts-buttton-bg);
+    color: var(--tts-buttton-txt);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.footer3 .footer-top .footernewsletter h3 {
+    margin: 0;
+}
+
+.footer3 .footer-top .footernewsletter form .newsletterform {
+    background: #fff;
+    padding: 6px 10px;
+    position: relative;
+    border-radius: 4px;
+    width: 300px;
+}
+
+.footer3 .footer-top .footernewsletter form .newsletterform input[type=email] {
+    border: 0;
+    padding: 4px;
+    width: calc(100% - 110px);
+}
+
+.footer3 .footer-top .footernewsletter form .newsletterform button {
+    position: absolute;
+    top: 0;
+    right: -2px;
+    bottom: 0;
+    border: 0;
+    background: none;
+    font-size: 16px;
+    padding: 0 20px 2px 20px;
+    background: var(--tts-buttton-bg1);
+    color: var(--tts-buttton-txt1);
+    transition: 0.3s;
+    border-radius: 0 4px 4px 0;
+}
+
+.copyright {
+    padding-top: 20px;
+}
+
+
+@media (max-width: 991px){
+    .footer3 .footer-top .footernewsletter {
+       display: block !important;
+    }
+    .footer3 .footer-top .footernewsletter form .newsletterform{
+        width: 100%;
+        margin-top: 10px;
+    }
+    .footer3 .footer-top .footernewsletter{
+        text-align: center;
+    }
+    .footer3 .footer-top .footernewsletter form .newsletterform input[type=email]{
+        text-align: left;
+        width: calc(100% - 0px);
+    }
+
+    .footer3 .footer-top .footer-info{
+        padding: 30px 0px 30px 0px;
+        border: none;
+    }
+    .footer3 .footerlink{
+        padding: 30px 0px 0px 0px;
+    }
+}

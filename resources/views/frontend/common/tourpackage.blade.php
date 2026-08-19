@@ -1,54 +1,65 @@
-  @foreach($departures as $departure)
-   <div class="col-md-4 mb-4"> 
-    <div class="card">
-            <a href="{{ $departure->slug1 === 'group-tours' ? route('frontend.agentdeparture', ['slug' => $departure->slug2, 'id' => $departure->slug3]) : url($departure->slug1.'/'.$departure->slug2.'/'.$departure->slug3) }}" target="_blank">
-            <img src="{{ $departure->image}}" class="card-img-top" alt="...">
-
-            @if($departure->featured)
-            <div class="best_selling_pack">
-                <img src="{{ asset('assets/images/icons/Rectangle19435.png') }}" class="w-auto">
-                <p class="best_sell_pack">BEST SELLING</p>
-            </div>
-            @endif
-
-            <div class="card-body common_package">
-                <h6>{{ ucwords(strtolower($departure->title)) }}</h6>
-                <div class="row">
-                    <div class="col-md-6">
-                        <p>{{ $departure->no_of_nights }}</p>
-                    </div>
-                    <div class="col-md-6 d-flex justify-content-end">
-                        @for($i = 0; $i < 5; $i++)
-                            <span class="fa fa-star {{ $i < 5 ? 'checked' : '' }}"></span>
-                            @endfor
-                    </div>
-                    <div class="col-md-12 d-flex">
-                        @foreach($departure->inclusions as $inclusion)
-                        @if($inclusion->icon)
-                        <img src="{{ $inclusion->icon }}" alt="{{ $inclusion->name }}" class="inclusion_icon px-1">
-                        @endif
-                        @endforeach
-                    </div>
-                    <div class="col-md-12 hightlights mt-3">
-                        <h6>Tours Highlights</h6>
-                        <ul class="hightlights mb-0 p-1">
-                            @foreach($departure->poi_names as $poiNames)
-                            <li>{{ $poiNames }}</li>
-                            @endforeach
-                        </ul>
-                        <p>
-                            {{-- <small class="text-decoration-line-through">₹ {{ number_format($departure->price)
-                                }}</small> --}}
-                            @if($departure->price !== null)
-                                <span>₹ {{ number_format($departure->price) }}</span>
-                                @else
-                                <span></span>
-                            @endif
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </a>
+@foreach($departures as $departure)
+  <div class="tour-card">
+      <a href="{{ $departure->slug1 === 'group-tours' ? route('frontend.agentdeparture', ['slug' => $departure->slug2, 'id' => $departure->slug3]) : url($departure->slug1.'/'.$departure->slug2.'/'.$departure->slug3) }}" target="_blank">
+    <div class="tour-image">
+      <img
+        src="{{ $departure->image }}"
+        alt="{{ ucwords(strtolower($departure->title)) }}"
+      />
+      @if($departure->featured)
+      <div class="best-selling">BEST SELLING</div>
+       @endif
     </div>
+    <div class="tour-content">
+      <h3 class="tour-title">
+       {{ ucwords(strtolower($departure->title)) }}
+      </h3>
+      <div class="tour-duration">
+        <i class="fas fa-clock"></i>
+        {{ $departure->no_of_nights }}
+      </div>
+      <div class="tour-features">
+         @foreach($departure->inclusions as $inclusion)
+          @if($inclusion->icon)
+          <img src="{{ $inclusion->icon }}" alt="{{ $inclusion->name }}" class="feature-icon">
+          @endif
+          @endforeach
+      </div>
+      <div class="tour-highlights">
+        <h4>Tours Highlights</h4>
+        <div class="highlights-grid">
+           @foreach($departure->poi_names as $poiNames)
+                     <div class="highlight-item">{{ $poiNames }}</div>
+                    @endforeach
+         
+        </div>
+      </div>
+      <div class="tour-price">
+        <div class="price-info">
+
+          <div class="current-price">@if($departure->price !== null)
+                        ₹ {{ $departure->price }}
+                        @else
+                        
+                    @endif</div>
+        </div>
+        <div class="tour-actions">
+          <button class="view-btn">View Details</button>
+          @php
+                $whatsappMessage = urlencode("Hi! I'm interested in the " . $departure->country_name . " tour package. Can you provide more details?");
+            @endphp
+
+            <a
+                href="https://api.whatsapp.com/send?phone=918368513675&text={{ $whatsappMessage }}"
+                class="tour-whatsapp-btn"
+                target="_blank"
+            >
+    
+            <i class="fab fa-whatsapp"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </a>
   </div>
- @endforeach
+ @endforeach 

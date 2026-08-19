@@ -1,0 +1,556 @@
+
+.slider-banner-hide{
+    height: 50vh;
+    background: linear-gradient(45deg, rgba(86, 58, 250, 0.6) 0%, rgba(242, 184, 39, 0.6) 100%);
+}
+.hero-banner .info {
+    position: absolute;
+    z-index: 2;
+    left: 0;
+    right: 0;
+    height: 50vh;
+}
+
+.hero-banner .info h2.typing-text {
+    color: #fff;
+    font-size: 40px;
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    animation: typing 5s steps(40, end)  infinite;
+}
+
+@keyframes typing {
+    from {
+        width: 0;
+      }
+      to {
+        width: 100%;
+      }
+}
+
+.hero-banner .info p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 18px;
+}
+
+.hero-banner .carousel {
+    width: 100%;
+    min-height: 50vh;
+    padding: 80px 0;
+    margin: 0;
+    position: relative;
+
+}
+
+.hero-banner .carousel-item {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    z-index: 1;
+    transition-duration: 0.4s;
+    height: 50vh;
+}
+
+.hero-banner .carousel-item::before {
+    content: "";
+    background-color: rgba(0, 0, 0, 0.7);
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+}
+
+
+.search_form_section {
+    padding-bottom: 120px;
+}
+
+.search-wrapper {
+    margin-top: -55px;
+    z-index: 3;
+    position: relative;
+}
+
+.search-header {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+
+}
+
+.search-nav {
+    display: inline-block;
+    background: #fff;
+}
+
+.search_tabs {
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
+}
+
+.search-nav .tab-link {
+    margin: 5px;
+}
+
+.search-nav .tab-link a {
+    background: #fff;
+    padding: 10px 16px;
+    font-weight: 500;
+    color: #5e5e5e;
+    position: relative;
+    transition: none;
+    display: block;
+    font-size: 16px;
+}
+
+.search-nav .tab-link.current a,
+.search-nav .tab-link a:hover {
+    background: var(--tts-buttton-bg);
+    color: var(--tts-buttton-txt);
+}
+
+.search-nav .tab-link a i {
+    margin-right: 8px;
+    color: #5e5e5e;
+}
+
+.search-nav .tab-link.current a i,
+.search-nav .tab-link a:hover i {
+    color: #ffffff;
+}
+
+.search-wrapper .tab-content {
+    background: #fff;
+    padding: 30px 30px 30px 30px;
+    border-radius: 0px;
+    box-shadow: 0 0 40px 5px rgb(0 0 0 / 5%);
+}
+
+.search-form .flight-type {
+    margin-bottom: 10px;
+}
+
+.search-form .flight-type .form-check-label {
+    font-weight: 500;
+    color: #5e5e5e;
+}
+
+.search-form .flight-type .form-check-label .form-check-input {
+    margin-top: 6.5px;
+    box-shadow: none;
+    border: 2px solid #5e5e5e;
+}
+
+.search-form .form-group {
+    position: relative;
+    padding: 10px 15px;
+    border-radius: 0px;
+    border: 1px solid #ededed;
+}
+
+.search-form .form-group label {
+    color: #5e5e5e;
+    margin: 0;
+}
+
+.search-form .form-control,
+.search-form .form-select.tts__traveller_select {
+    border-radius: 12px;
+    padding: 5px 0px;
+    box-shadow: none;
+    color: #5e5e5e;
+    background: transparent;
+    border: none;
+    font-size: 19px;
+    font-weight: 500;
+}
+
+.search-form .form-select.tts__traveller_select option {
+    font-size: 14px;
+    padding: 5px 15px !important;
+}
+
+.search-form .form-group i {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    font-size: 28px;
+    color: var(--tts-buttton-bg);
+}
+
+.search-form .form-group .flight_text_p,
+.passenger-class-name {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    color: #5e5e5e;
+    height: 25px;
+}
+
+.search-form-swap {
+    position: absolute;
+    right: -33px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    z-index: 1;
+}
+
+.search-form-swap i {
+    background: #EAE8FF;
+    font-size: 19px !important;
+    position: unset !important;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    line-height: 35px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    color: var(--tts-buttton-bg);
+}
+
+.search-form-date {
+    display: flex;
+}
+
+
+.search-form .search-btn .theme-btn {
+    position: absolute;
+    border-radius: 50px;
+    border: 5px solid #fff;
+    bottom: -25px;
+    left: 50%;
+    padding: 7px 25px;
+    white-space: nowrap;
+    transform: translateX(-50%);
+}
+
+.theme-btn::before {
+    content: "";
+    height: 400px;
+    width: 400px;
+    background: var(--tts-buttton-bg1);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateY(-50%) translateX(-50%) scale(0);
+    transition: 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: -1;
+}
+
+.theme-btn:hover::before {
+    transform: translateY(-50%) translateX(-50%) scale(1);
+}
+
+.theme-btn {
+    font-size: 16px;
+    color: var(--tts-buttton-txt);
+    padding: 11px 20px;
+    transition: all 0.5s;
+    text-transform: capitalize;
+    position: relative;
+    border-radius: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: center;
+    overflow: hidden;
+    border: none;
+    background: var(--tts-buttton-bg);
+    box-shadow: 0 3px 24px rgb(0 0 0 / 12%);
+    z-index: 1;
+}
+
+.theme-btn span {
+    margin-right: 5px;
+}
+
+.search-form .passenger-total {
+    border-radius: 12px;
+    padding: 5px 0px;
+    color: #5e5e5e;
+    font-size: 19px;
+    font-weight: 500;
+}
+
+.search-form .passenger-box .dropdown-menu {
+    background: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 15px 10px;
+    width: 291px;
+    left: -15px !important;
+    margin-top: 15px !important;
+    box-shadow: 0 0 40px 5px rgb(0 0 0 / 5%);
+}
+
+.search-form .passenger-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 5px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, .05);
+}
+
+.search-form .passenger-item H6 {
+    margin: 0;
+    font-size: 14px;
+}
+
+.search-form .form-group p {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    color: #5e5e5e;
+    font-size: 13px;
+    margin: 0;
+}
+
+.search-form .passenger-qty {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.search-form .passenger-qty .tts__counter {
+    border: none;
+    width: 35px;
+    height: 35px;
+    line-height: 35px;
+    border-radius: 50px;
+    background: rgba(113, 103, 255, .15);
+    text-align: center;
+}
+
+.search-form .passenger-qty .tts__counter i {
+    position: unset !important;
+    font-size: 14px !important;
+}
+
+.search-form .passenger-qty .tts_traveller__counter_span {
+    width: 25px;
+    text-align: center;
+    border: none;
+    outline: none;
+    font-weight: 500;
+    color: #5e5e5e;
+}
+
+.search-form .passenger-box .dropdown-item:hover,
+.search-form .passenger-box .dropdown-item:focus {
+    background: transparent;
+}
+
+.search-form .multicity-btn {
+    padding-top: 31px;
+    padding-bottom: 31px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    color: #5e5e5e;
+}
+
+
+.makeflex {
+    display: flex;
+    align-items: center;
+}
+
+.makeflex span {
+    margin-right: 15px;
+}
+
+.makeflex .search_filters {
+    position: relative;
+    border-radius: 4px;
+    color: var(--second-bg-color);
+}
+
+.makeflex .form-check-inline {
+    font-size: 13px;
+}
+.makeflex .form-check-inline .form-check-input{
+    margin-top: 6px;
+}
+
+.makeflex .form-check-border {
+    border-right: 1px solid #9b9b9b;
+    padding-right: 1rem;
+    margin-right: 1rem;
+}
+
+.makeflex .search_filters input[type=checkbox] {
+    margin-top: 6px;
+    border-radius: 50%;
+}
+
+.makeflex .form-check-inline label {
+    margin-bottom: 0;
+}
+
+/* =====================
+date picker
+===================== */
+
+.ui-widget.ui-widget-content {
+    border: none;
+    padding: 8px;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 3px 24px rgb(0 0 0 / 10%);
+    font-family: inherit;
+}
+
+.ui-widget-header .ui-icon {
+    background-image: unset;
+}
+
+.ui-datepicker .ui-widget-header {
+    background: var(--tts-buttton-bg1);
+    color: #fff;
+    border: none;
+}
+
+.ui-datepicker .ui-datepicker-prev::after {
+    content: "\f100";
+    left: 5px;
+    position: absolute;
+    font-family: "FontAwesome";
+    color: #fff;
+}
+
+.ui-datepicker .ui-datepicker-next::after {
+    content: "\f101";
+    right: 5px;
+    position: absolute;
+    font-family: "FontAwesome";
+    color: #fff;
+}
+
+.ui-datepicker .ui-datepicker-header .ui-corner-all,
+.ui-datepicker .ui-datepicker-header .ui-state-hover {
+    cursor: pointer;
+    border: 0;
+    font-weight: 600;
+    top: 3px;
+}
+
+.ui-datepicker td span,
+.ui-datepicker td a {
+    display: block;
+    padding: 0.2em;
+    text-align: center;
+    text-decoration: none;
+}
+
+.ui-state-default,
+.ui-widget-content .ui-state-default {
+    border: none;
+    border-radius: 8px;
+}
+
+.ui-state-highlight,
+.ui-widget-content .ui-state-highlight {
+    border: none;
+    background: var(--tts-buttton-bg);
+    color: var(--tts-buttton-txt);
+}
+
+.ui-state-active,
+.ui-widget-content .ui-state-active {
+    background: var(--tts-buttton-bg1);
+    color: var(--tts-buttton-txt1);
+}
+
+
+
+/* ===================
+  time picker css 
+  ====================== */
+
+.ui-timepicker.ui-widget.ui-widget-content {
+    box-shadow: none;
+}
+
+.ui-timepicker-standard {
+    border: none !important;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 40px 5px rgb(0 0 0 / 5%);
+    z-index: 2 !important;
+}
+
+.ui-timepicker-standard a {
+    border: none !important;
+    transition: none !important;
+    border-radius: 8px;
+}
+
+.ui-timepicker-standard a#ui-active-item,
+.ui-timepicker-standard a:hover {
+    background: var(--tts-buttton-bg1);
+    color: #fff;
+}
+
+
+
+.tts-autocomplete {
+    margin-top: 55px;
+}
+
+#ui-datepicker-div {
+    margin-top: 35px;
+}
+
+
+
+@media (max-width: 991px) {
+    .search-nav {
+        border-radius: 20px;
+    }
+
+    .search-nav .search_tabs {
+        justify-content: center;
+    }
+
+    .hero-banner .info,
+    .hero-banner .carousel,
+    .hero-banner .carousel-item {
+        height: 60vh;
+    }
+
+    .hero-banner .info h2 {
+        font-size: 40px;
+    }
+
+    .search-wrapper .tab-content {
+        border-radius: 20px;
+    }
+
+    .search-form-swap {
+        right: 40%;
+        top: 96px;
+        transform: translateX(-40%);
+    }
+
+    .search_filters {
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        width: 100%;
+        overflow: auto;
+    }
+
+    .search-nav .tab-link a {
+        border: 1px solid #dedede;
+    }
+
+}

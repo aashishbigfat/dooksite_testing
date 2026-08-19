@@ -14,10 +14,12 @@ use App\Models\CountryDeparture;
 use App\Models\DepartureDestination;
 use App\Models\DepartureDestinationPointOfInterest;
 use Illuminate\Http\Request;
+use DB;
 
 class ActivityController extends Controller
 {
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         $activity_header = LandingDeparturePage::where('type', 'landing_activity')
             ->select('title','sub_title','banner_image','description','meta_title','meta_keywords','meta_description','description')
            ->first();
@@ -25,28 +27,18 @@ class ActivityController extends Controller
         $activities = Activity::select('id','activity_name','slug_url','image')
                 ->orderBy('activity_name','ASC')->where('status',1)
                 ->where('slug_url','!=',"")
-                ->paginate(9); 
-        $activity =  $activities; 
-        if(count($activities)>0){  
-            foreach ($activities as $key => $value) { 
+                ->paginate(9);
+        if(count($activities)>0){ 
+            foreach ($activities as $key => $value) {
+                $value->colMd = "col-md-4 col-6";
                 if($value->image != "" || $value->image != null){
-                    $value->image = env('AWS_BUCKET_URL').'/activities/'.$value->image;
+                    $value->image = generateSignedUrl('activities/'.$value->image);
                 }else{
                     $value->image = url('images').'/event-no-image.jpg';
                 }
-                $departure_id_row = ActivityDeparture::where('activity_id',$value->id)
-                        ->distinct()
-                        ->pluck('departure_id')
-                        ->toArray();
-                $value->total_departure = count($departure_id_row);
-                $destintion_id_row = DepartureDestination::whereIn('departure_id',$departure_id_row)
-                        ->distinct()
-                        ->pluck('destination_id')
-                        ->toArray();
-                $value->total_destination = count($destintion_id_row);
             }
         }
-         if(!is_null($request->activity_idP)){
+        if(!is_null($request->activity_idP)){
             $activityId = $request->activity_idP;
         }elseif(!is_null($request->activity_idC)){
             $activityId = $request->activity_idC;
@@ -59,57 +51,96 @@ class ActivityController extends Controller
                 ->toArray();
         $departures = Departure::select('id','title','price_currency','price','price_currency_usd','price_usd','book_online','price_hide_show','slug_url_pre as slug1','slug_url as slug2','dep_dook_ref_id as slug3','no_of_days','no_of_nights','image','featured','dep_type')
             ->whereIn('id',$departure_ids)
+             ->where('dep_type', 'package')
             ->where('status', 1)
             ->orderBy('featured','DESC')
             ->paginate(8);
-            foreach ($departures as $key => $value) {
-                 $poiNames = DepartureDestinationPointOfInterest::where('departure_id', $value->id)->where('status', 1)->limit(4)->distinct()->pluck('poi_name')->toArray();
-                 $value->poi_names = $poiNames;
-                $capitalize = strtolower($value->title);
-                $value->title = ucwords($capitalize);
-                $value->dimage = $value->image;
-                if($value->image != "" || $value->image != null){
-                    $value->image = env('AWS_BUCKET_URL').'/package/'.$value->image;
-                }else{
-                    $value->image = url('images').'/package_default_img.jpg';
-                }
-                
-                
-                $value->featured = $value->featured == 1?'Best Selling':'';
-                $inclusions = Inclusion::where('departure_id',$value->id)
-                    ->whereNotNull('icon')
-                    ->select('name','icon')
-                    ->distinct()
-                    ->get();
-                foreach ($inclusions as $key => $inc) {
-                    $inc->icon = env('AWS_BUCKET_URL')."/inclusion/".$inc->icon;
-                }
-                $value->inclusions = $inclusions;
+
+            foreach ($departures as $departure) {
+            $poiNames = DepartureDestinationPointOfInterest::where('departure_id', $departure->id)->where('status', 1)->limit(4)->distinct()->pluck('poi_name')->toArray();
+            $departure->poi_names = $poiNames;
+            $departure->title = ucwords(strtolower($departure->title));
+            $departure->dimage = $departure->image;
+            $departure->image = $departure->image ? generateSignedUrl('package/'.$departure->image) : url('images').'/package-no-image.jpg';
+            $departure->featured = $departure->featured == 1 ? 'Best Selling' : '';
+            $departure->colMd = "col-md-3 col-12";
+              $departure->no_of_nights = "{$departure->no_of_days} Days {$departure->no_of_nights} Nights";
+             $inclusions = Inclusion::join('icon_inclusions', 'inclusions.icon_inclusion_id', '=', 'icon_inclusions.id')
+                       ->where('inclusions.departure_id', $departure->id)
+                       ->whereNotNull('icon_inclusions.icon_old')
+                       ->select('icon_inclusions.name', 'icon_inclusions.icon') // Select name and icon from icon_inclusions
+                       // ->distinct()
+                       ->get();
+
+            foreach ($inclusions as $inclusion) {
+                $inclusion->icon = generateSignedUrl("inclusion/".$inclusion->icon);
             }
-             $departure_ids = ActivityDeparture::where('activity_id', $activityId)
+
+            $departure->inclusions = $inclusions;
+            $destinationId = DB::table('departure_destinations')
+                            ->where('departure_id', $departure->id)
+                            ->value('destination_id');
+
+                if ($destinationId) {
+                    $countryId = DB::table('destinations')
+                        ->where('id', $destinationId)
+                        ->value('country_id');
+
+                    if ($countryId) {
+                        $countryName = DB::table('countries')
+                            ->where('id', $countryId)
+                            ->value('country_name');
+
+                        $departure->country_name = $countryName ?: null;
+                    } else {
+                        $departure->country_name = null;
+                    }
+                } else {
+                    $departure->country_name = null;
+                }    
+
+        }  
+        $departure_ids = ActivityDeparture::where('activity_id', $activityId)
                 ->distinct()
                 ->pluck('departure_id')
                 ->toArray();
-            $country_id = CountryDeparture::whereIn('departure_id',$departure_ids)
-                    ->distinct()
-                    ->pluck('country_id')
-                    ->toArray();
+        $country_id = CountryDeparture::whereIn('departure_id',$departure_ids)
+                ->distinct()
+                ->pluck('country_id')
+                ->toArray();
 
-            $countries = Country::whereIn('id', $country_id)
-                ->select('id','country_name as countryName','slug_url','image','about_country_slug_url','country_attraction_slug_url')
-                ->where('status',1)
-                ->get();
-            if(count($countries)>0) {
-                foreach ($countries as $key => $country_img) {
-                    $country_img->about_country_slug_url = "";
-                    $country_img->country_attraction_slug_url = "";
+        $countries = Country::whereIn('id', $country_id)
+            ->select('id','country_name as countryName','slug_url','image','about_country_slug_url','country_attraction_slug_url')
+            ->where('status',1)
+            ->paginate(4);
+        if(count($countries)>0) {
+                    foreach ($countries as $key => $country_img) {
+                        if($country_img->image != "" || $country_img->image != null){
+                            $country_img->image = generateSignedUrl('country/'.$country_img->image);
+                        }else{
+                            $country_img->image = url('images').'/poi-no-image.jpg';
+                        }
+                        $country_img->about_country_slug_url = "";
+                        $country_img->country_attraction_slug_url = "";
+
+                    }
                 }
-        } 
-       
+         if ($request->ajax()) {
+            return response()->json([
+                'activities' => view('frontend.common.activity_card', compact('activities'))->render(),
+                'departures' => view('frontend.common.tourpackage', compact('departures'))->render(),
+                'countries' => view('frontend.countries.countries_card', compact('countries'))->render(),
+                'hasMoreActivities' => $activities->hasMorePages(),
+                'hasMoreDepartures' => $departures->hasMorePages(),
+                'hasMoreCountries' => $countries->hasMorePages(),
 
-          return view('frontend.activity.index', compact('activities','activity_header','departures','countries'));
+            ]);
+        }
+       
+            return view('frontend.activity.index', compact('activities','activity_header','departures','countries'));
 
     }
+
    public function activityDetails(Request $request, $slug_url)
     {
         $activity = Activity::where('slug_url', $slug_url)
@@ -118,7 +149,7 @@ class ActivityController extends Controller
                             ->where('status', 1)
                             ->first();
         if (!$activity) {
-            return redirect('/404');
+            return redirect('/');
         }
         $activity->meta_title = $activity->meta_title ?: '20+ Best ' . $activity->activity_name . ' Packages Worldwide @ Budget Price';
         $activity->meta_description = $activity->meta_description ?: $activity->activity_name . ' Tours - Explore 20+ ' . $activity->activity_name . ' Packages around the World. Book ' . $activity->activity_name . ' online at a budget price only at Dook!';
@@ -143,22 +174,45 @@ class ActivityController extends Controller
                                 ->orderBy('featured', 'DESC')
                                 ->paginate(6);
         foreach ($departures as $departure) {
-            $poiNames = DepartureDestinationPointOfInterest::where('departure_id', $departure->id)->where('status', 1)->limit(4)->distinct()->pluck('poi_name')->toArray();
+            $poiNames = DepartureDestinationPointOfInterest::where('departure_id', $departure->id)->where('status', 1)->where('dep_type', 'package')->limit(4)->distinct()->pluck('poi_name')->toArray();
             $departure->poi_names = $poiNames;
             $departure->title = ucwords(strtolower($departure->title));
             $departure->dimage = $departure->image;
-             $departure->image = $departure->image ? env('AWS_BUCKET_URL') . '/package/' . $departure->image : url('images') . '/package-no-image.jpg';
+             $departure->image = $departure->image ? generateSignedUrl('package/' . $departure->image) : url('images') . '/package-no-image.jpg';
             $departure->featured = $departure->featured == 1 ? 'Best Selling' : '';
-
-            $inclusions = Inclusion::where('departure_id', $departure->id)
-                                   ->whereNotNull('icon')
-                                   ->select('name', 'icon')
-                                   ->distinct()
-                                   ->get();
+             $departure->colMd = "col-md-4 col-12";
+              $departure->no_of_nights = "{$departure->no_of_days} Days {$departure->no_of_nights} Nights";
+            $inclusions = Inclusion::join('icon_inclusions', 'inclusions.icon_inclusion_id', '=', 'icon_inclusions.id')
+                       ->where('inclusions.departure_id', $departure->id)
+                       ->whereNotNull('icon_inclusions.icon_old')
+                       ->select('icon_inclusions.name', 'icon_inclusions.icon') // Select name and icon from icon_inclusions
+                       // ->distinct()
+                       ->get();
             foreach ($inclusions as $inc) {
-                $inc->icon = env('AWS_BUCKET_URL') . "/inclusion/" . $inc->icon;
+                $inc->icon = generateSignedUrl("inclusion/" . $inc->icon);
             }
             $departure->inclusions = $inclusions;
+            $destinationId = DB::table('departure_destinations')
+                            ->where('departure_id', $departure->id)
+                            ->value('destination_id');
+
+            if ($destinationId) {
+                $countryId = DB::table('destinations')
+                    ->where('id', $destinationId)
+                    ->value('country_id');
+
+                if ($countryId) {
+                    $countryName = DB::table('countries')
+                        ->where('id', $countryId)
+                        ->value('country_name');
+
+                    $departure->country_name = $countryName ?: null;
+                } else {
+                    $departure->country_name = null;
+                }
+            } else {
+                $departure->country_name = null;
+            }    
         }
         $country_id = CountryDeparture::whereIn('departure_id', $departure_ids)
                                       ->distinct()
@@ -169,17 +223,29 @@ class ActivityController extends Controller
                                      'about_country_slug_url', 'country_attraction_slug_url')
                             ->where('status', 1)
                             ->paginate(12);
-        foreach ($countries as $country) {
-            $country->image = $country->image ?: url('images') . '/package-no-image.jpg';
-            $country->about_country_slug_url = '';
-            $country->country_attraction_slug_url = '';
-        }
-        $countries_count = Country::whereIn('id', $country_id)
-                                  ->where('status', 1)
-                                  ->select('id', 'country_name as countryName', 'country_experience_slug_url as exp_slug', 
-                                           'slug_url', 'image')
-                                  ->get();
+            if(count($countries)>0) {
+                    foreach ($countries as $key => $country_img) {
+                        if($country_img->image != "" || $country_img->image != null){
+                            $country_img->image = generateSignedUrl('country/'.$country_img->image);
+                        }else{
+                            $country_img->image = url('images').'/poi-no-image.jpg';
+                        }
+                        $country_img->about_country_slug_url = "";
+                        $country_img->country_attraction_slug_url = "";
 
+                    }
+                }
+
+         if ($request->ajax()) {
+            return response()->json([
+                'departures' => view('frontend.common.tourpackage', compact('departures'))->render(),
+                'countries' => view('frontend.countries.countries_card', compact('countries'))->render(),
+                'hasMoreDepartures' => $departures->hasMorePages(),
+                'hasMoreCountries' => $countries->hasMorePages(),
+
+            ]);
+        }
+        
         return view('frontend.activity.activity_detail', compact('activity', 'departures', 'countries', 'departure_destination_name'));
     }
 

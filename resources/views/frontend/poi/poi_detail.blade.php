@@ -1,14 +1,31 @@
 @extends('frontend.layouts.master')
 @push('title') {{$poiID->meta_title}}@endpush
 @push('meta_tag')<meta name="keywords" content="{{$poiID->meta_keywords}}">
-<meta name="description" content="{{$poiID->meta_description}}">@endpush
+<meta name="description" content="{{$poiID->meta_description}}">
+<meta property="og:description" content="{{$poiID->meta_description}}">
+<meta name="twitter:description" content="{{$poiID->meta_description}}">
+@endpush
 @section('content')
   
+  <section class="breadcrumb-section">
+      <div class="container">
+        <div class="breadcrumb-nav animate-fade-up">
+          <div class="breadcrumb-item">
+            <a href="/"><i class="fas fa-home"></i>Home</a>
+          </div>
+          <span class="breadcrumb-separator">/</span>
+          <div class="breadcrumb-item">
+            <span class="breadcrumb-current">Point of Interests</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    
   <div class="container">
     <div class="row mt-4 mb-4">
-       <div class="col-md-12 mt-4">
+    <!--    <div class="col-md-12 mt-4">
           <p class="color_gray"><a href="/" class="text-danger">Home</a> / Point of Interests</p>
-        </div>
+        </div> -->
        <div class="col-md-9 mt-3" style="position: relative;">
         <div>
             <img src="{{$poiID->image}}"
@@ -22,7 +39,9 @@
           </div>
           <h4>Description:</h4>
             <hr>
-            <h6>{{$poiID->poi_name}}</h6>
+             <div class="sectionHeading heading">
+                   <h2>{{$poiID->poi_name}}</h2>
+                   </div>
               @if($poiID->description != null || $poiID->description != "")
                 <p class="mb-2">{{$poiID->description}}</p>
               @endif
@@ -43,42 +62,39 @@
                 @endfor
               </div>
               @endif
-
+        <hr>
           <div class="row">
               <div class="col-md-12 mb-4">
-                <h4>Top {{$poiID->destination_name}} Tour Packages</h4>
+                 <div class="sectionHeading mt-5 heading">
+                   <h2>Top {{$poiID->destination_name}} Tour Packages</h2>
+               </div>
                 <p class="color_gray">Top tours featuring  {{$poiID->poi_name}}</p>
               </div>   
-               @foreach($departures as $departure)
-              <div class="col-md-4 mb-4">          
+              <div class="tours-grid" id="tourPackages">
                 @include('frontend.common.tourpackage')
-              </div>
-              @endforeach
-              <div class="col-md-12 mt-4 d-flex">
-                <ul style="list-style-type: none;" class="p-0 d-flex justify-content-center" id="pagination">
-                    <!-- Previous Button -->
-                    @if ($departures->onFirstPage())
-                        <li><a href="javascript:void(0)" class="border p-2 text-dark rounded text-white bg-secondary" id="prev" disabled>&lt;</a></li>
-                    @else
-                        <li><a href="{{ $departures->previousPageUrl() }}" class="border p-2 text-dark rounded text-white bg-danger" id="prev">&lt;</a></li>
-                    @endif
-
-                    <!-- Next Button -->
-                    @if ($departures->hasMorePages())
-                        <li><a href="{{ $departures->nextPageUrl() }}" class="border p-2 text-dark rounded mx-2 text-white bg-danger" id="next">&gt;</a></li>
-                    @else
-                        <li><a href="javascript:void(0)" class="border p-2 text-dark rounded mx-2 text-white bg-secondary" id="next" disabled>&gt;</a></li>
-                    @endif
-                </ul>
-               </div>
+            </div>
+            
+            @if($departures->hasMorePages())
+                <div class="col-md-12 mt-4 text-center">
+                    <div id="loader" class="loader">
+                        <div class="spinner-border text-danger" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <button id="loadMoreBtn" class="load_more_btn"><i class="fas fa-plus me-2"></i> Load More Packages</button>
+                </div>
+            @endif
               
                <div class="col-md-12 mb-4 mt-4">
-                <h4>Top {{$poiID->destination_name}} Tourist Attractions</h4>
+               <div class="sectionHeading mt-5 heading">
+                   <h2>Top {{$poiID->destination_name}} Tourist Attractions</h2>
+               </div>
               </div> 
                 @foreach($related_pois as $pointOfInterest)
                  @include('frontend.poi.poi_card')
                     @endforeach
           </div>
+        
         </div>
         <div class="col-md-3">
           <div class="shadow p-3 mb-3 bg-white rounded">
@@ -99,39 +115,40 @@
           </div>
       </div>
   </div>
-
+  
    @include('frontend.common.testimonial')
 
-   <script type="text/javascript">
-$(document).ready(function() {
-    // Handle Previous button click
-    $('#prev').on('click', function() {
-        var prevPage = "{{ $departures->previousPageUrl() }}";
-        if (prevPage) {
-            loadDepartures(prevPage);
-        }
-    });
-
-    // Handle Next button click
-    $('#next').on('click', function() {
-        var nextPage = "{{ $departures->nextPageUrl() }}";
-        if (nextPage) {
-            loadDepartures(nextPage);
-        }
-    });
-
-    function loadDepartures(url) {
-        $.ajax({
-            url: url,
-            method: 'GET',
-            success: function(response) {
-                // Update the content with the new data (you would need to adjust this)
-                $('#departures-container').html(response);
-            }
+ <script>
+        let page = 2;
+        $('#loadMoreBtn').click(function() {
+            $('#loader').show();
+            $('#loadMoreBtn').hide();
+            
+            let urlParams = new URLSearchParams(window.location.search);
+            urlParams.set("page", page);
+    
+            let url = "{{ url()->current() }}?" + urlParams.toString();
+    
+            $.ajax({
+                url: url,
+                type: "GET",
+                success: function(data) {
+                    $('#tourPackages').append(data.view);
+                    page++;
+                    if (!data.hasMorePages) {
+                        $('#loadMoreBtn').hide();
+                    }
+                    $('#loader').hide();
+                    if (data.hasMorePages) {
+                        $('#loadMoreBtn').show();
+                    }
+                },
+                error: function() {
+                    alert('Error loading more packages');
+                    $('#loader').hide();
+                    $('#loadMoreBtn').show();
+                }
+            });
         });
-    }
-});
-
-
-   </script>
+    </script>
 @endsection

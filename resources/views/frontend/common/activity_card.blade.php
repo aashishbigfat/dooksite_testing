@@ -1,4 +1,5 @@
-
+ @foreach($activities as $activity)
+<div class="{{$activity->colMd ?? 'col-md-3'}} ">
 
 <a href="{{route('frontend.activity_detail',$activity->slug_url)}}">
 <div class="card mb-4">
@@ -9,4 +10,5 @@
   </div>
 </div>
 </a>
-
+</div>
+ @endforeach

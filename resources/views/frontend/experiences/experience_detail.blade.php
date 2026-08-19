@@ -1,108 +1,121 @@
 @extends('frontend.layouts.master')
 @push('title') {{$experience->meta_title}}@endpush
 @push('meta_tag')<meta name="keywords" content="{{$experience->meta_keywords}}">
-<meta name="description" content="{{$experience->meta_description}}">@endpush
+<meta name="description" content="{{$experience->meta_description}}">
+<meta property="og:description" content="{{$experience->meta_description}}">
+<meta name="twitter:description" content="{{$experience->meta_description}}">
+@endpush
 @section('content')
-  
+<style type="text/css">
+    .country_about b a {
+  color: #dc3545 !important;
+}
+</style>  
+ <section class="breadcrumb-section">
+      <div class="container">
+        <div class="breadcrumb-nav animate-fade-up">
+          <div class="breadcrumb-item">
+            <a href="/"><i class="fas fa-home"></i>Home</a>
+          </div>
+          <span class="breadcrumb-separator">/</span>
+          <div class="breadcrumb-item">
+            <a href="{{route('frontend.experiences')}}">Experiences</a>
+          </div>
+          <span class="breadcrumb-separator">/</span>
+          <div class="breadcrumb-item">
+            <span class="breadcrumb-current">{{$experience->experience_name}}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Page Header Content -->
+    <section class="page-header-content">
+      <div class="container">
+        <div class="animate-fade-up delay-100">
+          <h1 class="page-title mt-0">{{$experience->edit_Header_title}}</h1>
+          <p class="page-subtitle">
+           {{$experience->header_sub_title}} 
+          </p>
+        </div>
+      </div>
+    </section>
 
   <div class="container">
+    @if($departures->count())
     <div class="row mt-4 mb-4">
        <div class="col-md-12 mt-4">
-          <p class="color_gray"><a href="/" class="text-danger">Home</a> / <a href="">Experiences</a> / {{$experience->experience_name}}</p>
           <div class="row">
-              <div class="col-md-9 mb-4">
-                <h4>{{$experience->pkg_title}}</h4>
-                <p class="color_gray">{{$experience->pkg_sub_title}}</p>
-              </div>  
-              <div class="col-md-3 mb-4">
-                <select class="form-control">
-                  <option selected>India</option>
-                </select>
-              </div>  
-               @foreach($departures as $departure)
-              <div class="col-md-3 mb-4 mt-4">          
+                <div class="tours-grid" id="tourPackages">
                 @include('frontend.common.tourpackage')
-              </div>
-              @endforeach
-              <div class="col-md-12 mt-4 d-flex">
-                <ul style="list-style-type: none;" class="p-0 d-flex justify-content-center" id="pagination">
-                    <!-- Previous Button -->
-                    @if ($departures->onFirstPage())
-                        <li><a href="javascript:void(0)" class="border p-2 text-dark rounded text-white bg-secondary" id="prev" disabled>&lt;</a></li>
-                    @else
-                        <li><a href="{{ $departures->previousPageUrl() }}" class="border p-2 text-dark rounded text-white bg-danger" id="prev">&lt;</a></li>
-                    @endif
-
-                    <!-- Next Button -->
-                    @if ($departures->hasMorePages())
-                        <li><a href="{{ $departures->nextPageUrl() }}" class="border p-2 text-dark rounded mx-2 text-white bg-danger" id="next">&gt;</a></li>
-                    @else
-                        <li><a href="javascript:void(0)" class="border p-2 text-dark rounded mx-2 text-white bg-secondary" id="next" disabled>&gt;</a></li>
-                    @endif
-                </ul>
-              </div>              
+            </div>
+            
+            @if($departures->hasMorePages())
+                <div class="col-md-12 mt-4 text-center">
+                    <div id="loader" class="loader">
+                        <div class="spinner-border text-danger" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <button id="loadMoreBtn" class="btn btn-danger">Load More</button>
+                </div>
+            @endif           
           </div>
         </div>       
     </div>
     <!-- Experience -->
     <hr>
+    @endif
+    @if(isset($activities) && $activities->count())
      <div class="row mb-4">
         <div class="col-md-12 mb-4">
-          <h4>{{$experience->exp_title}}</h4>
-          <p class="color_gray">{{$experience->exp_sub_title}}</p>
-  
-        <div class="row">
-          @foreach($activities as $key => $activity)
-          <div class="col-md-3">
-            @include('frontend/common/activity_card')
+          <div class="sectionHeading heading mt-3">
+            <h2 class="text-capitalize my-1">{{$experience->exp_title}}</h2>
+            <p class="color_gray">{{$experience->exp_sub_title}}</p>
           </div>
-          @endforeach
+        <div class="row">
+            @include('frontend/common/activity_card')        
         </div>
         </div>
      </div>
     <hr>
+    @endif
      <!-- destination -->
+     @if(isset($countries) && $countries->count())
      <div class="row mb-4">
-        <div class="col-md-9 mb-4">
-          <h4>{{$experience->country_title}}</h4>
-          <p class="color_gray">{{$experience->country_sub_title}}</p>
-          
-        <div class="row"> 
-          <div class="containerGridWrapper">
-              @foreach($countries as $key => $experience_row)
-              <a href="{{url('/')}}/{{$experience_row->slug_url}}" class="thingstodo-picture">
-                <div class="wrapperImageContainer">
-                  <img src="{{ $experience_row->image }}" />
-                  <p> {{ $experience_row->countryName }}</p>
-                </div>
-              </a>
-              @endforeach
+          <div class="col-md-9 mb-4">
+            <div class="sectionHeading heading mt-3">
+             <h2 class="text-capitalize my-1">{{$experience->country_title}}</h2>
+             <p class="color_gray">{{$experience->country_sub_title}}</p>
             </div>
-        </div>
+          <div class="row" id="countriesList">
+                @include('frontend.experiences.experience_country')
+            </div>
+           <div id="countriesLoadMoreBtn">
+                @if($countries->count() > 0 && $countries->hasMorePages())
+                    <div class="col-md-12 mt-4 text-center">
+                        <div id="loader2" class="loader" style="display:none;">
+                            <div class="spinner-border text-danger" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                        <button id="loadMoreCountriesBtn" class="btn btn-danger">Load More</button>
+                    </div>
+               @elseif($countries->count() == 0)
+                    <p>No countries available in this region.</p> 
+                @endif
+            </div> 
 
         </div>
          
          <div class="col-md-3">
-          <div class="shadow p-3 mb-3 bg-white rounded">
-              <h6 class="px-2">Book With Confidence</h6>
-              <p class="color_gray"><img src="{{asset('assets/images/icons/thumbs-up.png')}}" alt="" class="px-2"> No-hassle best price guarantee</p>
-              <p class="color_gray"><img src="{{asset('assets/images/icons/mobile.png')}}" alt="" class="px-2"> Customer care available 24/7</p>
-              <p class="color_gray"><img src="{{asset('assets/images/icons/star.png')}}" alt="" class="px-2"> Hand-picked Tours & Activities</p>
-              <p class="color_gray"><img src="{{asset('assets/images/icons/crosshair.png')}}" alt="" class="px-2"> Free Travel Insureance</p>
-  
-            </div>
-  
-            <div class="shadow p-3  bg-white rounded">
-              <h6 class="px-2">Need Help?</h6>
-              <p class="color_gray"><img src="{{asset('assets/images/icons/mobile.png')}}" alt="" class="px-2"> +911140001000</p>
-              <p class="color_gray"><img src="{{asset('assets/images/icons/mailbox.png')}}" alt="" class="px-2"> sales@dooktravels.com</p>
-              <p class="color_gray"><img src="{{asset('assets/images/icons/chat.png')}}" alt="" class="px-2"> +918368513675</p>
-            </div>
+          @include('frontend.common.bookwithconfidence')
          </div>
            <hr>
+            @endif
            @if($experience->description != null || $experience->description !="")
 
-              <div class="col-md-12 country_about">
+              <div class="col-md-12 color_gray desc">
                 {!! $experience->description !!}
               </div>
         @endif
@@ -112,4 +125,75 @@
   </div>
 
   @include('frontend.common.testimonial')
+  <script>
+   let page = 2;
+
+$('#loadMoreBtn').click(function() {
+    // Show the loader and hide the button
+    $('#loader').show();
+    $('#loadMoreBtn').hide();
+
+    $.ajax({
+        url: "{{ url()->current() }}?page=" + page,  // Add the page query parameter to the URL
+        type: "GET",
+        success: function(data) {
+            // Append the new tour packages to the existing ones
+            $('#tourPackages').append(data.view);
+
+            // Increment the page number
+            page++;
+
+            // If there are no more pages, hide the "Load More" button
+            if (!data.hasMorePages) {
+                $('#loadMoreBtn').hide();
+            }
+
+            // Hide the loader
+            $('#loader').hide();
+
+            // If there are more pages, show the "Load More" button
+            if (data.hasMorePages) {
+                $('#loadMoreBtn').show();
+            }
+        },
+        error: function() {
+            // Handle error
+            alert('Error loading more packages');
+            $('#loader').hide();
+            $('#loadMoreBtn').show();
+        }
+    });
+});
+
+ let countryPage = 2;
+    $('#loadMoreCountriesBtn').click(function() {
+        $('#loader2').show();
+        $('#loadMoreCountriesBtn').hide();
+
+        $.ajax({
+            url: "{{ url()->current() }}?page=" + countryPage,
+            type: "GET",
+            success: function(data) {
+                $('#countriesList').append(data.countries);
+                countryPage++;
+
+                // Check if there are more countries
+                if (!data.hasMoreCountries) {
+                    $('#loadMoreCountriesBtn').hide();
+                    $('#noMoreCountriesMsg').show(); // Show the "No more countries" message
+                } else {
+                    $('#loadMoreCountriesBtn').show();
+                }
+
+                // Hide the loader
+                $('#loader2').hide();
+            },
+            error: function() {
+                alert('Error loading more countries');
+                $('#loader2').hide();
+                $('#loadMoreCountriesBtn').show();
+            }
+        });
+    });
+</script>
   @endsection

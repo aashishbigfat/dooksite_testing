@@ -1,10 +1,14 @@
-<div class="col-md-3 mt-3 attr_img" style="position: relative;">
+
+
+   <div class="col-md-4 col-lg-3 mb-3">
     <a href="{{route('frontend.poi_details',['slug'=>$pointOfInterest->poi_url, 'id'=>$pointOfInterest->poiId])}}" target="_blank">
-        <img src="{{ $pointOfInterest['image'] ?? url('images/poi-no-image.jpg') }}"
-            alt="{{ $pointOfInterest['poi_name'] }}" style="width:100%;">
-        <div class="text-block px-2 py-2">
-            <h6 class="m-0 p-0">{{ $pointOfInterest['poi_name'] }}</h6>
-            <p class="p-0 m-0">Duration: {{ $pointOfInterest['duration'] ?? 'N/A' }}</p>
-        </div>
+    <div class="card attraction_card">
+       <img src="{{ $pointOfInterest['image'] ?? url('images/poi-no-image.jpg') }}"
+            alt="{{ $pointOfInterest['poi_name'] }}" />
+      <div class="attraction_card_body">
+         <h6 class="m-0 p-0">{{ $pointOfInterest['poi_name'] }}</h6>
+          <p class="p-0 m-0"><span class="text-white">{{$pointOfInterest['total_departures']}} Tours</span> <span class="text-white"> {{$pointOfInterest['featured_departure']}} Featured</span></p>
+      </div>
+    </div>
     </a>
-</div>
+  </div>

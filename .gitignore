@@ -1,3 +1,4 @@
+# Laravel
 /.phpunit.cache
 /node_modules
 /public/build
@@ -7,8 +8,8 @@
 /storage/pail
 /vendor
 .env
-.env.backup
-.env.production
+.env.*
+!.env.example
 .phpactor.json
 .phpunit.result.cache
 Homestead.json
@@ -16,8 +17,42 @@ Homestead.yaml
 auth.json
 npm-debug.log
 yarn-error.log
+
+# Editors / IDEs
 /.fleet
 /.idea
 /.nova
 /.vscode
 /.zed
+
+# OS junk files
+.DS_Store
+Thumbs.db
+
+# Sensitive credentials — must never be committed
+/application-project-dook-int-9801963164ab.json
+
+# Backups / third-party installer archives — not source, and some exceed
+# GitHub's 100MB per-file limit
+*.zip
+/public/book_bkp_27-03-2025_not_deleted/
+
+# public/book/ — bundled CodeIgniter booking sub-app: keep its source,
+# drop only its runtime-generated data (sessions, cache, logs, debugbar)
+/public/book/writable/cache/
+/public/book/writable/session/
+/public/book/writable/logs/
+/public/book/writable/debugbar/
+/public/book/writable/uploads/
+/public/book/adminpanel/writable/cache/
+/public/book/adminpanel/writable/session/
+/public/book/adminpanel/writable/logs/
+/public/book/adminpanel/writable/debugbar/
+/public/book/adminpanel/writable/uploads/
+/public/book/api/writable/cache/
+/public/book/api/writable/session/
+/public/book/api/writable/logs/
+/public/book/api/writable/debugbar/
+/public/book/api/writable/apilogs/
+/public/book/api/writable/uploads/
+/public/book/api/error_log

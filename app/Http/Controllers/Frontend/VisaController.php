@@ -110,7 +110,7 @@ class VisaController extends Controller
         {
             return view('frontend.visa.visa_detail', compact('residence_country','visas','visaDes'));
         }else{
-            return redirect('/404');
+            return redirect('/');
         }
     }
        public function visaDependencyCountryList(Request $request)

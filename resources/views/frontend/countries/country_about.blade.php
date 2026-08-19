@@ -1,30 +1,61 @@
 @extends('frontend.layouts.master')
 @push('title') {{$country->about_meta_title}}@endpush
 @push('meta_tag')<meta name="keywords" content="{{$country->about_meta_keywords}}">
-<meta name="description" content="{{$country->about_meta_description}}">@endpush
+<meta name="description" content="{{$country->about_meta_description}}">
+<meta property="og:description" content="{{$country->meta_description}}">
+<meta name="twitter:description" content="{{$country->meta_description}}">
+@endpush
 @section('content')
     <!-- home section -->
+    <section class="breadcrumb-section">
+      <div class="container">
+        <div class="breadcrumb-nav animate-fade-up">
+          <div class="breadcrumb-item">
+            <a href="/"><i class="fas fa-home"></i>Home</a>
+          </div>
+          <span class="breadcrumb-separator">/</span>
+          <div class="breadcrumb-item">
+            <a href="{{route('frontend.countries')}}">Countries</a>
+          </div>
+          <span class="breadcrumb-separator">/</span>
+          <div class="breadcrumb-item">
+            <span class="breadcrumb-current">{{$country->country_name}}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Page Header Content -->
+    <section class="page-header-content">
+      <div class="container">
+        <div class="animate-fade-up delay-100">
+          <h1 class="page-title mt-0">{{$country->about_title}}</h1>
+          <p class="page-subtitle">
+          {{$country->about_sub_title}}
+          </p>
+        </div>
+      </div>
+    </section>
+
    <div class="container">
     <div class="row mt-4">
-        <div class="col-md-12 header-sticky">
-            <p class="color_gray"><a href="/" class="text-danger">Home</a> /<a href="/" class="text-danger">Tours</a>/ {{$country->country_name}}
-               </p>
-                <ul class="nav nav-tabs shadow-sm p-3 mb-5 bg-white rounded ">
+               <div class="secondheader shadow-sm p-3 mb-5 bg-white rounded py-4">
+                <ul class="nav nav-tabs product_detail d-flex " style="border-bottom:none">
                     <li class="active"><a href="#Details">Details</a></li>
                    
                     <li><a href="#Itinerary">Tourism</a></li>
           
                     <li><a href="#Inclusion">Travel Guide</a></li>
              
-                    <li><a href="#Attractions">Visa Info</a></li>
+                    <li><a href="#Attractions">Visa Information</a></li>
                 </ul>
-        </div>
+            </div>
+        
         <div class="col-md-12">     
         <div id="Details" class="tab-pane fade in active">
-            <div class="row">
-                  <h4>{{$country->about_title}}</h4>
-                <p>{{$country->about_sub_title}}</p>
-                <div class="col-md-3">
+            <div class="row">                  
+                <h2>About {{$country->country_name}} — Tourism, Travel Guide, Visa and Essential Facts</h2>
+                <!-- <div class="col-md-3">
                     <div class="row">
                         <div class="col-md-12 mt-4">
                             <img src="url('images/no_image.jpg') "
@@ -51,7 +82,7 @@
                                 alt="" class="w-100 pack_img">
                         </div>
                     </div>
-                </div>
+                </div> -->
 
 
                 <div class="col-md-12 mt-4">
@@ -128,30 +159,37 @@
 
 
                         <div class="col-md-12">
-                            <h4>Details</h4>
+                            <!-- <h4>Details</h4> -->
                             <p class="color_gray ">
                                 {!! $country->about_description !!}
                             </p>
                             
-                          
+                          </div>
+                          </div>
                             <hr>
+                            <div class="col-md-12">
                             <div id="Itinerary" class="tab-pane fade">
-                                <h4>Tourism</h4>
+                                <h2>{{$country->country_name}} Tourism — Top Destinations and Attractions</h2>
                              <p class="color_gray ">
                                 {!! $country->tourism_description !!}
                             </p>
                             </div>
+                            </div>
+                            <div class="col-md-12">
                             <div id="Inclusion" class="tab-pane fade mt-4 pt-4">
-                            <h4>Travel Guide</h4>
+                            <h2> {{$country->country_name}} Tour & Travel Guide</h2>
                             <p class="color_gray "> {!! $country->guide_description !!}</p>
                             </div>
-                             <div id="Attractions" class="tab-pane fade">
-                                <h4>Visa Information</h4>
+                        </div>
+                        <div class="col-md-12">
+                             <div id="Attractions" class="tab-pane fade visa">
+                                <h2>{{$country->country_name}} Visa Information</h2>
                                 <p class="color_gray "> {!! $country->about_visa_information !!}</p>
                             </div>
-                        <hr>
                         </div>
-                    </div>
+                        <hr>
+                        
+                    
                 </div>
             </div>
         </div>
@@ -162,4 +200,37 @@
 </div>
     <!-- testimonial -->
    @include('frontend.common.testimonial')
+   <script>
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll(".nav-tabs a").forEach(function(tab) {
+        tab.addEventListener("click", function(event) {
+            event.preventDefault();
+            let target = document.querySelector(this.getAttribute("href"));
+            
+            if (target) {
+                // Remove active class from all tabs
+                document.querySelectorAll(".nav-tabs li").forEach(function(li) {
+                    li.classList.remove("active");
+                });
+                
+                // Add active class to the clicked tab
+                this.parentElement.classList.add("active");
+
+                // Smooth scroll to the section
+                window.scrollTo({
+                    top: target.offsetTop - 180, // Adjust for navbar height if needed
+                    behavior: "smooth"
+                });
+
+                // Show the corresponding section
+                document.querySelectorAll(".tab-pane").forEach(function(pane) {
+                    pane.classList.remove("show", "active");
+                });
+
+                target.classList.add("show", "active");
+            }
+        });
+    });
+});
+</script>
 @endsection
