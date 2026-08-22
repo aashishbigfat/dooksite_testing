@@ -1,0 +1,78 @@
+# Production compose file for the Google Compute Engine VM.
+#
+# Differences from docker-compose.yml (the local test file):
+#   - No JSON key mounted. Google Cloud Storage authenticates through the
+#     VM's attached service account (Application Default Credentials), so
+#     no long-lived key exists on the VM or in the image.
+#   - Publishes on port 80 rather than 8080.
+#   - Logs to Cloud Logging via the gcplogs driver.
+#
+# Works two ways, so the same file covers the first deploy and later ones:
+#
+#   1. Build on the VM from a GitHub clone (what explainers/gcp_hosting_guide.md
+#      uses - no Artifact Registry needed):
+#        docker compose -f docker-compose.prod.yml build
+#        docker compose -f docker-compose.prod.yml up -d
+#
+#   2. Pull a pre-built tagged image from Artifact Registry, once you want
+#      builds off the VM. Set IMAGE in /etc/dookwebsite/deploy.env:
+#        IMAGE=<REGION>-docker.pkg.dev/<PROJECT>/dookwebsite/app:2026-08-22
+#        docker compose -f docker-compose.prod.yml pull && ... up -d
+#      Pin a real tag; ':latest' makes it impossible to tell what is running
+#      or to roll back to what was running before.
+#
+# Started at boot by docker/dookwebsite.service.
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: ${IMAGE:-dookwebsite:prod}
+
+    # Host port 80 -> container port 80. Reached directly by the VM's
+    # external IP while verifying. When a Google Cloud HTTP(S) Load
+    # Balancer is put in front later, keep 80 here and terminate TLS there;
+    # see the TLS section of DOCKER.md.
+    ports:
+      - "80:80"
+
+    # Real env vars, never baked into the image. Copy docker/env.gcp.example
+    # to this path on the VM and fill it in.
+    env_file:
+      - /etc/dookwebsite/app.env
+
+    # Laravel logs and the legacy CodeIgniter sub-app's writable dirs, kept
+    # on the host so they survive a container replacement.
+    volumes:
+      - /var/lib/dookwebsite/storage-logs:/var/www/html/storage/logs
+
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1/up"]
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+      retries: 3
+
+    restart: always
+
+    # Ship container stdout/stderr to Cloud Logging. Requires the VM's
+    # service account to hold roles/logging.logWriter.
+    logging:
+      driver: gcplogs
+      options:
+        gcp-log-cmd: "true"
+
+    # A runaway request should not take the whole VM down with it. This is a
+    # blast-radius limit, not a guarantee of headroom: docker/php.ini keeps
+    # the cPanel host's memory_limit of 2024M per request, so 10 workers
+    # (docker/www.conf) could in theory ask for ~20 GB. What actually bounds
+    # concurrent memory is pm.max_children, not this number.
+    #
+    # Sized for the e2-standard-2 (8 GB) in DOCKER.md, leaving ~2 GB for the
+    # host. Raise it with the machine type, not on its own.
+    deploy:
+      resources:
+        limits:
+          memory: 6g

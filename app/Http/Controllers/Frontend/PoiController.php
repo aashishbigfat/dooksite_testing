@@ -5,11 +5,8 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\DepartureDestinationPointOfInterest;
 use App\Models\ActivityPointOfInterest;
-use App\Models\HotelCategory;
 use App\Models\Destination;
-use App\Models\Inclusion;
 use App\Models\Departure;
-use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -98,14 +95,18 @@ class PoiController extends Controller
             ->select('id', 'title', 'price_currency', 'price', 'price_currency_usd', 'price_usd', 'book_online', 'price_hide_show', 'no_of_days', 'no_of_nights', 'slug_url_pre as slug1', 'slug_url as slug2', 'dep_dook_ref_id as slug3', 'dep_type', 'image', 'featured')
             ->paginate(6);
 
-        $departures->getCollection()->map(function ($departure) {
-            $this->processDepartureImage($departure);
+        // Names, prices, inclusions and country for every card on this page at
+        // once, instead of six queries per departure inside the loop below.
+        $cards = departureCardData($departures->getCollection()->pluck('id')->all());
+
+        $departures->getCollection()->map(function ($departure) use ($cards) {
+            $this->processDepartureImage($departure, $cards[$departure->id] ?? []);
             return $departure;
         });
         return $departures;
     }
 
-    private function processDepartureImage($departure)
+    private function processDepartureImage($departure, array $card = [])
     {
         $departure->title = ucwords(strtolower($departure->title));
         $departure->dimage = $departure->image;
@@ -117,90 +118,56 @@ class PoiController extends Controller
             $departure->image = url('images') . '/package-no-image.jpg';
         }
 
-         $poiNames = DepartureDestinationPointOfInterest::where('departure_id', $departure->id)->where('status', 1)->limit(4)->distinct()->pluck('poi_name')->toArray();
-                        $departure->poi_names = $poiNames;
+        $departure->poi_names = $card['poi_names'] ?? [];
         $departure->featured = $departure->featured == 1 ? 'Best Selling' : '';
-        $prices = HotelCategory::where('departure_id', $departure->id)
-            ->orderBy('price_inr', 'ASC')
-            ->first();
-        if ($prices) {
-            $departure->price = $prices->price_inr;
-            $departure->price_usd = $prices->price_usd;
+        // Present but empty means the departure has a hotel category whose
+        // price is blank; absent means it has none at all, and the departure's
+        // own price stands - the same distinction ->first() drew before.
+        if (isset($card['price'])) {
+            $departure->price = $card['price']['inr'];
+            $departure->price_usd = $card['price']['usd'];
         }
 
-        $inclusions = Inclusion::join('icon_inclusions', 'inclusions.icon_inclusion_id', '=', 'icon_inclusions.id')
-                       ->where('inclusions.departure_id', $departure->id)
-                       ->whereNotNull('icon_inclusions.icon_old')
-                       ->select('icon_inclusions.name', 'icon_inclusions.icon') // Select name and icon from icon_inclusions
-                       // ->distinct()
-                       ->get()
+        // Signed at render time rather than cached: a signed URL expires.
+        $departure->inclusions = collect($card['inclusions'] ?? [])
             ->map(function ($inc) {
-                $inc->icon = generateSignedUrl("inclusion/" . $inc->icon);
-                return $inc;
+                return (object) [
+                    'name' => $inc['name'],
+                    'icon' => generateSignedUrl('inclusion/' . $inc['icon']),
+                ];
             });
-        $departure->inclusions = $inclusions;
-        $destinationId = DB::table('departure_destinations')
-                            ->where('departure_id', $departure->id)
-                            ->value('destination_id');
 
-                if ($destinationId) {
-                    $countryId = DB::table('destinations')
-                        ->where('id', $destinationId)
-                        ->value('country_id');
-
-                    if ($countryId) {
-                        $countryName = DB::table('countries')
-                            ->where('id', $countryId)
-                            ->value('country_name');
-
-                        $departure->country_name = $countryName ?: null;
-                    } else {
-                        $departure->country_name = null;
-                    }
-                } else {
-                    $departure->country_name = null;
-                }   
+        $departure->country_name = $card['country_name'] ?? null;
     }
 
     private function getRelatedPois($destination_id, $poiId)
     {
-        return DepartureDestinationPointOfInterest::where('destination_id', $destination_id)
+        $pois = DepartureDestinationPointOfInterest::where('destination_id', $destination_id)
             ->where('reference_id', '!=', $poiId)
             ->where('status', 1)
             ->select('destination_id', 'reference_id as poiId', 'poi_name', 'image', 'description')
             ->distinct('destination_id')
             ->get()
-            ->map(function ($poi) use ($destination_id) {
-                $this->processRelatedPoi($poi, $destination_id);
-                return $poi;
-            });
-    }
-    private function processRelatedPoi($poi, $destination_id)
-{
-    // TOTAL ACTIVE DEPARTURES
-    $poi->total_departures = DepartureDestinationPointOfInterest::join(
-            'departures',
-            'departures.id',
-            '=',
-            'departure_destination_point_of_interests.departure_id'
-        )
-        ->where('departure_destination_point_of_interests.reference_id', $poi->poiId)
-        ->where('departures.status', 1)
-        ->count();
+            // One card per attraction. The same POI is linked once per departure
+            // and often carries a different image on each of those rows, so
+            // SELECT DISTINCT sees them as distinct and cannot collapse them.
+            ->unique('poiId')
+            ->values();
 
-    // FEATURED PACKAGE DEPARTURES
-    $poi->featured_departure = DepartureDestinationPointOfInterest::join(
-            'departures',
-            'departures.id',
-            '=',
-            'departure_destination_point_of_interests.departure_id'
-        )
-        ->where('departure_destination_point_of_interests.reference_id', $poi->poiId)
-        ->where('departures.status', 1)
-        ->where('departures.featured', 1)
-        ->where('departures.dep_type', 'package')
-        ->distinct('departures.id')
-        ->count('departures.id');
+        // Counted for the whole set at once (cached per POI) instead of two
+        // queries per POI inside the map below.
+        $counts = poiDepartureCounts($pois->pluck('poiId')->all());
+
+        return $pois->map(function ($poi) use ($counts) {
+            $this->processRelatedPoi($poi, $counts);
+            return $poi;
+        });
+    }
+    private function processRelatedPoi($poi, array $counts)
+{
+    // TOTAL ACTIVE DEPARTURES / FEATURED PACKAGE DEPARTURES
+    $poi->total_departures = $counts[$poi->poiId]['total'] ?? 0;
+    $poi->featured_departure = $counts[$poi->poiId]['featured'] ?? 0;
 
     // POI URL
     $poi->poi_url = $this->generatePoiUrl($poi->poi_name);

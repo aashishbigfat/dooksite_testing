@@ -398,25 +398,14 @@ class DestinationController extends Controller
             ->get();
 
         if (count($pointOfInterest) > 0) {
-            foreach ($pointOfInterest as $key => $value) {
-            
-                $total_departure = DB::table('departure_destination_point_of_interests')
-                    ->where('reference_id', $value->poiId)
-                    ->select('departure_id')
-                    ->get();
+            // Counted for the whole set at once (cached per POI) instead of a
+            // query per POI plus a further query per linked departure inside
+            // the loop below.
+            $poiCounts = poiDepartureCountsUnfiltered($pointOfInterest->pluck('poiId')->all());
 
-                $value->total_departures = count($total_departure);
-                $featured_array = [];
-                foreach ($total_departure as $key => $featured_value) {
-                    $featured_row = DB::table('departures')
-                        ->where('id', $featured_value->departure_id)
-                        ->where('featured', 1)
-                        ->select('id')
-                        ->first();
-                    if ($featured_row) {
-                        array_push($featured_array, $featured_row->id);
-                    }
-                }
+            foreach ($pointOfInterest as $key => $value) {
+
+                $value->total_departures = $poiCounts[$value->poiId]['total'] ?? 0;
 
                 $make_poi_url = str_replace(array('\'', '"', ',', ';', '<', '>', '&', '$', '(', ')', '}', '{', '[', ']', '%', '+', '_', '.', '^', '#', '@', '*', '’'), '', $value->poi_name);
                 $strlower = Str::lower($make_poi_url);
@@ -427,7 +416,7 @@ class DestinationController extends Controller
                 $poi_url = $mainstr;
                 $value->poi_url = $poi_url;
 
-                $value->featured_departure = count($featured_array);
+                $value->featured_departure = $poiCounts[$value->poiId]['featured'] ?? 0;
                 if ($value->image != "" || $value->image != null) {
                     $value->image = generateSignedUrl('poi/' . $value->image);
                 } else {

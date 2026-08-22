@@ -150,6 +150,20 @@ return [
             'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
         ],
 
+        // Connecting costs far more than querying on a hosted Redis: opening a
+        // connection (TCP + AUTH) measured ~430ms against our instance, while
+        // an operation on an already-open connection was ~40ms. Without
+        // 'persistent' every request pays that setup cost and the cache ends up
+        // slower than the queries it replaces, so it is on by default.
+        //
+        // Persistent connections are held per php-fpm worker, and the plan caps
+        // us at 30 clients, so the total worker count across all containers is
+        // the real budget - see docker/www.conf.
+        //
+        // Timeouts are deliberately short: when the client limit is reached the
+        // helpers fall back to the database, and that fallback should happen
+        // immediately rather than after a long stall.
+
         'default' => [
             'url' => env('REDIS_URL'),
             'host' => env('REDIS_HOST', '127.0.0.1'),
@@ -157,6 +171,9 @@ return [
             'password' => env('REDIS_PASSWORD'),
             'port' => env('REDIS_PORT', '6379'),
             'database' => env('REDIS_DB', '0'),
+            'persistent' => env('REDIS_PERSISTENT', true),
+            'timeout' => env('REDIS_TIMEOUT', 2.0),
+            'read_write_timeout' => env('REDIS_READ_TIMEOUT', 2.0),
         ],
 
         'cache' => [
@@ -166,6 +183,9 @@ return [
             'password' => env('REDIS_PASSWORD'),
             'port' => env('REDIS_PORT', '6379'),
             'database' => env('REDIS_CACHE_DB', '1'),
+            'persistent' => env('REDIS_PERSISTENT', true),
+            'timeout' => env('REDIS_TIMEOUT', 2.0),
+            'read_write_timeout' => env('REDIS_READ_TIMEOUT', 2.0),
         ],
 
     ],

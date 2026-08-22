@@ -1,0 +1,40 @@
+# systemd unit that starts the app at boot on the Compute Engine VM.
+#
+# Install:
+#   sudo cp docker/dookwebsite.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now dookwebsite
+#
+# Operate:
+#   sudo systemctl status dookwebsite
+#   sudo systemctl restart dookwebsite
+#   journalctl -u dookwebsite -f
+
+[Unit]
+Description=dookwebsite (nginx + php-fpm container)
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/opt/dookwebsite
+
+# Optional. Only needed once you build images off the VM and pull them from
+# Artifact Registry:
+#   IMAGE=<region>-docker.pkg.dev/<project>/dookwebsite/app:<tag>
+# When absent, docker-compose.prod.yml falls back to the locally built
+# dookwebsite:prod image. The '-' prefix makes a missing file non-fatal.
+EnvironmentFile=-/etc/dookwebsite/deploy.env
+
+# Starts whatever image is already present - it does not build or pull.
+# Deploying a new version is a deliberate step (see the redeploy section of
+# explainers/gcp_hosting_guide.md), not something a reboot does silently.
+ExecStart=/usr/bin/docker compose -f docker-compose.prod.yml up -d --remove-orphans
+ExecStop=/usr/bin/docker compose -f docker-compose.prod.yml down
+
+TimeoutStartSec=600
+
+[Install]
+WantedBy=multi-user.target

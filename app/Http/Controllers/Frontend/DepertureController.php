@@ -350,8 +350,16 @@ class DepertureController extends Controller
         $poi = DepartureDestinationPointOfInterest::where('departure_id', $departure->id)
                     ->where('status', 1)
                     ->distinct()
-                    ->get(['reference_id as poiId', 'poi_name', 'image', 'latitude', 'longitude', 'description']);        
-              $departure->poi = $poi->map(function ($value) {
+                    ->get(['reference_id as poiId', 'poi_name', 'image', 'latitude', 'longitude', 'description'])
+                    // One entry per attraction - duplicate link rows differ by
+                    // image, so SELECT DISTINCT does not collapse them.
+                    ->unique('poiId')
+                    ->values();
+            // Counted for the whole set at once (cached per POI) instead of
+            // two queries per POI inside the map below.
+            $poiCounts = poiDepartureCounts($poi->pluck('poiId')->all());
+
+              $departure->poi = $poi->map(function ($value) use ($poiCounts) {
 
             // Image
             $value->image = $value->image
@@ -361,22 +369,9 @@ class DepertureController extends Controller
             // URL
             $value->poi_url = Str::slug($value->poi_name);
 
-            // TOTAL ACTIVE DEPARTURES
-            $value->total_departures = DB::table('departure_destination_point_of_interests as dpi')
-                ->join('departures as d', 'd.id', '=', 'dpi.departure_id')
-                ->where('dpi.reference_id', $value->poiId)
-                ->where('d.status', 1)
-                ->count();
-
-            // FEATURED PACKAGE DEPARTURES
-            $value->featured_departure = DB::table('departure_destination_point_of_interests as dpi')
-                ->join('departures as d', 'd.id', '=', 'dpi.departure_id')
-                ->where('dpi.reference_id', $value->poiId)
-                ->where('d.status', 1)
-                ->where('d.featured', 1)
-                ->where('d.dep_type', 'package')
-                ->distinct('d.id')
-                ->count('d.id');
+            // TOTAL ACTIVE DEPARTURES / FEATURED PACKAGE DEPARTURES
+            $value->total_departures = $poiCounts[$value->poiId]['total'] ?? 0;
+            $value->featured_departure = $poiCounts[$value->poiId]['featured'] ?? 0;
 
             return $value;
         });

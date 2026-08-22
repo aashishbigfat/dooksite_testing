@@ -1,0 +1,68 @@
+# ------------------------------------------------------------------
+# Build-context excludes for the Docker image (local + Compute Engine).
+# Keeps secrets out of image layers and keeps the build context small.
+# Nothing here changes application behavior - it only controls what
+# gets sent into `docker build`.
+# ------------------------------------------------------------------
+
+.git
+.gitattributes
+.gitignore
+
+# Never let a credential file reach an image layer, even transiently.
+# In production there is no key at all - the VM's attached service account
+# supplies credentials. Locally the key is bind-mounted at runtime (see
+# docker-compose.yml). Either way it must never be baked in.
+application-project-dook-int-9801963164ab.json
+*.json.key
+gcs-key*.json
+service-account*.json
+.env
+.env.*
+!.env.example
+
+# Local tooling / dependency caches - reinstalled inside the image
+node_modules
+vendor
+/public/build
+/public/hot
+
+# Editors / OS junk
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+
+# Docker's own files don't need to be in their own build context
+Dockerfile
+docker-compose*.yml
+.dockerignore
+DOCKER.md
+
+# Test / cache artifacts that shouldn't be baked into the image
+/.phpunit.cache
+.phpunit.result.cache
+/storage/framework/cache/data/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/logs/*
+!/storage/framework/cache/data/.gitignore
+!/storage/framework/sessions/.gitignore
+!/storage/framework/views/.gitignore
+!/storage/logs/.gitignore
+
+# Legacy CodeIgniter sub-app's own runtime/writable data
+/public/book/writable/cache/*
+/public/book/writable/session/*
+/public/book/writable/logs/*
+/public/book/writable/debugbar/*
+/public/book/adminpanel/writable/cache/*
+/public/book/adminpanel/writable/session/*
+/public/book/adminpanel/writable/logs/*
+/public/book/adminpanel/writable/debugbar/*
+/public/book/api/writable/cache/*
+/public/book/api/writable/session/*
+/public/book/api/writable/logs/*
+/public/book/api/writable/apilogs/*
+
+*.zip

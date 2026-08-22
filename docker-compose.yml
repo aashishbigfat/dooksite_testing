@@ -1,0 +1,64 @@
+# Local Docker Desktop test environment. Builds the exact image that gets
+# pushed to Artifact Registry and run on the Compute Engine VM.
+#
+# Two deliberate differences from production, both in .env.docker:
+#
+#   1. GCS authenticates with the bind-mounted JSON key, because there is no
+#      GCE metadata server locally. On the VM that key is absent and the
+#      attached service account provides credentials instead.
+#   2. CACHE_STORE=file, so this does NOT exercise the Redis path. Pointing
+#      local Docker at the shared Redis Cloud instance would eat into its
+#      30-connection budget. Set CACHE_STORE=redis here temporarily if you
+#      specifically need to test caching behaviour.
+#
+# Everything else - the image, the entrypoint, the php-fpm pool - is identical.
+#
+# For the VM, use docker-compose.prod.yml instead.
+#
+# Usage:
+#   docker compose up --build -d
+#   curl http://localhost:8080/up
+#   docker compose logs -f app
+#   docker compose down
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: dookwebsite:local
+    ports:
+      - "8080:80"
+    env_file:
+      - .env.docker
+    volumes:
+      # Same GCS key file the app already uses - bind-mounted read-only
+      # instead of baked into the image, nothing about it is changed.
+      - ./application-project-dook-int-9801963164ab.json:/var/www/html/gcs-key.local.json:ro
+      # Visible on the host for convenience while testing locally.
+      - ./storage/logs:/var/www/html/storage/logs
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1/up"]
+      interval: 30s
+      timeout: 5s
+      start_period: 20s
+      retries: 3
+    restart: unless-stopped
+
+  # One-off test runner (adds phpunit/dev deps on top of the runtime image).
+  # Never built/pushed for deployment - only used via:
+  #   docker compose run --rm test php artisan test
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: test
+    image: dookwebsite:test
+    env_file:
+      - .env.docker
+    environment:
+      APP_ENV: testing
+    volumes:
+      - ./application-project-dook-int-9801963164ab.json:/var/www/html/gcs-key.local.json:ro
+    entrypoint: ["/usr/local/bin/entrypoint.sh"]
+    profiles: ["test"]
