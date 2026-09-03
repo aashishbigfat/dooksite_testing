@@ -1,0 +1,16 @@
+# Runs one VPN/database reachability check. Driven by the .timer of the same
+# name - this unit is not enabled directly.
+#
+# See docker/vpn-healthcheck.sh for why a process-liveness check is not enough.
+
+[Unit]
+Description=Check the database is reachable through the VPN tunnel
+After=openvpn-client@dook.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/vpn-healthcheck
+
+# Override the defaults here rather than editing the script, e.g. if the
+# tunnel interface is not tun0:
+# Environment=DB_HOST=192.168.4.7 DB_PORT=3306 TUN_IF=tun0

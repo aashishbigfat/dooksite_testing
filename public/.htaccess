@@ -141,6 +141,11 @@ RewriteCond %{REQUEST_URI} !\.(css|js|jpg|jpeg|png|gif|webp|svg|woff|woff2|ttf|o
 
 RewriteRule ^ https://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
+# Strip index.php when something follows it (fixes old /index.php/blog/... links)
+
+RewriteCond %{THE_REQUEST} \s/index\.php/(.*)\s [NC]
+RewriteRule ^ /%1 [R=301,L]
+
 # Remove index.php
 
 RewriteCond %{THE_REQUEST} \s/index\.php [NC]

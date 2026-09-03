@@ -1,0 +1,20 @@
+# Checks every minute that the database is still reachable through the tunnel.
+#
+# Install:
+#   sudo systemctl enable --now dookwebsite-vpn-healthcheck.timer
+# Watch:
+#   journalctl -t vpn-healthcheck -f
+#   systemctl list-timers dookwebsite-vpn-healthcheck.timer
+
+[Unit]
+Description=Periodic VPN/database reachability check for dookwebsite
+
+[Timer]
+# First check shortly after boot, once the tunnel has had a chance to come up.
+OnBootSec=2min
+OnUnitActiveSec=1min
+AccuracySec=10s
+Unit=dookwebsite-vpn-healthcheck.service
+
+[Install]
+WantedBy=timers.target

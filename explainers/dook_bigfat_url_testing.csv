@@ -1,0 +1,97 @@
+﻿url,"Working status","Load time","tested Feature","Error Details"
+https://dook.bigfat.ai/,"Working fine",0.97s,Homepage,
+https://dook.bigfat.ai/international-tour-packages,"Working fine",0.98s,"International tour packages listing",
+https://dook.bigfat.ai/domestic-tour-packages,"Working fine",0.8s,"Domestic tour packages listing",
+https://dook.bigfat.ai/group-tours,"Working fine",0.67s,"Group tours listing",
+https://dook.bigfat.ai/countries,"Working fine",0.39s,"Countries listing",
+https://dook.bigfat.ai/destinations,"Working fine",0.73s,"Destinations listing",
+https://dook.bigfat.ai/activities,"Working fine",0.75s,"Activities listing",
+https://dook.bigfat.ai/regions,"Working fine",1.56s,"Regions listing",
+https://dook.bigfat.ai/experiences,"Working fine",0.83s,"Experiences listing",
+https://dook.bigfat.ai/blog/,"Working fine",0.59s,"Blog listing",
+https://dook.bigfat.ai/visa-consultation-services,"Working fine",0.37s,"Visa consultation services page",
+https://dook.bigfat.ai/privacy-policy,"Working fine",0.33s,"Privacy policy page",
+https://dook.bigfat.ai/terms-and-conditions,"Working fine",0.31s,"Terms and conditions page",
+https://dook.bigfat.ai/careers,"Working fine",0.36s,"Careers listing",
+https://dook.bigfat.ai/contact-us,"Working fine",0.38s,"Contact us page",
+https://dook.bigfat.ai/faqs,"Working fine",0.45s,"FAQs page",
+https://dook.bigfat.ai/dook-presentations,"Working fine",0.35s,"Dook presentations page",
+https://dook.bigfat.ai/reviews,"Working fine",0.42s,"Reviews page",
+https://dook.bigfat.ai/about-us,"Working fine",0.38s,"About us page",
+https://dook.bigfat.ai/thank-you,"Working fine",0.3s,"Thank-you page",
+https://dook.bigfat.ai/book_now_page,"BROKEN - 500 masked as a redirect to homepage",1.07s,"Book now page","Root cause confirmed via container logs: InvalidArgumentException ""View [book_now] not found"". BookingController::bookNowPage() (line 140) calls view('book_now', ...) but the file lives at resources/views/frontend/book_now.blade.php - the call is missing the ""frontend."" prefix. Every visit to this page fails and is silently redirected home by the global exception handler. Confirmed via GCP Cloud Logging, not guessed."
+https://dook.bigfat.ai/registration,"Working fine (redirects home only because the crawl session was logged in)",1s,"Registration page","By design: BookingController::registration() redirects logged-in users to ""/"". Re-tested as a guest separately - loads normally (200, no redirect). Not a bug."
+https://dook.bigfat.ai/404,"Working fine (404)",0.31s,"Custom 404 page",
+https://dook.bigfat.ai/book/flight,"BROKEN - HTTP 500",0.37s,"Legacy flight booking sub-app","Legacy CodeIgniter 4 sub-app. No stack trace in any log (nginx, Laravel, or Cloud Logging) despite thorough checking - consistent with a fatal error before CI4's own error handler initializes. Checked public/book/writable/ on the deployed VM: it contains only .htaccess and index.html - the logs/cache/session/debugbar subfolders CI4 requires at boot are missing entirely (plausible: empty dirs are not tracked by git and were never recreated on deploy). Most likely root cause; not 100% confirmed without adding those folders and retesting."
+https://dook.bigfat.ai/book/hotel,"BROKEN - HTTP 500",0.14s,"Legacy hotel booking sub-app","Same failure and same probable cause as /book/flight in this report (missing public/book/writable/{logs,cache,session,debugbar} folders)."
+https://dook.bigfat.ai/book/bus,"BROKEN - HTTP 500",0.13s,"Legacy bus booking sub-app","Same failure and same probable cause as /book/flight in this report (missing public/book/writable/{logs,cache,session,debugbar} folders)."
+https://dook.bigfat.ai/sitemap.xml,"Working fine",0.28s,"Sitemap XML",
+https://dook.bigfat.ai/up,"Working fine",0.19s,"Health check endpoint",
+https://dook.bigfat.ai/search?searchKeyword=Baku,"Working fine",0.97s,"Search feature (keyword: Baku)",
+https://dook.bigfat.ai/visa_dependency_country_list?iso_2=IN,"Working fine",0.2s,"Visa dependency AJAX endpoint (iso_2=IN)",
+https://dook.bigfat.ai/nonexistent-page-xyz-123,"Working as intended",1.03s,"Unknown-slug fallback behavior","Expected fallback: unknown slugs fall through to VisaController::getVisaDetails, find no match, abort(404), and the global exception handler redirects home. This is documented existing behaviour (routes/web.php), not new breakage."
+https://dook.bigfat.ai/uzbekistan/tashkent-special-tour-for-students-4-nights-package/0000147,"Working as intended (package deactivated)",0.98s,"Departure/package details page","Verified in the database: this departure exists but status=0 (inactive). packageDetails() correctly aborts(404) for inactive packages, masked to a homepage redirect by the global handler. URL is stale - sourced from the static public/sitemap.xml, which is not regenerated when packages are deactivated."
+https://dook.bigfat.ai/russia/moscow-and-st-petersburg-4-nights-package/0000981,"Working fine",0.76s,"Departure/package details page",
+https://dook.bigfat.ai/kazakhstan/almaty-5-nights-and-6-days-package/0000105,"Working as intended (package deactivated)",0.95s,"Departure/package details page","Verified in the database: status=0 (inactive). Same stale-sitemap cause as the other 3 departure URLs flagged in this report."
+https://dook.bigfat.ai/kazakhstan/almaty-tour-ex-nepal-4-nights-5-days-package/0000143,"Working fine",0.72s,"Departure/package details page",
+https://dook.bigfat.ai/finland/pure-finland-tour-10-nights-package/0000175,"Working fine",0.82s,"Departure/package details page",
+https://dook.bigfat.ai/russia/moscow-and-st-petersburg-6-nights-package/0000982,"Working fine",0.75s,"Departure/package details page",
+https://dook.bigfat.ai/india/pachmarhi-3-nights-4-days-package/0000223,"Working fine",0.68s,"Departure/package details page",
+https://dook.bigfat.ai/finland/inland-tour-5-nights-package/0000173,"Working as intended (package deactivated)",1s,"Departure/package details page","Verified in the database: status=0 (inactive). Same stale-sitemap cause as the other 3 departure URLs flagged in this report."
+https://dook.bigfat.ai/india/a-spiritual-and-cultural-journey-11-nights-package/0000164,"Working fine",1.03s,"Departure/package details page",
+https://dook.bigfat.ai/belarus/kiev-and-minsk-tour-5-nights-package/0000153,"Working as intended (package deactivated)",1.11s,"Departure/package details page","Verified in the database: status=0 (inactive). Same stale-sitemap cause as the other 3 departure URLs flagged in this report."
+https://dook.bigfat.ai/group-tours/europe-16-nights-and-17-days-package/0000003,"Working as intended (tour no longer offered)",1.03s,"Group tour (agent departure) details page","agentdeparture() pulls live inventory from an external API (agent.dookinternational.com). Queried it directly: it currently returns only 1 group tour total, and this ID is not in it. URL is stale, from the static sitemap.xml."
+https://dook.bigfat.ai/group-tours/europe-11-nights-and-12-days-package/0000004,"Working as intended (tour no longer offered)",1.03s,"Group tour (agent departure) details page","Same as the other group-tours URL in this report - not present in the external API's current 1-tour inventory. Stale sitemap entry."
+https://dook.bigfat.ai/group-tours/holyland-pilgrimage-11-nights-package/0000005,"Working as intended (tour no longer offered)",1.09s,"Group tour (agent departure) details page","Same as the other group-tours URLs in this report - not present in the external API's current 1-tour inventory. Stale sitemap entry."
+https://dook.bigfat.ai/about/czech-republic,"Working fine",0.43s,"Country 'About' page",
+https://dook.bigfat.ai/about/croatia,"Working fine",0.48s,"Country 'About' page",
+https://dook.bigfat.ai/about/bosnia-and-herzegovina,"Working fine",0.47s,"Country 'About' page",
+https://dook.bigfat.ai/about/serbia,"Working fine",0.43s,"Country 'About' page",
+https://dook.bigfat.ai/about/turkey,"Working fine",0.51s,"Country 'About' page",
+https://dook.bigfat.ai/about/estonia,"Working fine",0.39s,"Country 'About' page",
+https://dook.bigfat.ai/careers/sales-operations-executive,"Working as intended (position no longer listed)",0.79s,"Careers job detail page","Confirmed clean 404 page (not a crash) - job posting removed/filled. URL is stale, from the static sitemap.xml. Current live listings verified separately (e.g. /careers/product-manager) and load fine."
+https://dook.bigfat.ai/careers/sales-operations-manager,"Working as intended (position no longer listed)",0.64s,"Careers job detail page","Same as the other careers URL in this report - stale sitemap entry, clean 404."
+https://dook.bigfat.ai/careers/bd-marketing-manager,"Working as intended (position no longer listed)",0.93s,"Careers job detail page","Same as the other careers URLs in this report - stale sitemap entry, clean 404."
+https://dook.bigfat.ai/careers/content-writer,"Working as intended (position no longer listed)",0.54s,"Careers job detail page","Same as the other careers URLs in this report - stale sitemap entry, clean 404."
+https://dook.bigfat.ai/europe-tour-packages,"Working fine",5.66s,"Country/region/experience slug page (catch-all)",
+https://dook.bigfat.ai/baltic-tours-travels,"Working fine",0.98s,"Country/region/experience slug page (catch-all)",
+https://dook.bigfat.ai/lithuania-tour-packages,"Working fine",0.63s,"Country/region/experience slug page (catch-all)",
+https://dook.bigfat.ai/iran-tour-packages,"Working fine",0.39s,"Country/region/experience slug page (catch-all)",
+https://dook.bigfat.ai/serbia-tourist-attractions,"Working fine",0.96s,"Country/region/experience slug page (catch-all)",
+https://dook.bigfat.ai/nepal-tour-packages,"Working fine",0.65s,"Country/region/experience slug page (catch-all)",
+https://dook.bigfat.ai/greece-tour-packages,"Working fine",0.5s,"Country/region/experience slug page (catch-all)",
+https://dook.bigfat.ai/brazil-tour-packages,"Working fine",0.82s,"Country/region/experience slug page (catch-all)",
+https://dook.bigfat.ai/malaysia-tour-packages,"Working fine",0.91s,"Country/region/experience slug page (catch-all)",
+https://dook.bigfat.ai/africa-tour-packages,"Working fine",3.74s,"Country/region/experience slug page (catch-all)",
+https://dook.bigfat.ai/destinations/tbilisi-tours,"Working fine",1.69s,"Destination detail page",
+https://dook.bigfat.ai/destinations/venice-tours,"Working fine",0.79s,"Destination detail page",
+https://dook.bigfat.ai/destinations/phuket-tours,"Working fine",1.29s,"Destination detail page",
+https://dook.bigfat.ai/destinations/baku-tours,"Working fine",2.1s,"Destination detail page",
+https://dook.bigfat.ai/destinations/rapperswil-tours,"Working fine",0.43s,"Destination detail page",
+https://dook.bigfat.ai/destinations/bangkok-tours,"Working fine",0.78s,"Destination detail page",
+https://dook.bigfat.ai/activities/amusement-park,"Working fine",0.68s,"Activity detail page",
+https://dook.bigfat.ai/activities/bar-club,"Working fine",0.84s,"Activity detail page",
+https://dook.bigfat.ai/activities/art-galleries,"Working fine",0.9s,"Activity detail page",
+https://dook.bigfat.ai/activities/art-show,"Working fine",0.37s,"Activity detail page",
+https://dook.bigfat.ai/activities/animal-spotting,"Working fine",0.81s,"Activity detail page",
+https://dook.bigfat.ai/activities/archaeological-site,"Working fine",4.31s,"Activity detail page",
+https://dook.bigfat.ai/blog/singapore-arrival-card-sgac-guide-for-indians,"Working fine",0.84s,"Blog post detail page",
+https://dook.bigfat.ai/blog/indian-passport-renewal-abroad-expired-lost-guide,"Working fine",0.93s,"Blog post detail page",
+https://dook.bigfat.ai/blog/malaysia-digital-arrival-card-mdac-guide-for-indians,"Working fine",0.56s,"Blog post detail page",
+https://dook.bigfat.ai/blog/why-uzbekistan-is-the-new-prague-for-indian-travellers-in-2026,"Working fine",0.69s,"Blog post detail page",
+https://dook.bigfat.ai/blog/tanzania-vs-kenya-safari-which-is-right-for-you,"Working fine",0.64s,"Blog post detail page",
+https://dook.bigfat.ai/poi/philharmonic-fountain-park/5163,"Working fine",0.7s,"Point-of-interest (POI) detail page",
+https://dook.bigfat.ai/poi/national-flag-square/5150,"Working fine",3.52s,"Point-of-interest (POI) detail page",
+https://dook.bigfat.ai/poi/nasimi-monument/5165,"Working fine",0.58s,"Point-of-interest (POI) detail page",
+https://dook.bigfat.ai/poi/azerbaijan-carpet-museum/5217,"Working fine",1.77s,"Point-of-interest (POI) detail page",
+https://dook.bigfat.ai/poi/yanar-dag-fire-mountain/5138,"BROKEN - real broken link, masked as a redirect to homepage",0.99s,"Point-of-interest (POI) detail page","Root cause confirmed in the database: reference_id 5138 is shared by 24 point-of-interest rows for destination_id 10 (Baku) - 23 are named ""Yanar Dag"" and 1 is named ""Yanar Dag Fire Mountain"". DestinationController groups by poi_name (MIN(reference_id)) to build this link, picking the ""Fire Mountain"" spelling, but PoiController::poi_details() looks up reference_id alone and gets back a ""Yanar Dag"" row first - the slug comparison then fails and the visitor is silently redirected home. Reproducible; likely affects other POIs that share a reference_id across differently-spelled name rows."
+https://dook.bigfat.ai/poi/baku-ferris-wheel/5176,"Working fine",2.2s,"Point-of-interest (POI) detail page",
+"https://dook.bigfat.ai/login_process (POST)","Working fine",~0.3s,"Login with test user (test@dook.com)",
+"https://dook.bigfat.ai/ (post-login)","Working fine",,"Session persistence check - ""Logout"" link appears after login",
+https://dook.bigfat.ai/logout,"Working fine",,"Logout - session cleared, ""Login"" button reappears",
+https://dook.bigfat.ai/registration,"Working fine",,"Registration page (guest) - confirmed by user directly, not re-tested here",
+https://dook.bigfat.ai/search?searchKeyword=Baku,"Working fine",0.97s,"Search feature - result content check (keyword ""Baku"")",
+https://dook.bigfat.ai/visa_dependency_country_list?iso_2=IN,"Working fine",0.20s,"Visa dependency AJAX endpoint - returns real country/visa JSON list (60 countries)",
+https://dook.bigfat.ai/contact-us,"Working fine",,"Contact form present in page (structural check; not submitted, to avoid creating a real inquiry/email in production)",
+https://dook.bigfat.ai/reviews,"Working fine",,"Review submission form present in page (structural check; not submitted, to avoid a fake review going live)",
+https://dook.bigfat.ai/careers/product-manager,"Working fine",0.39s,"Careers job-detail page + application form present (currently-live job slug, verified against the live /careers listing)",

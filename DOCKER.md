@@ -1,7 +1,21 @@
 # Dockerizing dookwebsite for Google Cloud Platform
 
 A container image for the existing Laravel app, deployed to a **Compute
-Engine VM inside the same VPC as Cloud SQL**.
+Engine VM**.
+
+> **For the actual deployment, follow
+> [`explainers/gcp_hosting_guide.md`](explainers/gcp_hosting_guide.md), not
+> the VM/network steps in this file.**
+>
+> This document was written assuming the VM could sit in the same VPC as
+> Cloud SQL and reach `192.168.4.7` by a private route. That turned out to be
+> wrong: `192.168.4.7` is reachable only through an **OpenVPN tunnel** to
+> `34.100.210.26`, in a GCP project this account cannot administer. The
+> deployment therefore runs an OpenVPN client on the VM. The hosting guide
+> has the corrected architecture and evidence.
+>
+> Everything else here — the image, entrypoint, php-fpm pool, GCS
+> credentials, the `route:cache` warning — is unaffected and still accurate.
 
 **No application source file was changed to containerize this.** Every file
 listed below is new (`Dockerfile`, `docker-compose.yml`,
@@ -16,7 +30,7 @@ of this app point the other way:
 
 | Constraint | On a VM | On Cloud Run |
 |---|---|---|
-| Cloud SQL over private IP `192.168.4.7` | Direct — the VM is in the VPC | Needs Direct VPC egress or a connector |
+| Cloud SQL at `192.168.4.7` (behind a VPN) | A host OpenVPN client serves every container | A VPN client per instance — impractical |
 | `SESSION_DRIVER=file` | Works — one instance | Users logged out at random as requests hit different instances |
 | Redis plan caps at **30 client connections** | One bounded php-fpm pool fits easily | Autoscaling multiplies connections past the cap |
 
@@ -59,10 +73,13 @@ through to ADC. Verified against the pinned `google/auth v1.46.0`.
 | `docker/www.conf` | php-fpm pool sized against the Redis 30-connection budget. `clear_env = no` here is load-bearing — see below |
 | `docker/supervisord.conf` | Runs nginx + php-fpm in one container, both logging to stdout/stderr |
 | `docker/entrypoint.sh` | Startup: clears stale `bootstrap/cache/*.php`, `package:discover`, checks GCS credentials, then `config:cache` + `view:cache` |
-| `docker/dookwebsite.service` | systemd unit — starts the container at boot, pulls before restarting |
+| `docker/dookwebsite.service` | systemd unit — starts the container at boot, ordered after the VPN tunnel |
+| `docker/openvpn-client-override.conf` | Drop-in giving the tunnel `Restart=always` |
+| `docker/vpn-healthcheck.sh` | Proves the database is reachable *through* the tunnel; restarts it if not |
+| `docker/dookwebsite-vpn-healthcheck.{service,timer}` | Runs that check every minute |
 | `docker/env.gcp.example` | Template for `/etc/dookwebsite/app.env` on the VM. Safe to commit; the filled-in copy is not |
 | `docker-compose.yml` | Local Docker Desktop run: builds the image, publishes 8080, bind-mounts the GCS key |
-| `docker-compose.prod.yml` | On the VM: pulls a tagged image, port 80, no key mounted, logs to Cloud Logging |
+| `docker-compose.prod.yml` | On the VM: builds locally, or pulls a tagged image when `IMAGE` is set; port 80, no key mounted, logs to Cloud Logging |
 | `.dockerignore` | Keeps `.env`, credential JSON, `vendor/`, `node_modules/`, `.git` out of image layers |
 
 ### Two settings that look cosmetic and are not
@@ -188,11 +205,12 @@ docker build --platform linux/amd64 -t $IMAGE .
 docker push $IMAGE
 ```
 
-### 5. Create the VM in the VPC
+### 5. Create the VM
 
-Same VPC as Cloud SQL, so `DB_HOST=192.168.4.7` keeps working unchanged.
-No external IP if a load balancer fronts it; add Cloud NAT for egress
-(the app calls the Agent Connect and blog APIs outbound).
+> **Superseded — see `explainers/gcp_hosting_guide.md` Phase 2.** The VPC
+> choice below assumes a private route to Cloud SQL that does not exist.
+> The VM needs no particular network, needs `--can-ip-forward`, and reaches
+> the database over an OpenVPN tunnel it runs itself.
 
 ```bash
 gcloud compute instances create dookwebsite \
@@ -323,9 +341,9 @@ sudo systemctl restart dookwebsite
 # Roll back: point deploy.env at the previous tag and restart.
 ```
 
-The systemd unit pulls before restarting, so a bad tag or an expired
-registry credential fails at `ExecStartPre` and leaves the running
-container alone.
+The systemd unit only starts what is already present — it does not build or
+pull, so a reboot never silently changes the running version. Deploying is a
+deliberate `pull`/`build` followed by a restart.
 
 ### Database migrations
 

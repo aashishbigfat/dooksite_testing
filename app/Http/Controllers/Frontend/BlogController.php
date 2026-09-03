@@ -42,7 +42,7 @@ public function blog(Request $request)
         $data_string = json_encode($post);
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://blog.dookinternational.com/api/blog-search');
+        curl_setopt($ch, CURLOPT_URL, 'http://127.0.0.1:8001/api/blog-search');
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
@@ -56,7 +56,7 @@ public function blog(Request $request)
             'Accept: application/json',
         ]);
     } else {
-        $post_urls = "https://blog.dookinternational.com/api/all-posts?page=" . $current_page;
+        $post_urls = "http://127.0.0.1:8001/api/all-posts?page=" . $current_page;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $post_urls);
         curl_setopt($ch, CURLOPT_HTTPGET, true);
@@ -107,7 +107,7 @@ public function blog(Request $request)
     {
         $cacheKey = 'blog_details_' . $slug;
         $posts = Cache::remember($cacheKey, 60, function() use ($slug) {
-            $response = Http::post('https://blog.dookinternational.com/api/post_details', [
+            $response = Http::post('http://127.0.0.1:8001/api/post_details', [
                 'slug' => $slug
             ]);
             if ($response->successful()) {
@@ -132,7 +132,7 @@ public function blog(Request $request)
         );
         $data_string = json_encode($post);                                                                                
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://blog.dookinternational.com/api/category/posts');
+        curl_setopt($ch, CURLOPT_URL, 'http://127.0.0.1:8001/api/category/posts');
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST"); 
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);  

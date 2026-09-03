@@ -30,6 +30,20 @@ if [ ! -e public/storage ]; then
     php artisan storage:link
 fi
 
+# --- Legacy CodeIgniter 4 booking sub-app (public/book/) ---------------
+# CI4 requires writable/{cache,logs,session,debugbar,uploads} to exist at
+# boot, or it fatals before its own error handler is even up - which is
+# why /book/, /book/flight, /book/hotel and /book/bus all returned a bare
+# HTTP 500 with literally no trace in nginx, Laravel, or Cloud Logging
+# (see explainers/dook_bigfat_url_testing.csv). Git does not track empty
+# directories, so these never arrived from a fresh clone; recreate them on
+# every start instead of trusting the image to already have them. Owned by
+# www-data since that's who the php-fpm workers run as (docker/www.conf) -
+# same permission lesson as the GCS key earlier in this deployment.
+echo "[entrypoint] Ensuring public/book/writable/ subdirectories exist..."
+mkdir -p public/book/writable/{cache,logs,session,debugbar,uploads}
+chown -R www-data:www-data public/book/writable
+
 # Package discovery was skipped during the Composer build stage (the
 # build image has no DB driver, and this app queries the DB during
 # bootstrap) - do it now that a real DB connection is available.

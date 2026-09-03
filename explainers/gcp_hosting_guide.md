@@ -7,195 +7,133 @@ open in a browser and check by hand.
 
 | # | Constraint | How |
 |---|---|---|
-| 1 | Code stays on GitHub | The VM clones `Bigfat-AI-Labs/dookwebsite` and builds there. No image registry needed. |
-| 2 | Database unchanged | The VM is placed in the **same VPC** as Cloud SQL, so `DB_HOST=192.168.4.7` keeps working exactly as it does now. Nothing about the database changes. |
+| 1 | Code stays on GitHub | The VM clones `aashishbigfat/dooksite_testing` and builds there. No image registry needed. |
+| 2 | Database unchanged | The VM runs an **OpenVPN client** to the same tunnel your laptop uses, so `DB_HOST=192.168.4.7` keeps working exactly as it does now. Nothing about the database changes. |
 | 3 | Must use Docker | One container (nginx + php-fpm), built from the `Dockerfile` in this repo. |
 | 4 | Default URL, not the custom domain | You browse `http://<VM_EXTERNAL_IP>`. DNS is untouched, the live site keeps serving, and you switch over only when you're satisfied. |
 
-## What you end up with
+## How the database is reached — read this first
+
+`192.168.4.7` is **not** a private IP your VM's network can route to. It sits
+behind an OpenVPN tunnel, in a GCP project this account cannot administer.
+Established by investigation, not assumption:
+
+| Finding | Evidence |
+|---|---|
+| `192.168.4.0/24` goes through an **OpenVPN tunnel**, not a VPC route | `Find-NetRoute 192.168.4.7` → next hop `172.27.232.1` on the OpenVPN TAP adapter |
+| The tunnel ends on a **GCE VM** | Profile says `remote 34.100.210.26`; PTR is `26.210.100.34.bc.googleusercontent.com` |
+| That project is **not administrable** by `aashish@bigfatailabs.com` | `gcloud sql instances list --project application-project-dook-int` → "client is not authorized" |
+| The deployment project is separate | `dook-website-506316` is a fresh project; the database's VPC is not reachable from it |
+| The profile is **split tunnel** | No `redirect-gateway` — only pushed routes use the VPN |
+
+> **VPC Peering is not a workaround.** Cloud SQL private IPs live behind
+> Google's Private Service Access network, and VPC peering is not transitive.
+> Peering `dook-website-506316` to the database's VPC still would not reach
+> `192.168.4.7`. Don't spend a day on it.
+
+So the VM does what your laptop does: **runs an OpenVPN client**. The tunnel
+lives on the VM host, and Docker containers reach the database through
+ordinary NAT — the application needs no VPN awareness and `DB_HOST` is
+unchanged.
 
 ```mermaid
 flowchart LR
     U["You, in a browser<br/>http://VM_EXTERNAL_IP"] --> VM
-    subgraph VPC["Your VPC"]
-        VM["Compute Engine VM<br/>Docker: nginx + php-fpm"]
-        SQL[("Cloud SQL<br/>192.168.4.7<br/><b>unchanged</b>")]
-        VM -->|private IP| SQL
+    subgraph GCP["dook-website-506316"]
+        VM["Compute Engine VM<br/>host: OpenVPN client<br/>Docker: nginx + php-fpm"]
     end
-    VM -->|egress| R["Redis Cloud"]
-    VM -->|metadata| GCS["Cloud Storage<br/>gs://dooktravels"]
-    GH["GitHub<br/>Bigfat-AI-Labs/dookwebsite"] -.->|git clone| VM
+    VM -->|"tun0 · 192.168.4.0/24 only"| AS["OpenVPN server<br/>34.100.210.26"]
+    AS --> SQL[("Cloud SQL 192.168.4.7<br/><b>unchanged</b><br/>other GCP project")]
+    VM -->|normal egress| R["Redis Cloud"]
+    VM -->|normal egress| GCS["Cloud Storage<br/>gs://dooktravels"]
+    GH["GitHub<br/>aashishbigfat/dooksite_testing"] -.->|git clone| VM
 ```
+
+Split tunnel is what makes this practical: only `192.168.4.0/24` crosses the
+VPN, so GitHub, Redis Cloud and Cloud Storage keep using the VM's normal
+internet path.
+
+**The trade-off you are accepting:** the tunnel becomes a hard dependency. If
+it drops, the app cannot reach the database — and because `bootstrap/app.php`
+turns every exception into a 302 to the homepage, that outage *looks like a
+working redirect*. Phase 5 installs a healthcheck precisely because nothing
+else will tell you.
 
 The live site on the custom domain is **not touched at any point** in this
 guide.
 
 ---
 
-# Phase 0 — Push the code to GitHub
+# Phase 0 — Confirm the code on GitHub
 
-**Nothing from the recent work is committed yet.** The VM clones from
-GitHub, so if you skip this it will build the old code without the Docker
-setup, the query fixes, or the index migrations.
+**Already done.** Verified against
+`https://github.com/aashishbigfat/dooksite_testing` on branch `main`:
 
-Check what is outstanding:
+| Check | Result |
+|---|---|
+| `Dockerfile`, `docker-compose.prod.yml`, `docker/*` present | ✅ |
+| `docker/entrypoint.sh` — `route:cache` appears only in comments, live commands are `config:cache` + `view:cache` | ✅ |
+| `app/Http/Helper/Helper.php` contains `departureCardData` (the query fixes) | ✅ |
+| Index migrations `2026_08_22_000001` / `000003` present | ✅ |
+| `.env`, `.env.docker`, `application-project-dook-int-*.json` | ✅ absent — correct |
 
-```bash
-git status --short
-```
+Nothing to do here. If you push further changes, re-check that last row —
+the repo is public.
 
-You should see the Docker files, three migrations, `explainers/`, and
-modified controllers plus `Helper.php`.
-
-```bash
-git checkout -b gcp-deploy
-
-git add Dockerfile docker-compose.yml docker-compose.prod.yml .dockerignore \
-        docker/ DOCKER.md explainers/ \
-        database/migrations/2026_08_22_*.php \
-        app/ config/database.php composer.json composer.lock
-
-git commit -m "Docker setup for GCP, query optimisation, index migrations"
-git push -u origin gcp-deploy
-```
-
-> **Check before you push:** `git status` must not show `.env`,
-> `.env.docker`, or `application-project-dook-int-*.json`. All three are in
-> `.gitignore` and must stay out of the repo. Confirm with
-> `git ls-files | grep -E "^\.env|\.json$" | grep -v composer` — it should
-> return nothing but `package.json`-style files.
-
-Secrets reach the VM separately, in Phase 4.
+Secrets never go in the repo; they reach the VM separately, in Phase 4.4.
 
 ---
 
-# Phase 1 — GCP project setup
+# Phases 1–3 — GCP setup ✅ ALREADY DONE
 
-Set your values once:
+These were executed on 2026-08-22. Recorded here for reference; you do not
+need to run them again.
 
-```bash
-export PROJECT=<your-project-id>
-export REGION=<region>        # same region as Cloud SQL
-export ZONE=<region>-a
-gcloud config set project $PROJECT
-```
+| Resource | Value |
+|---|---|
+| Project | `dook-website-506316` (project number `691168319637`) |
+| Billing | enabled, account `010DB1-CF1341-2E10F7` |
+| Your role | `roles/editor` |
+| APIs enabled | `compute`, `iamcredentials`, `logging` |
+| VM | `dookwebsite`, `e2-standard-2`, Debian 12, 50 GB pd-balanced |
+| Zone | `asia-south1-a` (same region as the VPN server) |
+| **External IP** | **`34.93.38.228`** ← this is your "default URL" |
+| Internal IP | `10.160.0.2` |
+| Service account | `691168319637-compute@developer.gserviceaccount.com` (default, has `roles/editor`) |
+| Firewall | `allow-dookwebsite-http-testing` — tcp:80 from `223.181.33.202/32` only |
 
-### 1.1 Find the VPC your Cloud SQL instance is on
+The VM was created with `--can-ip-forward` (needed for the VPN tunnel) and
+`--scopes cloud-platform`.
 
-The VM must join this network or the private IP will not resolve.
+### Why there is no custom service account
 
-```bash
-gcloud sql instances list
-gcloud sql instances describe <INSTANCE_NAME> \
-    --format="value(settings.ipConfiguration.privateNetwork, ipAddresses[].ipAddress, region)"
-```
+The plan called for one with `storage.objectViewer` and
+`iam.serviceAccountTokenCreator`. That turned out to be impossible **and
+unnecessary**:
 
-Note the network name (e.g. `projects/<PROJECT>/global/networks/default`)
-and confirm the private IP shown is `192.168.4.7`.
+- **Impossible:** `gs://dooktravels` belongs to `application-project-dook-int`.
+  `gcloud storage buckets describe gs://dooktravels` → *"does not have
+  storage.buckets.get access"*. You cannot grant a new service account
+  access to a bucket you cannot administer. And a signed URL is validated
+  against the **signer's** permissions, so such an account would produce
+  URLs that return 403.
+- **Unnecessary:** the default Compute Engine service account already holds
+  `roles/editor`, which covers writing logs — and `roles/editor` cannot
+  grant IAM roles anyway, so the bindings would have failed.
 
-```bash
-export VPC=<network-name>
-export SUBNET=<subnet-in-that-region>
-```
+**So Cloud Storage uses the existing JSON key** (Phase 4.5), which already
+has the right permissions on that bucket. To move to the cleaner model
+later, ask whoever administers `application-project-dook-int` for
+`roles/storage.objectViewer` on the bucket plus
+`roles/iam.serviceAccountTokenCreator` on the service account itself, then
+drop `GOOGLE_CLOUD_KEY_FILE` from the env file.
 
-### 1.2 Enable APIs
-
-```bash
-gcloud services enable compute.googleapis.com \
-    iamcredentials.googleapis.com \
-    logging.googleapis.com
-```
-
-`iamcredentials` is **not optional** — it is what signs Cloud Storage URLs.
-
-### 1.3 Service account for the VM
-
-```bash
-gcloud iam service-accounts create dookwebsite-vm --display-name "dookwebsite VM"
-export SA=dookwebsite-vm@$PROJECT.iam.gserviceaccount.com
-```
-
-```bash
-# Read the images bucket.
-#
-# Note the bucket name: GOOGLE_CLOUD_STORAGE_BUCKET is "dooktravels/com",
-# which is not a legal bucket name - buckets cannot contain '/'. It works
-# because the client concatenates it into the object path, so the real
-# bucket is "dooktravels" and "com" is a folder inside it. Verified from a
-# generated signed URL: storage.googleapis.com/dooktravels/com/poi/...
-gcloud storage buckets add-iam-policy-binding gs://dooktravels \
-    --member "serviceAccount:$SA" --role roles/storage.objectViewer
-
-# Sign URLs as itself.
-gcloud iam service-accounts add-iam-policy-binding $SA \
-    --member "serviceAccount:$SA" --role roles/iam.serviceAccountTokenCreator
-
-# Write container logs to Cloud Logging.
-gcloud projects add-iam-policy-binding $PROJECT \
-    --member "serviceAccount:$SA" --role roles/logging.logWriter
-```
-
-> **The `serviceAccountTokenCreator` binding is the one that breaks things
-> silently if you skip it.** Signing a URL without a private key goes
-> through the IAM Credentials API. Without this role `signedUrl()` throws,
-> `generateSignedUrl()` catches the exception and returns `null`, and
-> **every image on the site renders blank with nothing in any log.**
-> Step 6.4 tests for exactly this.
-
----
-
-# Phase 2 — Create the VM
+### Connect to the VM
 
 ```bash
-gcloud compute instances create dookwebsite \
-    --zone $ZONE \
-    --machine-type e2-standard-2 \
-    --image-family debian-12 --image-project debian-cloud \
-    --boot-disk-size 50GB --boot-disk-type pd-balanced \
-    --network $VPC --subnet $SUBNET \
-    --service-account $SA \
-    --scopes https://www.googleapis.com/auth/cloud-platform \
-    --tags dookwebsite-http
+gcloud config set project dook-website-506316
+gcloud compute ssh dookwebsite --zone asia-south1-a
 ```
-
-Three things here matter:
-
-- **`--network $VPC`** — this is what makes `192.168.4.7` reachable. Get it
-  wrong and every page 500s on a database connection error.
-- **`--scopes cloud-platform`** — the default scopes are too narrow for the
-  Storage and IAM calls that sign image URLs.
-- **An external IP is assigned by default.** You need it (that's your
-  "default URL"), and it also gives the VM outbound internet access for
-  the Agent Connect API, the blog API and Redis Cloud.
-
-Get the address you will browse:
-
-```bash
-gcloud compute instances describe dookwebsite --zone $ZONE \
-    --format="get(networkInterfaces[0].accessConfigs[0].natIP)"
-```
-
-Call it `VM_IP` from here on.
-
----
-
-# Phase 3 — Firewall
-
-While verifying, open port 80 to yourself only. Do not open it to the world
-for a site that isn't checked yet.
-
-```bash
-MY_IP=$(curl -s https://ifconfig.me)
-
-gcloud compute firewall-rules create allow-dookwebsite-http-testing \
-    --network $VPC --allow tcp:80 \
-    --source-ranges $MY_IP/32 \
-    --target-tags dookwebsite-http \
-    --description "Temporary: office/home IP only while verifying"
-```
-
-If your connection has a changing IP, re-run with the new address rather
-than widening the range. Broaden it only when you go live.
 
 ---
 
@@ -205,7 +143,117 @@ than widening the range. Broaden it only when you go live.
 gcloud compute ssh dookwebsite --zone $ZONE
 ```
 
-### 4.1 Docker
+### 4.1 The VPN tunnel — do this before anything else
+
+Nothing downstream works until `192.168.4.7` is reachable. The app queries
+the database during startup (`artisan package:discover` in the entrypoint
+resolves a DB query in this codebase), so the container cannot even boot
+without it.
+
+```bash
+sudo apt-get update && sudo apt-get install -y openvpn netcat-openbsd
+```
+
+**Get the profile onto the VM.** Either download a fresh one from the
+OpenVPN Access Server web UI using your URL/username/password, or copy the
+one from this laptop at
+`%APPDATA%\OpenVPN Connect\profiles\bundled.ovpn`. It must land at
+`/etc/openvpn/client/dook.conf` — `openvpn-client@dook` derives that path
+from the unit name, and the `.conf` extension is required.
+
+```bash
+sudo install -d -m 700 /etc/openvpn/client
+sudo nano /etc/openvpn/client/dook.conf     # paste the profile
+sudo chmod 600 /etc/openvpn/client/dook.conf
+```
+
+**Handle authentication.** The profile carries an inline client certificate
+*and* an `auth-user-pass` directive, so it also wants a username and
+password. Left as-is, OpenVPN prompts on the console and the service never
+starts. There are two ways to fix that.
+
+**Preferred — an autologin profile.** The server at `34.100.210.26` is
+OpenVPN **Access Server** (its web root redirects to `/__session_start__`).
+Access Server can issue a profile for a user with *Allow Auto-login* set,
+which embeds everything needed and prompts for nothing — no password on
+disk at all. In the Admin UI:
+
+> User Permissions → add `dookwebsite-vm` → tick **Allow Auto-login** → Save
+> → download that user's **autologin** profile.
+
+Use that as `/etc/openvpn/client/dook.conf` and skip the rest of this step.
+It is both simpler and safer than the fallback below.
+
+**Fallback — a stored credentials file**, if you can't get an autologin
+profile:
+
+Type the password into an editor, not the command line — a heredoc or an
+`echo` puts your VPN password in the shell history and in the process list.
+
+```bash
+sudo install -m 600 /dev/null /etc/openvpn/client/dook.auth
+sudo nano /etc/openvpn/client/dook.auth
+#   line 1: the VPN username
+#   line 2: the VPN password
+#   nothing else - no blank third line
+
+# Point the directive at that file.
+sudo sed -i 's|^auth-user-pass$|auth-user-pass /etc/openvpn/client/dook.auth|' \
+    /etc/openvpn/client/dook.conf
+grep '^auth-user-pass' /etc/openvpn/client/dook.conf   # confirm it now has the path
+```
+
+**Start it, and make it restart on its own:**
+
+```bash
+sudo systemctl enable --now openvpn-client@dook
+
+sudo mkdir -p /etc/systemd/system/openvpn-client@dook.service.d
+sudo cp /opt/dookwebsite/docker/openvpn-client-override.conf \
+        /etc/systemd/system/openvpn-client@dook.service.d/override.conf
+sudo systemctl daemon-reload
+sudo systemctl restart openvpn-client@dook
+```
+
+*(If you haven't cloned the repo yet, do Phase 4.3 first and come back for
+the override — it is a two-line file.)*
+
+**Verify all four before continuing. Do not skip ahead if any fail:**
+
+```bash
+systemctl is-active openvpn-client@dook     # active
+ip addr show tun0                           # interface exists, has an IP
+ip route get 192.168.4.7                    # MUST say "dev tun0"
+nc -vz 192.168.4.7 3306                     # succeeded
+```
+
+`ip route get` is the one people skip and regret. The tunnel can be up while
+the route was never pushed, in which case database traffic leaves via the
+default gateway and vanishes.
+
+**Check for a subnet clash** — Docker's bridge is `172.17.0.0/16` and the VPN
+client pool is around `172.27.232.0/2x`. No overlap today, but confirm:
+
+```bash
+ip route | grep -E "172\.(1[6-9]|2[0-9])\."
+```
+
+> **Use a separate VPN account for the server — don't share yours.**
+> Access Server defaults to one concurrent session per user (`duplicate_cn`
+> off), so a shared account means the VM and your laptop disconnect each
+> other. That shows up as a flapping tunnel in
+> `journalctl -u openvpn-client@dook -f`.
+>
+> Even where multiple sessions are permitted, a dedicated account is worth
+> it: it can be revoked without touching your access, it survives your
+> password changing, your personal credentials never sit on a server, and
+> the server's sessions are distinguishable in the AS logs.
+>
+> If your URL/username/password are **admin** credentials you can create the
+> account yourself at `https://34.100.210.26/admin`. If not, ask whoever
+> administers it for a `dookwebsite-vm` user with auto-login enabled.
+
+### 4.2 Docker
 
 ```bash
 curl -fsSL https://get.docker.com | sudo sh
@@ -216,26 +264,30 @@ exit
 Reconnect so the group membership applies, then `docker ps` should work
 without `sudo`.
 
-### 4.2 Clone from GitHub
+### 4.3 Clone from GitHub
 
-For a private repo, create a read-only deploy key on the VM:
-
-```bash
-ssh-keygen -t ed25519 -C "dookwebsite-vm" -f ~/.ssh/id_ed25519 -N ""
-cat ~/.ssh/id_ed25519.pub
-```
-
-Add that public key at **GitHub → repo → Settings → Deploy keys → Add deploy
-key**, leaving "Allow write access" **unchecked**.
+`aashishbigfat/dooksite_testing` is a **public** repo, so no deploy key or
+token is needed — a plain HTTPS clone works:
 
 ```bash
 sudo mkdir -p /opt/dookwebsite
 sudo chown $USER:$USER /opt/dookwebsite
-git clone -b gcp-deploy git@github.com:Bigfat-AI-Labs/dookwebsite.git /opt/dookwebsite
+git clone https://github.com/aashishbigfat/dooksite_testing.git /opt/dookwebsite
 cd /opt/dookwebsite
 ```
 
-### 4.3 Environment file
+> **Because the repo is public, never commit `.env`, `.env.docker` or the
+> Google Cloud key JSON to it.** Verified on the current `main`: all three
+> are absent and only `.env.example` is present, which is correct. Keep it
+> that way — a leaked service-account key or database password in a public
+> repo is exploitable within minutes.
+>
+> If you later make the repo private, switch to a read-only **deploy key**:
+> `ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N ""`, add the `.pub` under
+> repo → Settings → Deploy keys with write access **unchecked**, and clone
+> via `git@github.com:...` instead.
+
+### 4.4 Environment file
 
 `.env` is gitignored, so it is not in the clone — this is deliberate.
 
@@ -252,10 +304,10 @@ and will cause silent, confusing failures if you get them wrong:**
 
 | Setting | Value now | Why |
 |---|---|---|
-| `APP_URL` | `http://VM_IP` | Every absolute link and asset URL is built from this. Set to the custom domain and your test page loads the **live site's** CSS/JS. |
-| `ASSET_URL` | `http://VM_IP` | Same. |
+| `APP_URL` | `http://34.93.38.228` | Every absolute link and asset URL is built from this. Set to the custom domain and your test page loads the **live site's** CSS/JS. |
+| `ASSET_URL` | `http://34.93.38.228` | Same. |
 | `SESSION_DOMAIN` | *(empty)* | A cookie scoped to `.dooktravels.com` is **not set at all** when the host is an IP. Login and booking appear broken with no error anywhere. |
-| `GOOGLE_CLOUD_KEY_FILE` | *(absent — do not add it)* | Leaving it unset makes the app fall through to the VM's service account. Pointing it at a non-existent path blanks every image. |
+| `GOOGLE_CLOUD_KEY_FILE` | `/etc/dookwebsite/gcs-key.json` | Must point at the JSON key you upload in 4.4a. The bucket is in another project, so the VM's own service account cannot be used. A wrong path blanks every image. |
 
 Generate an app key if you are not reusing the existing one:
 
@@ -269,6 +321,48 @@ Log directory owned by the container's `www-data` (uid 33):
 sudo mkdir -p /var/lib/dookwebsite/storage-logs
 sudo chown -R 33:33 /var/lib/dookwebsite/storage-logs
 ```
+
+### 4.5 Google Cloud Storage key
+
+Every image on the site is served through a signed URL, and signing needs
+credentials with read access to `gs://dooktravels`. That bucket is in
+`application-project-dook-int`, which this account cannot administer — so
+the VM's own service account cannot be granted access, and the existing JSON
+key is used instead.
+
+From **your laptop** (PowerShell), copy the key that already works:
+
+```powershell
+gcloud compute scp `
+  "$HOME\Desktop\dooksite\dookwebsite\application-project-dook-int-9801963164ab.json" `
+  dookwebsite:~/gcs-key.json --zone asia-south1-a
+```
+
+Then on the VM:
+
+```bash
+sudo mv ~/gcs-key.json /etc/dookwebsite/gcs-key.json
+# Owned by www-data (uid 33 on Debian, matching the container), not root.
+# php-fpm's MASTER process runs as root, but the WORKER processes that
+# actually handle requests run as www-data (docker/www.conf). A root-owned
+# key is unreadable to them - confirmed by hitting this exact bug during
+# deployment: every page that renders an image logged
+# "file_get_contents(...gcs-key.json): Permission denied" and 302'd to the
+# homepage (via bootstrap/app.php's catch-all), while `docker compose exec`
+# tests still passed because exec runs as root and could read it anyway.
+sudo chown 33:33 /etc/dookwebsite/gcs-key.json
+sudo chmod 400 /etc/dookwebsite/gcs-key.json
+```
+
+`docker-compose.prod.yml` mounts it read-only at the same path inside the
+container, matching `GOOGLE_CLOUD_KEY_FILE` in the env file. It is excluded
+by `.dockerignore` and `.gitignore`, so it never reaches an image layer or
+the public repo — keep it that way.
+
+> This is the one place this deployment holds a long-lived private key. It is
+> a consequence of not administering the bucket's project, not a preference.
+> Step 6.5 verifies it works; the note in Phases 1–3 explains how to remove
+> the need for it.
 
 ---
 
@@ -287,17 +381,17 @@ Watch the entrypoint output. This is the expected shape:
 [entrypoint] Clearing stale bootstrap caches copied in from the host...
 [entrypoint] Linking storage (idempotent)...
 [entrypoint] Discovering packages...
-[entrypoint] GCS auth: Application Default Credentials as dookwebsite-vm@...
-[entrypoint]           (that account needs roles/iam.serviceAccountTokenCreator on itself to sign URLs)
+[entrypoint] GCS auth: key file at /etc/dookwebsite/gcs-key.json
 [entrypoint] Caching config/views...
 [entrypoint] Ready. Starting: /usr/bin/supervisord ...
 ```
 
 Two things to read carefully:
 
-- **`GCS auth: Application Default Credentials as ...`** — if you instead
-  see `WARNING: no GOOGLE_CLOUD_KEY_FILE and no GCE metadata server
-  reachable`, images will not render. Check `--scopes` on the VM.
+- **`GCS auth: key file at /etc/dookwebsite/gcs-key.json`** — if you instead
+  see `WARNING: GOOGLE_CLOUD_KEY_FILE is set ... but that path is not
+  readable`, the key did not get uploaded (Phase 4.5) or the mount is
+  missing, and every image will be blank.
 - **`Caching config/views`** — *not* "config/routes/views". `route:cache` is
   deliberately absent; see the warning at the end of this guide.
 
@@ -308,6 +402,39 @@ sudo cp docker/dookwebsite.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable --now dookwebsite
 sudo systemctl status dookwebsite
+```
+
+The unit declares `Requires=` and `After=openvpn-client@dook.service`, so on
+every reboot the tunnel comes up before the container tries to reach the
+database.
+
+### 5.1 Tunnel monitoring — not optional
+
+systemd only knows whether the openvpn *process* is alive. A tunnel can be up,
+the interface present and the process healthy, while no traffic passes — a
+stale session after a server restart, a revoked seat, a route that was never
+pushed. systemd is satisfied; your site is down.
+
+And it is down invisibly: the app can't reach the database, Laravel throws,
+and `bootstrap/app.php` turns that into a 302 to the homepage. **The site
+looks like it is working.** This timer is what notices.
+
+```bash
+sudo install -m 755 docker/vpn-healthcheck.sh /usr/local/bin/vpn-healthcheck
+sudo cp docker/dookwebsite-vpn-healthcheck.service \
+        docker/dookwebsite-vpn-healthcheck.timer /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now dookwebsite-vpn-healthcheck.timer
+```
+
+It checks every minute that `tun0` exists, that `192.168.4.7` still routes
+through it, and that port 3306 actually answers — restarting the tunnel if
+not, and logging either way.
+
+```bash
+systemctl list-timers dookwebsite-vpn-healthcheck.timer
+journalctl -t vpn-healthcheck -f
+sudo /usr/local/bin/vpn-healthcheck && echo "healthy"   # run once by hand
 ```
 
 ---
@@ -330,17 +457,29 @@ $DC ps                        # State should be "running (healthy)"
 curl -fsS http://localhost/up # 200
 ```
 
-### 6.2 Cloud SQL over the private IP — unchanged
+### 6.2 The tunnel, from the host
+
+```bash
+systemctl is-active openvpn-client@dook   # active
+ip route get 192.168.4.7                  # dev tun0
+nc -vz 192.168.4.7 3306                   # succeeded
+```
+
+### 6.3 The database, from inside the container — the decisive test
 
 ```bash
 $DC exec app php artisan tinker --execute="echo DB::table('destinations')->count();"
 ```
 
-A number means the VPC placement is right. A connection error means the VM
-is on the wrong network — fix Phase 2 rather than changing anything about
-the database.
+A number proves the whole approach works: traffic left the container, was
+NAT'd by the host, crossed the tunnel and reached Cloud SQL. **This is the
+step that validates the architecture** — 6.2 only proves the host can do it.
 
-### 6.3 Redis
+A connection error here while 6.2 passes means Docker's NAT isn't reaching
+`tun0`. Check for a subnet clash (`ip route | grep 172.`) rather than
+changing anything about the database.
+
+### 6.4 Redis
 
 ```bash
 $DC exec app php artisan tinker --execute="Cache::put('probe',1,10); var_dump(Cache::get('probe'));"
@@ -349,7 +488,7 @@ $DC exec app php artisan tinker --execute="Cache::put('probe',1,10); var_dump(Ca
 Expect `int(1)`. `NULL` means the cache is not reachable — the site still
 works (it falls back to the database) but slower.
 
-### 6.4 Signed image URLs — the silent failure
+### 6.5 Signed image URLs — the silent failure
 
 ```bash
 $DC exec app php artisan tinker --execute="var_dump(generateSignedUrl('poi/sample.jpg'));"
@@ -359,28 +498,28 @@ A long `https://storage.googleapis.com/dooktravels/com/...` URL means it
 works. **`NULL` means the `roles/iam.serviceAccountTokenCreator` binding
 from step 1.3 is missing** and every image on the site will be blank.
 
-### 6.5 Routing is not frozen
+### 6.6 Routing is not frozen
 
 ```bash
 $DC exec app ls bootstrap/cache/      # must NOT contain routes-v7.php
 $DC exec app php artisan route:list --path="{slug}"
 ```
 
-### 6.6 Pages, in a real browser
+### 6.7 Pages, in a real browser
 
-Open `http://VM_IP` and click through. Check each of these and confirm
+Open `http://34.93.38.228` and click through. Check each of these and confirm
 **images actually appear**, not just that the page returns 200:
 
 | Page | URL | What to confirm |
 |---|---|---|
-| Homepage | `http://VM_IP/` | Layout, mega menu, images |
-| POI detail | `http://VM_IP/poi/presidential-residence/4` | Package cards, "N Tours" counts, inclusion icons |
-| Attraction slug | `http://VM_IP/adventure-tours` | 200, correct content — **not** visa content |
-| Destination | `http://VM_IP/destinations/almaty-tours` | Loads without bouncing to the homepage |
+| Homepage | `http://34.93.38.228/` | Layout, mega menu, images |
+| POI detail | `http://34.93.38.228/poi/presidential-residence/4` | Package cards, "N Tours" counts, inclusion icons |
+| Attraction slug | `http://34.93.38.228/adventure-tours` | 200, correct content — **not** visa content |
+| Destination | `http://34.93.38.228/destinations/almaty-tours` | Loads without bouncing to the homepage |
 | Package detail | any tour card | Price, inclusions, itinerary |
 | Search | site search | Results render |
 | Booking / login | the booking flow | **Sessions persist** — this is what `SESSION_DOMAIN=` empty is for |
-| Static assets | view page source | CSS/JS URLs point at `VM_IP`, not the live domain |
+| Static assets | view page source | CSS/JS URLs point at `34.93.38.228`, not the live domain |
 
 > **A 302 to the homepage is how this app reports *every* crash.**
 > `bootstrap/app.php` renders all exceptions as a redirect, so a broken page
@@ -391,7 +530,27 @@ Open `http://VM_IP` and click through. Check each of these and confirm
 > $DC exec app tail -50 storage/logs/laravel-$(date +%Y-%m-%d).log
 > ```
 
-### 6.7 Compare against the live site
+### 6.8 Break the tunnel on purpose
+
+Do this once, deliberately, so you know what an outage looks like *before*
+it happens unplanned at 2am.
+
+```bash
+sudo systemctl stop openvpn-client@dook
+curl -sI http://localhost/ | head -1        # expect 302, NOT an error
+journalctl -t vpn-healthcheck -f            # within a minute: UNHEALTHY, restarting
+```
+
+Two things to take away. First, a dead database presents as a **302 to the
+homepage** — the site looks alive. Second, the healthcheck should restart the
+tunnel and log `RECOVERED` on its own. If it doesn't, fix that now, because
+this is the failure mode you are most likely to actually hit.
+
+```bash
+sudo systemctl start openvpn-client@dook    # if it hasn't already recovered
+```
+
+### 6.9 Compare against the live site
 
 Open the same pages on the current production site side by side. You are
 looking for missing images, missing prices, and differences in the package
@@ -429,7 +588,7 @@ site up too.
 
 ```bash
 # On your machine
-git push origin gcp-deploy
+git push origin main
 
 # On the VM
 cd /opt/dookwebsite
@@ -450,6 +609,66 @@ docker compose -f docker-compose.prod.yml up -d
 Once you are past manual verification, move builds off the VM: push images
 to Artifact Registry and set `IMAGE=` in `/etc/dookwebsite/deploy.env`.
 `docker-compose.prod.yml` already supports that; see `DOCKER.md`.
+
+---
+
+# HTTPS on the verification domain ✅ DONE (2026-08-24)
+
+The site is reachable at **`https://dook.bigfat.ai`** with a real,
+browser-trusted certificate. This is a **separate verification domain**,
+not `dooktravels.com` — it doesn't touch the live site or its DNS, and
+exists purely so testers get a normal padlock instead of a bare-IP
+"Not Secure" warning while this deployment is being checked by hand.
+
+**Why a domain was required at all:** no public certificate authority —
+not Let's Encrypt, not Google's own managed certs — will issue a trusted
+certificate for a bare IP address. `dook.bigfat.ai` already existed as a
+subdomain of a domain the team controls and was pointed at `34.93.38.228`,
+which sidestepped needing a throwaway free domain.
+
+**Approach taken: Option A — TLS terminated by the container's own nginx**,
+not a separate host-level proxy. This means Laravel sees genuine HTTPS
+requests directly and needs **no `TrustProxies` change** — the trade-off
+noted for Option B below does not apply here.
+
+### What changed
+
+| File | Change |
+|---|---|
+| `docker/nginx.conf` | Added an ACME-challenge location (`^~ /.well-known/acme-challenge/`), a `443 ssl` server block for `dook.bigfat.ai` with the cert paths, `fastcgi_param HTTPS on;` in both PHP locations (see below), and a port-80 redirect to the fixed HTTPS domain — not `https://$host`, because that would send bare-IP visitors to a hostname the certificate doesn't cover |
+| `docker-compose.prod.yml` | Publishes `443:443`; mounts `/etc/letsencrypt` and a certbot webroot directory, both read-only |
+| `/etc/dookwebsite/app.env` (VM only) | `APP_URL` / `ASSET_URL` → `https://dook.bigfat.ai` |
+| Firewall `allow-dookwebsite-http-testing` | Widened from a single IP to `0.0.0.0/0` on ports 80 and 443 — required both for Let's Encrypt's validation servers to reach the ACME challenge and for any tester to reach the site at all |
+
+**The `fastcgi_param HTTPS on;` line matters more than it looks.** nginx
+does not automatically tell PHP a connection was encrypted. Without it,
+`$request->secure()` reports `false` even on a genuinely HTTPS connection —
+confirmed by checking asset URLs on the live homepage before and after
+updating `app.env`: 46 `http://` references dropped to 1 (a `schema.org`
+JSON-LD namespace string, not a loaded resource — expected and harmless).
+
+### Certificate lifecycle
+
+Issued via Certbot on the VM **host** (not inside the container) using
+HTTP-01 webroot validation — `certbot certonly --webroot`. Renewal is
+handled by Debian's own `certbot.timer` (runs twice daily, checks
+expiry, only actually renews within 30 days of expiry). A deploy-hook at
+`/etc/letsencrypt/renewal-hooks/deploy/reload-dookwebsite-nginx.sh` runs
+`docker compose exec app nginx -s reload` after each renewal — necessary
+because the container's already-running nginx process won't notice new
+certificate files on its own, only the bind-mounted directory changing.
+
+Verified with `certbot renew --dry-run` against the staging CA.
+
+**Gotcha hit while testing this:** the SSH client's own local `timeout`
+killing a `gcloud compute ssh` connection does **not** kill the remote
+process — a certbot run cut off this way kept running server-side and held
+the lock, making the *next* attempt fail with "Another instance of Certbot
+is already running." If you see that error, check `ps aux | grep certbot`
+on the VM for a genuinely orphaned process before assuming something is
+broken.
+
+Certificate: `CN=dook.bigfat.ai`, issued 2026-08-24, expires 2026-11-22.
 
 ---
 
@@ -498,6 +717,25 @@ this deployment that means a misconfiguration looks like a working
 redirect. Read the logs, don't trust the status code. Fixing this is the
 single highest-value change you can make to this codebase.
 
+**The VPN tunnel is a single point of failure, and it fails silently.**
+Combined with the item above, a dropped tunnel means every page 302s to the
+homepage with nothing in the application log. `dookwebsite-vpn-healthcheck.timer`
+exists solely to notice this. If you take one thing from this guide, take
+that: `journalctl -t vpn-healthcheck` is where you look first when the site
+behaves oddly.
+
+**Watch for VPN session limits.** OpenVPN Access Server commonly permits one
+concurrent session per user. If the VM and your laptop share an account they
+will disconnect each other, which shows up as a flapping tunnel in
+`journalctl -u openvpn-client@dook`. Request a dedicated VPN account for the
+server.
+
+**This is a workaround, not the destination.** Running a client VPN on a
+server exists because this account cannot administer the project holding the
+database. The durable fix is a VM inside that project's VPC, where
+`192.168.4.7` is simply routable and none of this machinery is needed. Worth
+revisiting before the custom-domain cutover.
+
 **`/book` (the legacy CodeIgniter sub-app) returns 500.** Its
 `app/Config/Database.php` has blank credentials and `hostname => localhost`.
 Pre-existing, unrelated to Docker, configured separately in production.
@@ -511,12 +749,34 @@ environment. Changing it to `yes` blanks every Cloud Storage URL.
 
 # Verification status of this guide
 
-- **Verified on the dev machine:** the image builds cleanly from this
-  `Dockerfile`; the container starts and the entrypoint's credential
-  detection reports the correct path; `route:cache` freezing `/{slug}` was
-  reproduced and then cleared; the real bucket name was confirmed from a
-  generated signed URL.
-- **Not verified:** every `gcloud` command here. There is no GCP project
-  access from the dev machine, so Phases 1–5 are written from the documented
-  behaviour of those services and have not been executed. **Phase 6 is the
-  real acceptance test** — treat it as such rather than a formality.
+**Verified on the dev machine (Docker):** the image builds cleanly from this
+`Dockerfile`; the container starts and the entrypoint's credential detection
+reports the correct path; `route:cache` freezing `/{slug}` was reproduced and
+then cleared; the real bucket name was confirmed from a generated signed URL.
+
+**Verified for the VPN architecture:**
+
+- `192.168.4.7` routes over the OpenVPN TAP adapter, next hop
+  `172.27.232.1` — it is not a VPC route
+- the profile's `remote` is `34.100.210.26`, whose PTR is
+  `26.210.100.34.bc.googleusercontent.com` — a GCE VM
+- `aashish@bigfatailabs.com` is denied `sql.instances.list`,
+  `compute.networks.list` and `compute.subnetworks.list` on
+  `application-project-dook-int`
+- the original `dooksite` project had no billing; deployment moved to
+  `dook-website-506316`, where billing is enabled and the account holds
+  `roles/editor`
+- the profile is split-tunnel (no `redirect-gateway`) and carries an inline
+  client certificate *plus* an `auth-user-pass` directive
+
+**Verified on GitHub:** `main` contains the Docker setup, both index
+migrations and the query fixes, with no `.env` or credential JSON present.
+
+**Not verified — nothing has been created on GCP yet.** Every `gcloud`
+command in Phases 1–3, and the entire VPN-on-VM setup in Phase 4.1, are
+written from documented behaviour and have **not** been executed. In
+particular, whether Docker's NAT reaches `tun0` is argued from how bridge
+networking works, not observed.
+
+**Phase 6 is the real acceptance test, and 6.3 is the one that matters** —
+it is what proves the architecture rather than merely the configuration.

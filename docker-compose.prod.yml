@@ -31,22 +31,58 @@ services:
       target: runtime
     image: ${IMAGE:-dookwebsite:prod}
 
-    # Host port 80 -> container port 80. Reached directly by the VM's
-    # external IP while verifying. When a Google Cloud HTTP(S) Load
-    # Balancer is put in front later, keep 80 here and terminate TLS there;
-    # see the TLS section of DOCKER.md.
+    # 80 for the ACME challenge and the http->https redirect; 443 for the
+    # site itself. TLS is terminated by THIS container's own nginx (not a
+    # separate host proxy or load balancer) - see docker/nginx.conf.
     ports:
       - "80:80"
+      - "443:443"
 
     # Real env vars, never baked into the image. Copy docker/env.gcp.example
     # to this path on the VM and fill it in.
     env_file:
       - /etc/dookwebsite/app.env
 
-    # Laravel logs and the legacy CodeIgniter sub-app's writable dirs, kept
-    # on the host so they survive a container replacement.
     volumes:
+      # Laravel logs, kept on the host so they survive a container replacement.
       - /var/lib/dookwebsite/storage-logs:/var/www/html/storage/logs
+      # Google Cloud Storage credentials, read-only, never baked into the
+      # image. Required rather than optional here: gs://dooktravels lives in
+      # a project this account cannot administer, so the VM's own service
+      # account cannot be granted access to it and signed URLs would 403.
+      # Path must match GOOGLE_CLOUD_KEY_FILE in /etc/dookwebsite/app.env.
+      #
+      # Must be owned by uid 33 (www-data) on the host, NOT root. php-fpm's
+      # master process runs as root but its WORKERS - the ones that actually
+      # handle requests - run as www-data (docker/www.conf). A root-owned
+      # file is unreadable to them. Hit this exact bug during deployment:
+      # `docker compose exec` (runs as root) could read a root-owned key and
+      # falsely passed, while every real page that rendered an image logged
+      # "Permission denied" and 302'd to the homepage.
+      - /etc/dookwebsite/gcs-key.json:/etc/dookwebsite/gcs-key.json:ro
+      # Let's Encrypt challenge files. certbot (on the host) writes here;
+      # nginx's acme-challenge location (docker/nginx.conf) serves them.
+      # Read-only in the container - only certbot on the host writes to it.
+      - /var/lib/dookwebsite/certbot-webroot:/var/www/certbot:ro
+      # The certificate + key themselves, read-only. nginx's MASTER process
+      # (root) reads these at startup/reload - not the www-data WORKERS - so
+      # the usual private-key permission problem does not apply here the way
+      # it did for the GCS key; no special chown needed.
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      # DB credentials for the legacy CodeIgniter 4 booking sub-app
+      # (public/book/). Its own Config/Database.php ships with blank
+      # placeholder values and is overridden at runtime by a CI4-format
+      # .env - a file that (like GOOGLE credentials) never belongs in git
+      # or the image. Points at the SAME Cloud SQL instance/credentials as
+      # the main app's DB_* vars above. Must be owned by uid 33 (www-data)
+      # - same reason as the GCS key.
+      #
+      # Mount path is public/book/APP/.env, NOT public/book/.env. CI4's
+      # own Boot::loadDotEnv() calls `new DotEnv($paths->appDirectory)`,
+      # i.e. it reads from the app/ subdirectory, not the CI4 project
+      # root most CI4 docs/examples assume. Got this wrong once already -
+      # confirmed by reading Boot.php directly, not guessed.
+      - /etc/dookwebsite/book.env:/var/www/html/public/book/app/.env:ro
 
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://127.0.0.1/up"]

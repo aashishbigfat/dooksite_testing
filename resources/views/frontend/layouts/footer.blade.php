@@ -488,6 +488,8 @@
                       </div>
                     <!-- Modal Body -->
                     <div class="modal-body">                    
+                         {{-- LOGIN FORM TEMPORARILY DISABLED FOR MAINTENANCE (commented out 2026-09-01, not deleted) --}}
+                         {{--
                          <form class="aa-login-form" id="frmLogin">
                             <div class="input-group mb-4">
                                 <span class="input-group-text">
@@ -506,20 +508,24 @@
                             </div>
                             <div class="d-flex justify-content-between mb-3">
                                 <div class="form-check">
-                                    <input type="checkbox" id="rememberme" name="rememberme" {{$is_remember}}> 
+                                    <input type="checkbox" id="rememberme" name="rememberme" {{$is_remember}}>
                                     <label class="form-check-label" for="rememberMe">Remember me</label>
                                       <div id="login_msg"></div>
                                 </div>
                                <button onclick="forgot_password()" class="form-check-label btn btn-sucess" for="rememberMe" style="color: black;">Forgot
                                     Password?</button>
                             </div>
-                            <button type="submit" class="btn btn-danger w-100"  id="btnLogin">Login</button>                  
+                            <button type="submit" class="btn btn-danger w-100"  id="btnLogin">Login</button>
 
-                                 <div class="text-center mt-4">                               
+                                 <div class="text-center mt-4">
                                 Don't have an account? <a href="{{url('registration')}}" class="text-danger"><b>Register now!</b></a>
                                  </div>
                         @csrf
                         </form>
+                        --}}
+                        <div class="text-center py-5">
+                            <p class="text-dark mb-0" style="font-size: 18px;">Our Website is currently under maintenance. For any enquiry or assistance, please drop us an email at sales@dooktravels.com or call us at +91 83685 13675.</p>
+                        </div>
                         </div>                   
                     </div>              
                       <div id="popup_forgot" style="display:none;">

@@ -16,6 +16,27 @@ Requires=docker.service
 After=docker.service network-online.target
 Wants=network-online.target
 
+# The database is only reachable through the VPN tunnel, and this app talks
+# to the database during startup - docker/entrypoint.sh runs
+# `artisan package:discover`, which this codebase resolves with a DB query.
+# Starting the container before the tunnel is up makes that fail.
+#
+# Deliberately Wants=, not Requires=. Requires= was tried first and is
+# WRONG here: it doesn't just order startup, it also STOPS this unit
+# whenever openvpn-client@dook stops - including a routine `systemctl
+# restart`, which is exactly what dookwebsite-vpn-healthcheck.timer does to
+# recover a stalled tunnel. That combination would take the whole site down
+# on every recovery and never bring it back (Requires= propagates stops,
+# not restarts). Confirmed by reproducing it: stopping the tunnel for a
+# deliberate failure test cascaded into killing the running container.
+#
+# Wants=+After= keeps the original intent - try to have the tunnel up
+# before this starts - without coupling this unit's continued liveness to
+# the tunnel's. A dropped tunnel now degrades individual requests (DB calls
+# fail, existing fallbacks handle it) instead of taking nginx down with it.
+Wants=openvpn-client@dook.service
+After=openvpn-client@dook.service
+
 [Service]
 Type=oneshot
 RemainAfterExit=yes
