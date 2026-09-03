@@ -144,13 +144,30 @@ jobs:
       # `sudo env` rather than plain sudo because sudo drops the variable.
       - name: Deploy
         run: |
+          # Log docker in AS ROOT on the VM, using the deploy account's own
+          # short-lived access token. Two reasons this beats running
+          # `gcloud auth configure-docker` on the VM:
+          #
+          #   1. compose runs under sudo, so docker reads
+          #      /root/.docker/config.json - NOT the ssh user's ~/.docker,
+          #      which is where configure-docker writes. That mismatch is
+          #      what produced "Unauthenticated request" on the first run
+          #      even though the image had pushed fine.
+          #   2. it needs no artifactregistry.reader on the VM's own service
+          #      account, and no cloud-platform scope - and scopes can only
+          #      be changed by stopping the instance.
+          #
+          # The token lasts ~1h and is masked out of the run log.
+          TOKEN="$(gcloud auth print-access-token)"
+          echo "::add-mask::$TOKEN"
           gcloud compute ssh "$VM_NAME" --zone="$ZONE" --project="$PROJECT_ID" --quiet --command="
             set -euo pipefail
+            echo '$TOKEN' | sudo docker login -u oauth2accesstoken --password-stdin https://${REGION}-docker.pkg.dev
             cd /opt/dookwebsite
-            gcloud auth configure-docker ${REGION}-docker.pkg.dev --quiet
             sudo env IMAGE='${{ steps.img.outputs.ref }}' docker compose -f docker-compose.prod.yml pull
             sudo env IMAGE='${{ steps.img.outputs.ref }}' docker compose -f docker-compose.prod.yml up -d --remove-orphans
             sudo docker image prune -f
+            sudo docker logout https://${REGION}-docker.pkg.dev
           "
 
       # Checked from inside the VM against 127.0.0.1, so this reports on the
