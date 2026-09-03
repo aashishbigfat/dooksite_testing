@@ -1,0 +1,176 @@
+# Build the image in CI, push it to Artifact Registry, and have the VM pull it.
+#
+# Deliberately NOT the old flow (git pull + docker build on the VM). Building a
+# ~2 GB image on the production box competes with the running site for CPU and
+# disk, and leaves the VM's git tree as a second source of truth - which is
+# exactly how the previous server ended up with 9 uncommitted changes that
+# existed nowhere else and died with the disk.
+#
+# Auth is keyless: Workload Identity Federation, no service-account JSON in the
+# repo. This repo is public, so a long-lived key here would be a standing
+# liability. The provider is pinned to this repository by an attribute
+# condition on the GCP side.
+#
+# Manual trigger to start. Flip on the `push` block once a run has gone green -
+# you do not want the first-ever build of this image to be discovered by an
+# automatic deploy.
+
+name: Deploy to GCP
+
+on:
+  workflow_dispatch:
+    inputs:
+      sync_env:
+        description: "Rewrite /etc/dookwebsite/* on the VM from GitHub secrets"
+        type: boolean
+        default: true
+  # push:
+  #   branches: [main]
+
+# id-token: write is what lets GitHub mint the OIDC token WIF exchanges for
+# GCP credentials. Without it the auth step fails with no obvious cause.
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  PROJECT_ID: dook-website-506316
+  REGION: asia-south1
+  ZONE: asia-south1-a
+  VM_NAME: dookwebsite
+  AR_REPO: dookwebsite
+  IMAGE_NAME: app
+
+# One deploy at a time. Two concurrent runs would race on the VM's compose
+# state and could leave it running an image neither run intended.
+concurrency:
+  group: deploy-gcp
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud (keyless)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.WIF_PROVIDER }}
+          service_account: ${{ vars.WIF_SERVICE_ACCOUNT }}
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Resolve image tag
+        id: img
+        run: |
+          echo "ref=${REGION}-docker.pkg.dev/${PROJECT_ID}/${AR_REPO}/${IMAGE_NAME}:${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker "${REGION}-docker.pkg.dev" --quiet
+
+      # target=runtime skips the `test` stage in the Dockerfile; the vendor
+      # stage still runs because runtime copies from it.
+      - name: Build image
+        run: docker build --target runtime -t "${{ steps.img.outputs.ref }}" .
+
+      - name: Push image
+        run: docker push "${{ steps.img.outputs.ref }}"
+
+      # Idempotent: safe on a fresh Debian VM and on every deploy after.
+      # Docker is not preinstalled on the Debian images, and the compose file
+      # bind-mounts host paths that must exist before the container starts.
+      - name: Prepare the VM
+        run: |
+          gcloud compute ssh "$VM_NAME" --zone="$ZONE" --project="$PROJECT_ID" --quiet --command='
+            set -euo pipefail
+            if ! command -v docker >/dev/null 2>&1; then
+              echo "installing docker"
+              curl -fsSL https://get.docker.com | sudo sh
+            fi
+            sudo mkdir -p /opt/dookwebsite \
+                          /etc/dookwebsite \
+                          /var/lib/dookwebsite/storage-logs \
+                          /var/lib/dookwebsite/certbot-webroot
+            sudo chown -R 33:33 /var/lib/dookwebsite/storage-logs
+          '
+
+      - name: Upload compose file
+        run: |
+          gcloud compute scp docker-compose.prod.yml \
+            "${VM_NAME}:/tmp/docker-compose.prod.yml" \
+            --zone="$ZONE" --project="$PROJECT_ID" --quiet
+          gcloud compute ssh "$VM_NAME" --zone="$ZONE" --project="$PROJECT_ID" --quiet \
+            --command='sudo mv /tmp/docker-compose.prod.yml /opt/dookwebsite/docker-compose.prod.yml'
+
+      # Secrets are written to runner-local files and copied, rather than
+      # interpolated into an ssh command string - values contain quotes, $ and
+      # newlines that do not survive nested shell quoting intact.
+      #
+      # Ownership is not cosmetic: php-fpm WORKERS run as www-data (uid 33,
+      # docker/www.conf) while the master runs as root. A root-owned gcs-key
+      # reads fine over `docker exec` and fails silently in every real request.
+      - name: Sync env files and credentials
+        if: ${{ inputs.sync_env }}
+        env:
+          APP_ENV_FILE: ${{ secrets.APP_ENV_FILE }}
+          BOOK_ENV_FILE: ${{ secrets.BOOK_ENV_FILE }}
+          GCS_KEY_JSON: ${{ secrets.GCS_KEY_JSON }}
+        run: |
+          umask 077
+          printf '%s' "$APP_ENV_FILE"  > app.env
+          printf '%s' "$BOOK_ENV_FILE" > book.env
+          printf '%s' "$GCS_KEY_JSON"  > gcs-key.json
+
+          for f in app.env book.env gcs-key.json; do
+            gcloud compute scp "$f" "${VM_NAME}:/tmp/$f" \
+              --zone="$ZONE" --project="$PROJECT_ID" --quiet
+          done
+          rm -f app.env book.env gcs-key.json
+
+          gcloud compute ssh "$VM_NAME" --zone="$ZONE" --project="$PROJECT_ID" --quiet --command='
+            set -euo pipefail
+            sudo install -o root     -g root     -m 600 /tmp/app.env      /etc/dookwebsite/app.env
+            sudo install -o 33 -g 33 -m 400 /tmp/book.env     /etc/dookwebsite/book.env
+            sudo install -o 33 -g 33 -m 400 /tmp/gcs-key.json /etc/dookwebsite/gcs-key.json
+            rm -f /tmp/app.env /tmp/book.env /tmp/gcs-key.json
+          '
+
+      # IMAGE is what docker-compose.prod.yml substitutes into `image:`; with it
+      # set, `pull` fetches the tagged build instead of building locally.
+      # `sudo env` rather than plain sudo because sudo drops the variable.
+      - name: Deploy
+        run: |
+          gcloud compute ssh "$VM_NAME" --zone="$ZONE" --project="$PROJECT_ID" --quiet --command="
+            set -euo pipefail
+            cd /opt/dookwebsite
+            gcloud auth configure-docker ${REGION}-docker.pkg.dev --quiet
+            sudo env IMAGE='${{ steps.img.outputs.ref }}' docker compose -f docker-compose.prod.yml pull
+            sudo env IMAGE='${{ steps.img.outputs.ref }}' docker compose -f docker-compose.prod.yml up -d --remove-orphans
+            sudo docker image prune -f
+          "
+
+      # Checked from inside the VM against 127.0.0.1, so this reports on the
+      # container rather than on DNS or the firewall, which fail for unrelated
+      # reasons. -L because nginx 301s http->https; -k because the cert may not
+      # be issued yet on a freshly rebuilt host.
+      - name: Health check
+        run: |
+          gcloud compute ssh "$VM_NAME" --zone="$ZONE" --project="$PROJECT_ID" --quiet --command='
+            for i in $(seq 1 20); do
+              code=$(curl -fsS -o /dev/null -w "%{http_code}" -L -k --max-time 10 http://127.0.0.1/up || true)
+              if [ "$code" = "200" ]; then echo "healthy (HTTP $code)"; exit 0; fi
+              echo "attempt $i: HTTP ${code:-none}"; sleep 6
+            done
+            echo "did not become healthy"; sudo docker compose -f /opt/dookwebsite/docker-compose.prod.yml logs --tail=60; exit 1
+          '
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "### Deploy" >> "$GITHUB_STEP_SUMMARY"
+          echo "- image: \`${{ steps.img.outputs.ref }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- vm: \`$VM_NAME\` (\`$ZONE\`)" >> "$GITHUB_STEP_SUMMARY"
