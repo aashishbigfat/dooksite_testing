@@ -256,9 +256,9 @@ class DestinationController extends Controller
             Log::error("API Error", ['message' => $e->getMessage()]);
             return response()->json(['error' => 'Failed to retrieve data'], 500);
         } 
+           $matchingDepartures = [];
            if ($departures && isset($departures)) {
                 $depar = $departures;
-                $matchingDepartures = [];
                 $iconInclusions = IconInclusion::all()->keyBy('name');
                 foreach ($depar as $departure) {    
                         if (!empty($departure->Slug)) {
@@ -398,7 +398,7 @@ class DestinationController extends Controller
             ->get();
 
         if (count($pointOfInterest) > 0) {
-            // Counted for the whole set at once (cached per POI) instead of a
+            // Counted for the whole set in one grouped query instead of a
             // query per POI plus a further query per linked departure inside
             // the loop below.
             $poiCounts = poiDepartureCountsUnfiltered($pointOfInterest->pluck('poiId')->all());

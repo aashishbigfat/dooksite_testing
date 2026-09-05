@@ -35,41 +35,47 @@ class RegionController extends Controller
                          ->limit(26)
                          ->get();
         if(count($regions)>0){
-            foreach ($regions as $key => $country_value) {
-                $region_country = RegionCountry::where('region_id',$country_value->id)
-                        ->pluck('country_id')
-                        ->toArray();
+            // Batched. This previously ran two queries per region - the pivot
+            // lookup, then a ::first() per related row - which for 26 regions
+            // meant ~116 round-trips at ~90ms each over the VPN. Fetch both
+            // pivots and both related tables once, then map in PHP.
+            $regionIds = $regions->pluck('id')->all();
+
+            $regionCountryRows = RegionCountry::whereIn('region_id', $regionIds)->get(['region_id', 'country_id']);
+            $countriesById = Country::whereIn('id', $regionCountryRows->pluck('country_id')->filter()->unique()->all())
+                ->where('status', 1)
+                ->select('id', 'country_name', 'slug_url')
+                ->get()
+                ->keyBy('id');
+            $countryRowsByRegion = $regionCountryRows->groupBy('region_id');
+
+            $regionExperienceRows = RegionExperience::whereIn('region_id', $regionIds)->get(['region_id', 'experience_id']);
+            $experiencesById = Experience::whereIn('id', $regionExperienceRows->pluck('experience_id')->filter()->unique()->all())
+                ->select('id', 'experience_name', 'slug_url')
+                ->get()
+                ->keyBy('id');
+            $experienceRowsByRegion = $regionExperienceRows->groupBy('region_id');
+
+            foreach ($regions as $country_value) {
                 $region_country_array = array();
-                foreach ($region_country as $key => $value) {
-                    $countries = Country::where('id', $value)
-                        ->where('status',1)
-                        ->select('id','country_name','slug_url')
-                        ->first();
+                foreach ($countryRowsByRegion->get($country_value->id, []) as $rcRow) {
+                    $countries = $countriesById->get($rcRow->country_id);
                     if ($countries) {
                         array_push($region_country_array, $countries);
                     }
                 }
-
                 $country_value->countries = $region_country_array;
                 $country_value->image = generateSignedUrl('region/'.$country_value->image);
-            }
 
-            //Experiences
-            foreach ($regions as $key => $exp_value) {
-                $region_country = RegionExperience::where('region_id',$exp_value->id)
-                        ->pluck('experience_id')
-                        ->toArray();
+                //Experiences
                 $region_exp_array = array();
-                foreach ($region_country as $key => $value) {
-                    $experience_row = Experience::where('id', $value)
-                        ->select('id','experience_name','slug_url')
-                        ->first();
+                foreach ($experienceRowsByRegion->get($country_value->id, []) as $reRow) {
+                    $experience_row = $experiencesById->get($reRow->experience_id);
                     if($experience_row){
                         array_push($region_exp_array, $experience_row);
                     }
                 }
-
-                $exp_value->experiences = $region_exp_array;
+                $country_value->experiences = $region_exp_array;
             }
         }
         $regionId = $request->keyword ?? $regions->first()->id;
@@ -84,49 +90,65 @@ class RegionController extends Controller
                                ->distinct('departures.created_at')
                                ->orderBy('departures.featured', 'DESC')
                                ->paginate(8);
+        // Batched - same fix as regionDetails(). Five queries per departure at
+        // ~90ms each; paginate(8) keeps this smaller than the detail pages, but
+        // it is the same pattern and the same failure mode as it grows.
+        $departureIds = $departures->pluck('id')->filter()->unique()->values()->all();
+
+        $poiByDeparture = DepartureDestinationPointOfInterest::whereIn('departure_id', $departureIds)
+            ->where('status', 1)
+            ->distinct()
+            ->get(['departure_id', 'poi_name'])
+            ->groupBy('departure_id');
+
+        $inclusionsByDeparture = DB::table('inclusions')
+            ->join('inclusion_masters', 'inclusions.icon_inclusion_id', '=', 'inclusion_masters.id')
+            ->whereIn('inclusions.departure_id', $departureIds)
+            ->whereNotNull('inclusions.icon_inclusion_id')
+            ->select('inclusions.departure_id', 'inclusion_masters.name', 'inclusion_masters.icon')
+            ->distinct()
+            ->get()
+            ->groupBy('departure_id');
+
+        // ->value() took the FIRST matching row; pluck() would keep the last.
+        $destinationByDeparture = [];
+        foreach (DB::table('departure_destinations')->whereIn('departure_id', $departureIds)->get(['departure_id', 'destination_id']) as $ddRow) {
+            if (!array_key_exists($ddRow->departure_id, $destinationByDeparture)) {
+                $destinationByDeparture[$ddRow->departure_id] = $ddRow->destination_id;
+            }
+        }
+
+        $countryIdByDestination = DB::table('destinations')
+            ->whereIn('id', array_values(array_unique(array_filter($destinationByDeparture))))
+            ->pluck('country_id', 'id');
+
+        $countryNameById = DB::table('countries')
+            ->whereIn('id', array_values(array_unique(array_filter($countryIdByDestination->all()))))
+            ->pluck('country_name', 'id');
+
+        $signedIconUrls = [];
+
         foreach ($departures as $departure) {
-            $poiNames = DepartureDestinationPointOfInterest::where('departure_id', $departure->id)->where('status', 1)->limit(4)->distinct()->pluck('poi_name')->toArray();
-            $departure->poi_names = $poiNames;
+            $departure->poi_names = collect($poiByDeparture->get($departure->id, []))
+                ->pluck('poi_name')->unique()->take(4)->values()->all();
             $departure->title = ucwords(strtolower($departure->title));
             $departure->dimage = $departure->image;
             $departure->image = $departure->image ? generateSignedUrl('package/'.$departure->image) : url('images').'/package-no-image.jpg';
             $departure->featured = $departure->featured == 1 ? 'Best Selling' : '';
-             $departure->no_of_nights = "{$departure->no_of_days} Days {$departure->no_of_nights} Nights";
+            $departure->no_of_nights = "{$departure->no_of_days} Days {$departure->no_of_nights} Nights";
 
-            $inclusions = DB::table('inclusions')
-                    ->join('inclusion_masters', 'inclusions.icon_inclusion_id', '=', 'inclusion_masters.id')
-                    ->where('inclusions.departure_id', $departure->id)
-                    ->whereNotNull('inclusions.icon_inclusion_id')
-                    ->select('inclusion_masters.name', 'inclusion_masters.icon')
-                    ->distinct()
-                    ->get();
-
+            $inclusions = collect($inclusionsByDeparture->get($departure->id, []))->values();
             foreach ($inclusions as $inclusion) {
-                $inclusion->icon = generateSignedUrl('inclusion/'.$inclusion->icon);
+                if (!array_key_exists($inclusion->icon, $signedIconUrls)) {
+                    $signedIconUrls[$inclusion->icon] = generateSignedUrl('inclusion/'.$inclusion->icon);
+                }
+                $inclusion->icon = $signedIconUrls[$inclusion->icon];
             }
-
             $departure->inclusions = $inclusions;
-            $destinationId = DB::table('departure_destinations')
-                            ->where('departure_id', $departure->id)
-                            ->value('destination_id');
 
-                if ($destinationId) {
-                    $countryId = DB::table('destinations')
-                        ->where('id', $destinationId)
-                        ->value('country_id');
-
-                    if ($countryId) {
-                        $countryName = DB::table('countries')
-                            ->where('id', $countryId)
-                            ->value('country_name');
-
-                        $departure->country_name = $countryName ?: null;
-                    } else {
-                        $departure->country_name = null;
-                    }
-                } else {
-                    $departure->country_name = null;
-                }   
+            $destinationId = $destinationByDeparture[$departure->id] ?? null;
+            $countryId     = $destinationId ? ($countryIdByDestination[$destinationId] ?? null) : null;
+            $departure->country_name = $countryId ? ($countryNameById[$countryId] ?: null) : null;
         }
         if ($request->ajax()) {
             return response()->json([
@@ -269,9 +291,13 @@ class RegionController extends Controller
                         ->get();
                 // agent departure
                     
+                // Initialised before the guard, not inside it: the upstream API
+                // returns Result:[] when it has no data, so $departures is
+                // falsy and this block is skipped - while line 382 (array_merge)
+                // uses $matchingDepartures unconditionally.
+                $matchingDepartures = [];
                 if ($departures && isset($departures)) {
                     $depar = $departures;
-                    $matchingDepartures = [];
                     $iconInclusions = IconInclusion::all()->keyBy('name');
                     foreach ($depar as $departure) {    
                             if (!empty($departure->Slug)) {
@@ -329,54 +355,74 @@ class RegionController extends Controller
                             }
                     }
                 } 
+                // Batched lookups. This loop previously issued FIVE queries per
+                // departure - POIs, inclusions, departure_destinations,
+                // destinations, countries - and every one crosses the OpenVPN
+                // tunnel at ~90ms. A region page with ~100 departures therefore
+                // spent ~28s in round-trips alone and died on PHP's 30s limit.
+                // Fetch each table once for all departures, then map in PHP.
+                $departureIds = $departuresFromDB->pluck('id')->filter()->unique()->values()->all();
+
+                $poiByDeparture = DepartureDestinationPointOfInterest::whereIn('departure_id', $departureIds)
+                    ->where('status', 1)
+                    ->distinct()
+                    ->get(['departure_id', 'poi_name'])
+                    ->groupBy('departure_id');
+
+                $inclusionsByDeparture = DB::table('inclusions')
+                    ->join('inclusion_masters', 'inclusions.icon_inclusion_id', '=', 'inclusion_masters.id')
+                    ->whereIn('inclusions.departure_id', $departureIds)
+                    ->whereNotNull('inclusions.icon_inclusion_id')
+                    ->select('inclusions.departure_id', 'inclusion_masters.name', 'inclusion_masters.icon')
+                    ->distinct()
+                    ->get()
+                    ->groupBy('departure_id');
+
+                // ->value() returned the FIRST matching row, so keep the first
+                // occurrence here - pluck() would keep the last and silently
+                // change which destination a departure resolves to.
+                $destinationByDeparture = [];
+                foreach (DB::table('departure_destinations')->whereIn('departure_id', $departureIds)->get(['departure_id', 'destination_id']) as $ddRow) {
+                    if (!array_key_exists($ddRow->departure_id, $destinationByDeparture)) {
+                        $destinationByDeparture[$ddRow->departure_id] = $ddRow->destination_id;
+                    }
+                }
+
+                $countryIdByDestination = DB::table('destinations')
+                    ->whereIn('id', array_values(array_unique(array_filter($destinationByDeparture))))
+                    ->pluck('country_id', 'id');
+
+                $countryNameById = DB::table('countries')
+                    ->whereIn('id', array_values(array_unique(array_filter($countryIdByDestination->all()))))
+                    ->pluck('country_name', 'id');
+
+                // Inclusion icons repeat heavily across departures; sign each
+                // distinct path once instead of once per occurrence.
+                $signedIconUrls = [];
+
                 foreach ($departuresFromDB as $departure) {
-                    $poiNames = DepartureDestinationPointOfInterest::where('departure_id', $departure->id)->where('status', 1)->limit(4)->distinct()->pluck('poi_name')->toArray();
-                    $departure->poi_names = $poiNames;
+                    $departure->poi_names = collect($poiByDeparture->get($departure->id, []))
+                        ->pluck('poi_name')->unique()->take(4)->values()->all();
                     $departure->title = ucwords(strtolower($departure->title));
                     $departure->dimage = $departure->image;
                     $departure->image = $departure->image ? generateSignedUrl('package/'.$departure->image) : url('images').'/package-no-image.jpg';
-                     $departure->featured = $departure->featured ? 'Best Selling' : '';
+                    $departure->featured = $departure->featured ? 'Best Selling' : '';
                     $departure->colMd = "col-md-4 col-12";
-                      $departure->no_of_nights = "{$departure->no_of_days} Days {$departure->no_of_nights} Nights";
-             
+                    $departure->no_of_nights = "{$departure->no_of_days} Days {$departure->no_of_nights} Nights";
 
-                   $inclusions = DB::table('inclusions')
-                    ->join('inclusion_masters', 'inclusions.icon_inclusion_id', '=', 'inclusion_masters.id')
-                    ->where('inclusions.departure_id', $departure->id)
-                    ->whereNotNull('inclusions.icon_inclusion_id')
-                    ->select('inclusion_masters.name', 'inclusion_masters.icon')
-                    ->distinct()
-                    ->get();
-
-
-
+                    $inclusions = collect($inclusionsByDeparture->get($departure->id, []))->values();
                     foreach ($inclusions as $inclusion) {
-                        $inclusion->icon = generateSignedUrl('inclusion/'.$inclusion->icon);
+                        if (!array_key_exists($inclusion->icon, $signedIconUrls)) {
+                            $signedIconUrls[$inclusion->icon] = generateSignedUrl('inclusion/'.$inclusion->icon);
+                        }
+                        $inclusion->icon = $signedIconUrls[$inclusion->icon];
                     }
-
                     $departure->inclusions = $inclusions;
-                    $destinationId = DB::table('departure_destinations')
-                            ->where('departure_id', $departure->id)
-                            ->value('destination_id');
 
-                if ($destinationId) {
-                    $countryId = DB::table('destinations')
-                        ->where('id', $destinationId)
-                        ->value('country_id');
-
-                    if ($countryId) {
-                        $countryName = DB::table('countries')
-                            ->where('id', $countryId)
-                            ->value('country_name');
-
-                        $departure->country_name = $countryName ?: null;
-                    } else {
-                        $departure->country_name = null;
-                    }
-                } else {
-                    $departure->country_name = null;
-                }   
-                    }
+                    $destinationId = $destinationByDeparture[$departure->id] ?? null;
+                    $countryId     = $destinationId ? ($countryIdByDestination[$destinationId] ?? null) : null;
+                    $departure->country_name = $countryId ? ($countryNameById[$countryId] ?: null) : null;
+                }
 
                     $departuresFromDB = json_decode(json_encode($departuresFromDB->toArray()));
                     $departures = array_merge($matchingDepartures,$departuresFromDB);
@@ -471,9 +517,12 @@ class RegionController extends Controller
                         ->get();
                 // agent departure
                     
+               // Initialised before the guard, not inside it: the upstream API
+               // returns Result:[] when it has no data, so $departures is falsy,
+               // this block is skipped, and the later array_merge uses it unconditionally.
+               $matchingDepartures = [];
                if ($departures && isset($departures)) {
                     $depar = $departures;
-                    $matchingDepartures = [];
                     $iconInclusions = IconInclusion::all()->keyBy('name');
                     foreach ($depar as $departure) {    
                             if (!empty($departure->Slug)) {
@@ -530,52 +579,67 @@ class RegionController extends Controller
                             }
                     }
                 } 
+                // Batched lookups - same fix as the Europe branch. Five queries
+                // per departure at ~90ms each over the VPN is what pushed this
+                // page past PHP's 30s execution limit.
+                $departureIds = $departuresFromDB->pluck('id')->filter()->unique()->values()->all();
+
+                $poiByDeparture = DepartureDestinationPointOfInterest::whereIn('departure_id', $departureIds)
+                    ->where('status', 1)
+                    ->distinct()
+                    ->get(['departure_id', 'poi_name'])
+                    ->groupBy('departure_id');
+
+                $inclusionsByDeparture = DB::table('inclusions')
+                    ->join('inclusion_masters', 'inclusions.icon_inclusion_id', '=', 'inclusion_masters.id')
+                    ->whereIn('inclusions.departure_id', $departureIds)
+                    ->whereNotNull('inclusions.icon_inclusion_id')
+                    ->select('inclusions.departure_id', 'inclusion_masters.name', 'inclusion_masters.icon')
+                    ->distinct()
+                    ->get()
+                    ->groupBy('departure_id');
+
+                // ->value() took the FIRST matching row; pluck() would keep the last.
+                $destinationByDeparture = [];
+                foreach (DB::table('departure_destinations')->whereIn('departure_id', $departureIds)->get(['departure_id', 'destination_id']) as $ddRow) {
+                    if (!array_key_exists($ddRow->departure_id, $destinationByDeparture)) {
+                        $destinationByDeparture[$ddRow->departure_id] = $ddRow->destination_id;
+                    }
+                }
+
+                $countryIdByDestination = DB::table('destinations')
+                    ->whereIn('id', array_values(array_unique(array_filter($destinationByDeparture))))
+                    ->pluck('country_id', 'id');
+
+                $countryNameById = DB::table('countries')
+                    ->whereIn('id', array_values(array_unique(array_filter($countryIdByDestination->all()))))
+                    ->pluck('country_name', 'id');
+
+                $signedIconUrls = [];
+
                 foreach ($departuresFromDB as $departure) {
-                    $poiNames = DepartureDestinationPointOfInterest::where('departure_id', $departure->id)->where('status', 1)->limit(4)->distinct()->pluck('poi_name')->toArray();
-                    $departure->poi_names = $poiNames;
+                    $departure->poi_names = collect($poiByDeparture->get($departure->id, []))
+                        ->pluck('poi_name')->unique()->take(4)->values()->all();
                     $departure->title = ucwords(strtolower($departure->title));
                     $departure->dimage = $departure->image;
                     $departure->image = $departure->image ? generateSignedUrl('package/'.$departure->image) : url('images').'/package-no-image.jpg';
-                     $departure->featured = $departure->featured ? 'Best Selling' : '';
+                    $departure->featured = $departure->featured ? 'Best Selling' : '';
                     $departure->colMd = "col-md-4 col-12";
-                      $departure->no_of_nights = "{$departure->no_of_days} Days {$departure->no_of_nights} Nights";
-             
+                    $departure->no_of_nights = "{$departure->no_of_days} Days {$departure->no_of_nights} Nights";
 
-                    $inclusions = DB::table('inclusions')
-                    ->join('inclusion_masters', 'inclusions.icon_inclusion_id', '=', 'inclusion_masters.id')
-                    ->where('inclusions.departure_id', $departure->id)
-                    ->whereNotNull('inclusions.icon_inclusion_id')
-                    ->select('inclusion_masters.name', 'inclusion_masters.icon')
-                    ->distinct()
-                    ->get();
-
-            foreach ($inclusions as $inclusion) {
-                $inclusion->icon = generateSignedUrl('inclusion/'.$inclusion->icon);
-            }
-
-                    $departure->inclusions = $inclusions;
-                    $destinationId = DB::table('departure_destinations')
-                            ->where('departure_id', $departure->id)
-                            ->value('destination_id');
-
-                if ($destinationId) {
-                    $countryId = DB::table('destinations')
-                        ->where('id', $destinationId)
-                        ->value('country_id');
-
-                    if ($countryId) {
-                        $countryName = DB::table('countries')
-                            ->where('id', $countryId)
-                            ->value('country_name');
-
-                        $departure->country_name = $countryName ?: null;
-                    } else {
-                        $departure->country_name = null;
+                    $inclusions = collect($inclusionsByDeparture->get($departure->id, []))->values();
+                    foreach ($inclusions as $inclusion) {
+                        if (!array_key_exists($inclusion->icon, $signedIconUrls)) {
+                            $signedIconUrls[$inclusion->icon] = generateSignedUrl('inclusion/'.$inclusion->icon);
+                        }
+                        $inclusion->icon = $signedIconUrls[$inclusion->icon];
                     }
-                } else {
-                    $departure->country_name = null;
-                }   
-                   }
+                    $departure->inclusions = $inclusions;
+
+                    $destinationId = $destinationByDeparture[$departure->id] ?? null;
+                    $countryId     = $destinationId ? ($countryIdByDestination[$destinationId] ?? null) : null;
+                    $departure->country_name = $countryId ? ($countryNameById[$countryId] ?: null) : null;
+                }
 
                     $departuresFromDB = json_decode(json_encode($departuresFromDB->toArray()));
                     $departures = array_merge($matchingDepartures,$departuresFromDB);
@@ -657,9 +721,12 @@ class RegionController extends Controller
                 ->toArray();
             // end by anirudh        
 
+            // Initialised before the guard, not inside it: the upstream API
+            // returns Result:[] when it has no data, so $departures is falsy,
+            // this block is skipped, and the later array_merge uses it unconditionally.
+            $matchingDepartures = [];
             if ($departures && isset($departures)) {
                 $depar = $departures;
-                $matchingDepartures = [];
                 $iconInclusions = IconInclusion::all()->keyBy('name');
                 foreach ($depar as $departure) {    
                         if (!empty($departure->Slug)) {
@@ -718,48 +785,67 @@ class RegionController extends Controller
                 }
             }      
 
-           foreach ($departuresFromDB as $departure) {
-                $poiNames = DepartureDestinationPointOfInterest::where('departure_id', $departure->id)->where('status', 1)->limit(4)->distinct()->pluck('poi_name')->toArray();
-                $departure->poi_names = $poiNames;
+            // Batched lookups - same fix as the Europe branch. Five queries per
+            // departure at ~90ms each over the VPN is what pushed region pages
+            // past PHP's 30s execution limit.
+            $departureIds = $departuresFromDB->pluck('id')->filter()->unique()->values()->all();
+
+            $poiByDeparture = DepartureDestinationPointOfInterest::whereIn('departure_id', $departureIds)
+                ->where('status', 1)
+                ->distinct()
+                ->get(['departure_id', 'poi_name'])
+                ->groupBy('departure_id');
+
+            // This branch reads the Inclusion model directly (name/icon) rather
+            // than joining inclusion_masters as Europe/Africa do. Kept as-is.
+            $inclusionsByDeparture = Inclusion::whereIn('departure_id', $departureIds)
+                ->whereNotNull('icon')
+                ->select('departure_id', 'name', 'icon')
+                ->distinct()
+                ->get()
+                ->groupBy('departure_id');
+
+            // ->value() took the FIRST matching row; pluck() would keep the last.
+            $destinationByDeparture = [];
+            foreach (DB::table('departure_destinations')->whereIn('departure_id', $departureIds)->get(['departure_id', 'destination_id']) as $ddRow) {
+                if (!array_key_exists($ddRow->departure_id, $destinationByDeparture)) {
+                    $destinationByDeparture[$ddRow->departure_id] = $ddRow->destination_id;
+                }
+            }
+
+            $countryIdByDestination = DB::table('destinations')
+                ->whereIn('id', array_values(array_unique(array_filter($destinationByDeparture))))
+                ->pluck('country_id', 'id');
+
+            $countryNameById = DB::table('countries')
+                ->whereIn('id', array_values(array_unique(array_filter($countryIdByDestination->all()))))
+                ->pluck('country_name', 'id');
+
+            $signedIconUrls = [];
+
+            foreach ($departuresFromDB as $departure) {
+                $departure->poi_names = collect($poiByDeparture->get($departure->id, []))
+                    ->pluck('poi_name')->unique()->take(4)->values()->all();
                 $departure->title = ucwords(strtolower($departure->title));
                 $departure->dimage = $departure->image;
                 $departure->image = $departure->image ? generateSignedUrl('package/'.$departure->image) : url('images').'/package-no-image.jpg';
                 $departure->featured = $departure->featured == 1 ? 'Best Selling' : '';
                 $departure->colMd = "col-md-4 col-12";
                 $departure->no_of_nights = "{$departure->no_of_days} Days {$departure->no_of_nights} Nights";
-                $inclusions = Inclusion::where('departure_id', $departure->id)
-                                       ->whereNotNull('icon')
-                                       ->select('name', 'icon')
-                                       ->distinct()
-                                       ->get();
 
+                $inclusions = collect($inclusionsByDeparture->get($departure->id, []))->values();
                 foreach ($inclusions as $inclusion) {
-                    $inclusion->icon = generateSignedUrl('inclusion/'.$inclusion->icon);
-                }
-
-                $departure->inclusions = $inclusions;
-                $destinationId = DB::table('departure_destinations')
-                            ->where('departure_id', $departure->id)
-                            ->value('destination_id');
-
-                if ($destinationId) {
-                    $countryId = DB::table('destinations')
-                        ->where('id', $destinationId)
-                        ->value('country_id');
-
-                    if ($countryId) {
-                        $countryName = DB::table('countries')
-                            ->where('id', $countryId)
-                            ->value('country_name');
-
-                        $departure->country_name = $countryName ?: null;
-                    } else {
-                        $departure->country_name = null;
+                    if (!array_key_exists($inclusion->icon, $signedIconUrls)) {
+                        $signedIconUrls[$inclusion->icon] = generateSignedUrl('inclusion/'.$inclusion->icon);
                     }
-                } else {
-                    $departure->country_name = null;
-                }   
-            }            
+                    $inclusion->icon = $signedIconUrls[$inclusion->icon];
+                }
+                $departure->inclusions = $inclusions;
+
+                $destinationId = $destinationByDeparture[$departure->id] ?? null;
+                $countryId     = $destinationId ? ($countryIdByDestination[$destinationId] ?? null) : null;
+                $departure->country_name = $countryId ? ($countryNameById[$countryId] ?: null) : null;
+            }
             $departuresFromDB = json_decode(json_encode($departuresFromDB->toArray()));
             $departures = array_merge($matchingDepartures,$departuresFromDB);
             foreach ($departures as $departure) {   
