@@ -63,7 +63,7 @@
           Travel.<span class="text-gradient"> Relax.</span> Discover.
         </h2> -->
         <p class="hero-subtitle">
-          Enjoy seamless travel experiences with our exclusive CIS Countries Tour Packages from India.
+          Enjoy seamless travel experiences with our exclusive CIS Countries Tour Packages.
         </p>
         <div class="d-flex gap-2 flex-wrap mb-3 justify-content-center">
           <a href="{{url('countries')}}" class="btn-explore">
