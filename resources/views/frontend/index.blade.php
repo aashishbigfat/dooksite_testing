@@ -1293,6 +1293,7 @@
       </div>
       @endforeach
     </div>
+    {{-- Promo carousels (desktop + mobile) hidden - uncomment to show again
     <div class="col-md-12 mt-5 d-lg-block d-none">
       <div id="carouselExample" class="carousel slide">
         <div class="carousel-inner" style="border-radius: 17px;">
@@ -1345,6 +1346,7 @@
       </div>
 
     </div>
+    --}}
   </div>
 </section>
 <!-- Enhanced Experiences Section -->
