@@ -515,6 +515,14 @@ class InquiryController extends Controller
 
 
             curl_close($ch);
+
+            // Same payload to the new Tutterfly CRM, sent after the response and fully
+            // isolated so the old CRM flow above is unchanged.
+            try {
+                $this->mirrorLeadToNewTutterfly($curl_data, $lead_id ?? '', $ref_id, $last_id);
+            } catch (\Throwable $e) {
+                Log::warning('New Tutterfly lead send not queued', ['ref_id' => $ref_id, 'error' => $e->getMessage()]);
+            }
         }
        
         // //////////// lds curl ////////////////
@@ -662,6 +670,73 @@ class InquiryController extends Controller
             return response()->json($status, 200);
         }
     }
+    /**
+     * Send the exact lead JSON already posted to the old Tutterfly CRM to the new CRM too.
+     * Off until TUTTERFLY_NEW_CAPTURE_URL and TUTTERFLY_NEW_API_KEY are set. Runs after the
+     * visitor has the response and swallows every failure, so the old CRM, the enquiry email
+     * and the thank-you flow are never affected.
+     *
+     * The new CRM's lead id is saved to dook_enquiries.tfc_new_lead_id once that column has
+     * been added (see Tutterfly explainers/tutterfly_con_data.md); until then it is only logged.
+     */
+    private function mirrorLeadToNewTutterfly($payload, $oldLeadId, $refId, $enquiryId): void
+    {
+        $url = config('services.tutterfly_new.capture_url');
+        $apiKey = config('services.tutterfly_new.api_key');
+
+        if (empty($url) || empty($apiKey) || ! is_string($payload) || $payload === '') {
+            return;
+        }
+
+        $timeout = max(1, (int) config('services.tutterfly_new.timeout', 10));
+        $oldLeadId = is_scalar($oldLeadId) ? (string) $oldLeadId : '';
+
+        app()->terminating(function () use ($url, $apiKey, $timeout, $payload, $oldLeadId, $refId, $enquiryId) {
+            try {
+                $response = Http::withHeaders([
+                        'X-Api-Key' => $apiKey,
+                        'X-Old-Tfc-Lead-Id' => $oldLeadId,
+                    ])
+                    ->connectTimeout(min($timeout, 5))
+                    ->timeout($timeout)
+                    ->withBody($payload, 'application/json')
+                    ->post($url);
+            } catch (\Throwable $e) {
+                Log::warning('New Tutterfly lead send failed', [
+                    'ref_id' => $refId,
+                    'error' => $e->getMessage(),
+                ]);
+                return;
+            }
+
+            if (! $response->successful()) {
+                Log::warning('New Tutterfly rejected lead', [
+                    'ref_id' => $refId,
+                    'status' => $response->status(),
+                    'message' => $response->json('message'),
+                ]);
+                return;
+            }
+
+            $newLeadId = $response->json('lead_id');
+            Log::info('New Tutterfly lead created', [
+                'ref_id' => $refId,
+                'new_lead_id' => $newLeadId,
+            ]);
+
+            try {
+                if ($newLeadId && $enquiryId && \Illuminate\Support\Facades\Schema::hasColumn('dook_enquiries', 'tfc_new_lead_id')) {
+                    DB::table('dook_enquiries')->where('id', $enquiryId)->update(['tfc_new_lead_id' => (string) $newLeadId]);
+                }
+            } catch (\Throwable $e) {
+                Log::warning('New Tutterfly lead id not saved', [
+                    'ref_id' => $refId,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        });
+    }
+
     private function getGeoDataFromIp($ip1)
 {
     // $url = "http://www.geoplugin.net/json.gp?ip=" . $ip1;

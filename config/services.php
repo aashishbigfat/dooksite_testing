@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    // New Tutterfly CRM. Leaving the URL or key empty keeps the mirror send off.
+    'tutterfly_new' => [
+        'capture_url' => env('TUTTERFLY_NEW_CAPTURE_URL'),
+        'api_key' => env('TUTTERFLY_NEW_API_KEY'),
+        'timeout' => env('TUTTERFLY_NEW_TIMEOUT', 10),
+    ],
+
 ];
