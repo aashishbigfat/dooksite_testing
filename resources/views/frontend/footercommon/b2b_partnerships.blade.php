@@ -327,7 +327,7 @@
                 </div>
                 <div class="b2b-field">
                   <label for="b2bTravelDate">Travel Dates / Month</label>
-                  <input type="text" id="b2bTravelDate" name="travel_date" placeholder="e.g. May 2027">
+                  <input type="month" id="b2bTravelDate" name="travel_date" min="{{ now()->format('Y-m') }}" pattern="[0-9]{4}-[0-9]{2}" placeholder="YYYY-MM" title="Month and year, e.g. 2027-05">
                 </div>
               </div>
 
