@@ -72,13 +72,6 @@ class CommonController extends Controller
         return view('frontend.footercommon.terms_conditions', compact('terms_header'));
     }
 
-    public function b2bPartnerships()
-    {
-        // This page ships its own WebPage/BreadcrumbList/FAQPage schema, so the
-        // site-wide FAQ and breadcrumb blocks in the header are suppressed here.
-        return view('frontend.footercommon.b2b_partnerships', ['suppressGlobalSchema' => true]);
-    }
-
     public function presentations()
     {
         $presentations = DookPresentation::where('active_status',1)

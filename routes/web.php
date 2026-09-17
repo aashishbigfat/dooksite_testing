@@ -106,9 +106,6 @@ Route::get('/privacy-policy', [CommonController::class,'privacyPolicy'])->name('
 // terms routes
 Route::get('/terms-and-conditions', [CommonController::class,'termsConditions'])->name('terms_conditions');
 
-// B2B partnerships landing page
-Route::get('/b2b-partnerships', [CommonController::class,'b2bPartnerships'])->name('b2b_partnerships');
-
 // Careers routes
 Route::get('/careers', [CommonController::class,'careerListing'])->name('careers');
 Route::get('/careers/{slug_url}', [CommonController::class, 'careersDetail'])->name('careers_detail');

@@ -107,9 +107,6 @@
         }
         }
     </script>
-    {{-- Site-wide FAQ/Breadcrumb schema. A page that ships its own FAQPage or
-         BreadcrumbList passes $suppressGlobalSchema to avoid emitting duplicates. --}}
-    @if(empty($suppressGlobalSchema))
     <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -192,7 +189,6 @@
   ]
 }
 </script>
-    @endif
     <script>
     (function(c,l,a,r,i,t,y){
         c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
