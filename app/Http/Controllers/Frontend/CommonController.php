@@ -72,6 +72,11 @@ class CommonController extends Controller
         return view('frontend.footercommon.terms_conditions', compact('terms_header'));
     }
 
+    public function b2bPartnerships()
+    {
+        return view('frontend.b2b.partnerships');
+    }
+
     public function presentations()
     {
         $presentations = DookPresentation::where('active_status',1)

@@ -1,0 +1,2789 @@
+/*
+ * B2B Partnerships landing page (/b2b-partnerships).
+ *
+ * Standalone page with its own top bar, navbar and footer. Every class is prefixed
+ * b2b- and every rule is scoped to .b2b-page (set on <body>). Loaded only by
+ * resources/views/frontend/b2b/partnerships.blade.php.
+ */
+
+.b2b-page {
+  --red: #d71921;
+  --red-dark: #b5121b;
+  --ink: #20262b;
+  --muted: #626970;
+  --line: #e4e6e8;
+  --pale: #f6f7f8;
+  --pink: #fff3f3;
+  --dark: #14252c;
+  --font: Outfit,Arial,sans-serif;
+}
+
+.b2b-page * {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 110px;
+}
+
+.b2b-page {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 1rem;
+  line-height: 1.6;
+  background: #fff;
+}
+
+.b2b-page button,
+.b2b-page input,
+.b2b-page select,
+.b2b-page textarea {
+  font: inherit;
+}
+
+.b2b-page button,
+.b2b-page a,
+.b2b-page input,
+.b2b-page select,
+.b2b-page textarea,
+.b2b-page summary {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.b2b-page button {
+  cursor: pointer;
+}
+
+.b2b-page a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.b2b-page button {
+  color: inherit;
+}
+
+.b2b-page img {
+  display: block;
+  max-width: 100%;
+}
+
+.b2b-page h1,
+.b2b-page h2,
+.b2b-page h3,
+.b2b-page p {
+  margin: 0;
+}
+
+.b2b-page h1,
+.b2b-page h2,
+.b2b-page h3 {
+  line-height: 1.12;
+  letter-spacing: -.025em;
+  font-weight: 600;
+}
+
+.b2b-page h2 {
+  font-size: clamp(2.3rem,3.4vw,3.2rem);
+}
+
+.b2b-page h3 {
+  font-size: 1.35rem;
+}
+
+.b2b-page p {
+  color: var(--muted);
+}
+
+.b2b-page .b2b-container {
+  width: min(1240px,calc(100% - 80px));
+  margin-inline: auto;
+}
+
+.b2b-page .b2b-section {
+  padding: 96px 0;
+}
+
+.b2b-page .b2b-red {
+  color: var(--red);
+}
+
+.b2b-page .b2b-icon {
+  width: 22px;
+  height: 22px;
+  display: inline-block;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.b2b-page .b2b-icon-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.b2b-page .b2b-eyebrow {
+  font-size: .78rem;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: .14em;
+  color: var(--red);
+  margin-bottom: 20px;
+}
+
+.b2b-page .b2b-eyebrow.b2b-light {
+  color: #fff;
+}
+
+.b2b-page .b2b-eyebrow.b2b-light span {
+  display: inline-block;
+  width: 26px;
+  height: 2px;
+  background: var(--red);
+  margin-right: 9px;
+  vertical-align: middle;
+}
+
+.b2b-page .b2b-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  padding: 17px 24px;
+  border: 1px solid var(--red);
+  background: var(--red);
+  color: #fff;
+  line-height: 1.4;
+  font-weight: 500;
+  font-size: 1rem;
+  border-radius: 5px;
+  transition: background .2s,transform .2s;
+}
+
+.b2b-page .b2b-button:hover {
+  background: var(--red-dark);
+  border-color: var(--red-dark);
+  transform: translateY(-2px);
+}
+
+.b2b-page .b2b-button-small {
+  padding: 12px 18px;
+  font-size: .9rem;
+  gap: 15px;
+}
+
+.b2b-page .b2b-button-outline {
+  background: transparent;
+  color: var(--ink);
+  border-color: #bfc4c8;
+}
+
+.b2b-page .b2b-button-outline:hover {
+  background: var(--ink);
+  color: #fff;
+  border-color: var(--ink);
+}
+
+.b2b-page .b2b-button-white {
+  background: white;
+  color: var(--red);
+  border-color: #fff;
+}
+
+.b2b-page .b2b-button-white:hover {
+  color: var(--red-dark);
+  background: #fff2f2;
+  border-color: #fff2f2;
+}
+
+.b2b-page .b2b-text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--red);
+  font-weight: 500;
+  background: none;
+  border: 0;
+  padding: 0;
+  text-align: left;
+  line-height: 1.5;
+  font-size: 1rem;
+}
+
+.b2b-page .b2b-text-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+
+.b2b-page .b2b-text-link.b2b-light {
+  color: #fff;
+}
+
+.b2b-page .b2b-text-link .b2b-icon {
+  width: 18px;
+}
+
+.b2b-page .b2b-skip-link {
+  position: fixed;
+  top: -100px;
+  left: 20px;
+  z-index: 100;
+  background: #fff;
+  padding: 12px 20px;
+  color: var(--red);
+  box-shadow: 0 2px 12px #0003;
+}
+
+.b2b-page .b2b-skip-link:focus {
+  top: 10px;
+}
+
+.b2b-page :focus-visible {
+  outline: 3px solid #3089b2;
+  outline-offset: 4px;
+}
+
+.b2b-page section[id] {
+  scroll-margin-top: 25px;
+}
+
+.b2b-page [hidden] {
+  display: none!important;
+}
+
+.b2b-page .b2b-topbar {
+  background: var(--dark);
+  color: #fff;
+}
+
+.b2b-page .b2b-topbar-inner {
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  font-size: .75rem;
+  letter-spacing: .08em;
+}
+
+.b2b-page .b2b-topbar a {
+  font-size: .81rem;
+  letter-spacing: 0;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #e2e7e9;
+}
+
+.b2b-page .b2b-topbar .b2b-icon {
+  width: 15px;
+  height: 15px;
+}
+
+.b2b-page .b2b-header {
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 1px solid var(--line);
+}
+
+.b2b-page .b2b-nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 26px;
+  min-height: 91px;
+}
+
+.b2b-page .b2b-brand {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-shrink: 0;
+}
+
+.b2b-page .b2b-brand img {
+  width: 66px;
+  height: auto;
+}
+
+.b2b-page .b2b-brand span {
+  font-size: .75rem;
+  line-height: 1.65;
+  letter-spacing: .075em;
+  color: var(--muted);
+  max-width: 180px;
+}
+
+.b2b-page .b2b-brand strong {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.b2b-page nav {
+  display: flex;
+  gap: 27px;
+  align-items: center;
+  font-size: .94rem;
+}
+
+.b2b-page nav a {
+  padding: 10px 0;
+  border-bottom: 2px solid transparent;
+  transition: color .2s;
+}
+
+.b2b-page nav a:hover {
+  color: var(--red);
+  border-color: var(--red);
+}
+
+.b2b-page .b2b-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.b2b-page .b2b-menu-toggle {
+  display: none;
+  background: none;
+  border: 1px solid var(--line);
+  width: 44px;
+  height: 44px;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.b2b-page .b2b-menu-toggle span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--ink);
+  margin: 4px 0;
+}
+
+.b2b-page .b2b-hero {
+  position: relative;
+  min-height: 650px;
+  background: #19363f;
+  isolation: isolate;
+  color: #fff;
+  overflow: hidden;
+}
+
+.b2b-page .b2b-hero-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 60% center;
+  z-index: -3;
+}
+
+.b2b-page .b2b-hero-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,rgba(7,25,34,.93) 0%,rgba(10,27,35,.83) 33%,rgba(9,29,39,.3) 72%,rgba(9,29,39,.05) 100%),linear-gradient(0deg,rgba(6,19,30,.48),transparent 42%);
+  z-index: -2;
+}
+
+.b2b-page .b2b-hero-content {
+  padding-top: 75px;
+  padding-bottom: 117px;
+}
+
+.b2b-page .b2b-hero .b2b-eyebrow {
+  margin-bottom: 23px;
+}
+
+.b2b-page .b2b-hero h1 {
+  font-size: clamp(3rem,4.8vw,4.4rem);
+  line-height: 1.045;
+  letter-spacing: -.035em;
+  font-weight: 500;
+}
+
+.b2b-page .b2b-hero h1 span {
+  color: #fff;
+  font-weight: 400;
+}
+
+.b2b-page .b2b-hero-description {
+  margin-top: 25px;
+  max-width: 560px;
+  font-size: 1.13rem;
+  color: #e1e7e9;
+  line-height: 1.65;
+}
+
+.b2b-page .b2b-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin-top: 30px;
+}
+
+.b2b-page .b2b-hero-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: .96rem;
+  border-bottom: 1px solid #ffffff60;
+  padding-block: 7px;
+}
+
+.b2b-page .b2b-hero-link .b2b-icon {
+  width: 18px;
+}
+
+.b2b-page .b2b-hero-reassurance {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+  margin-top: 27px;
+  font-size: .85rem;
+  color: #e8ecee;
+}
+
+.b2b-page .b2b-hero-reassurance span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.b2b-page .b2b-hero-reassurance .b2b-icon {
+  width: 16px;
+  height: 16px;
+  color: #fff;
+}
+
+.b2b-page .b2b-image-caption {
+  position: absolute;
+  right: 40px;
+  bottom: 78px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: .75rem;
+  letter-spacing: .12em;
+  text-shadow: 0 2px 8px #0008;
+}
+
+.b2b-page .b2b-image-caption .b2b-icon {
+  width: 17px;
+  height: 17px;
+}
+
+.b2b-page .b2b-image-caption small {
+  font-size: .8rem;
+  letter-spacing: 0;
+  color: #e4eaed;
+  line-height: 2;
+}
+
+.b2b-page .b2b-proof-strip {
+  position: relative;
+  z-index: 2;
+  background: white;
+  margin-top: -47px;
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  border: 1px solid var(--line);
+  box-shadow: 0 12px 36px #14252c0a;
+  border-radius: 7px;
+  padding: 27px 0;
+}
+
+.b2b-page .b2b-proof-strip>div {
+  padding: 3px 31px;
+  border-right: 1px solid var(--line);
+}
+
+.b2b-page .b2b-proof-strip>div:last-child {
+  border: 0;
+}
+
+.b2b-page .b2b-proof-strip strong {
+  display: block;
+  color: var(--red);
+  font-weight: 600;
+  line-height: 1.3;
+  font-size: 2.2rem;
+  letter-spacing: -.035em;
+}
+
+.b2b-page .b2b-proof-strip strong span {
+  font-size: 1.22rem;
+  letter-spacing: -.015em;
+}
+
+.b2b-page .b2b-proof-strip p {
+  font-size: .89rem;
+  margin-top: 6px;
+  color: var(--muted);
+}
+
+.b2b-page .b2b-section-intro {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 95px;
+  align-items: end;
+  margin-bottom: 45px;
+}
+
+.b2b-page .b2b-section-intro>p {
+  font-size: 1.08rem;
+  line-height: 1.7;
+  max-width: 500px;
+  padding-bottom: 3px;
+}
+
+.b2b-page .b2b-why-section {
+  padding-top: 93px;
+}
+
+.b2b-page .b2b-advantage-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 40px;
+}
+
+.b2b-page .b2b-advantage-grid article {
+  border-top: 1px solid var(--line);
+  padding-top: 23px;
+}
+
+.b2b-page .b2b-number {
+  font-size: .88rem;
+  color: var(--red);
+  display: block;
+  margin-bottom: 23px;
+  font-weight: 500;
+}
+
+.b2b-page .b2b-advantage-grid h3 {
+  margin-bottom: 13px;
+}
+
+.b2b-page .b2b-advantage-grid p {
+  line-height: 1.7;
+}
+
+.b2b-page .b2b-trade-line {
+  margin-top: 36px;
+  border-top: 1px solid var(--line);
+  padding-top: 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 25px;
+}
+
+.b2b-page .b2b-trade-line>span {
+  font-size: .75rem;
+  color: var(--muted);
+  letter-spacing: .085em;
+}
+
+.b2b-page .b2b-trade-line a {
+  display: inline-flex;
+  align-items: center;
+  gap: 13px;
+  color: var(--red);
+  font-size: .94rem;
+  font-weight: 500;
+}
+
+.b2b-page .b2b-trade-line .b2b-icon {
+  width: 18px;
+}
+
+.b2b-page .b2b-office-section {
+  background: var(--dark);
+  color: #fff;
+  position: relative;
+}
+
+.b2b-page .b2b-office-layout {
+  display: grid;
+  grid-template-columns: .9fr 1.1fr;
+  gap: 112px;
+  align-items: center;
+}
+
+.b2b-page .b2b-office-intro h2 {
+  font-size: clamp(2.9rem,4vw,3.8rem);
+  line-height: 1.08;
+  font-weight: 500;
+}
+
+.b2b-page .b2b-office-intro h2>span {
+  color: #ff696e;
+}
+
+.b2b-page .b2b-office-intro>p:not(.b2b-eyebrow) {
+  margin: 24px 0;
+  color: #bdc9ce;
+  max-width: 400px;
+  line-height: 1.7;
+  font-size: 1.08rem;
+}
+
+.b2b-page .b2b-office-intro .b2b-text-link {
+  font-size: .92rem;
+}
+
+.b2b-page .b2b-office-footnote {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  border-top: 1px solid #ffffff28;
+  margin-top: 42px;
+  padding-top: 24px;
+  color: #c8d2d7;
+  font-size: .88rem;
+}
+
+.b2b-page .b2b-office-footnote>.b2b-icon {
+  width: 30px;
+  height: 30px;
+  color: #ff696e;
+}
+
+.b2b-page .b2b-directory-heading {
+  margin-bottom: 23px;
+}
+
+.b2b-page .b2b-directory-heading h3 {
+  font-size: 1.3rem;
+  margin-bottom: 8px;
+}
+
+.b2b-page .b2b-directory-heading p {
+  font-size: .88rem;
+  color: #adbec7;
+}
+
+.b2b-page .b2b-office-list {
+  border-top: 1px solid #ffffff36;
+}
+
+.b2b-page .b2b-office-list details {
+  border-bottom: 1px solid #ffffff28;
+}
+
+.b2b-page .b2b-office-list summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr 20px;
+  gap: 15px;
+  align-items: center;
+  cursor: pointer;
+  padding: 17px 0;
+  list-style: none;
+}
+
+.b2b-page .b2b-office-list summary::-webkit-details-marker {
+  display: none;
+}
+
+.b2b-page .b2b-office-country {
+  font-size: .75rem;
+  letter-spacing: .1em;
+  color: #b4c4cc;
+}
+
+.b2b-page .b2b-office-city {
+  font-size: 1.26rem;
+  font-weight: 400;
+}
+
+.b2b-page .b2b-office-list .b2b-icon {
+  width: 17px;
+  height: 17px;
+  color: #a2b6c0;
+  transition: transform .2s;
+}
+
+.b2b-page .b2b-office-list details[open] summary .b2b-icon {
+  transform: rotate(45deg);
+  color: #ff696e;
+}
+
+.b2b-page .b2b-office-address {
+  padding: 2px 30px 18px 0;
+  font-size: .9rem;
+  color: #c2cfd5;
+}
+
+.b2b-page .b2b-office-address strong {
+  font-weight: 500;
+  color: #fff;
+}
+
+.b2b-page .b2b-office-address address {
+  font-style: normal;
+  margin-top: 4px;
+}
+
+.b2b-page .b2b-destinations-section {
+  padding-bottom: 75px;
+}
+
+.b2b-page .b2b-destination-cards {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 25px;
+}
+
+.b2b-page .b2b-destination-card {
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  transition: box-shadow .25s,transform .25s;
+}
+
+.b2b-page .b2b-destination-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px #2034390e;
+}
+
+.b2b-page .b2b-destination-photo {
+  position: relative;
+  height: 270px;
+  overflow: hidden;
+  background: #dae1e4;
+}
+
+.b2b-page .b2b-destination-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .6s;
+}
+
+.b2b-page .b2b-destination-card:hover img {
+  transform: scale(1.04);
+}
+
+.b2b-page .b2b-photo-tag {
+  position: absolute;
+  left: 18px;
+  top: 18px;
+  background: #fff;
+  color: var(--ink);
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  padding: 7px 10px;
+  border-radius: 2px;
+}
+
+.b2b-page .b2b-destination-content {
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.b2b-page .b2b-card-overline {
+  font-size: .75rem;
+  letter-spacing: .11em;
+  color: var(--red);
+  font-weight: 500;
+  margin-bottom: 13px;
+}
+
+.b2b-page .b2b-destination-content h3 {
+  font-size: 1.5rem;
+  line-height: 1.2;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.b2b-page .b2b-destination-content p {
+  font-size: .89rem;
+  line-height: 1.65;
+}
+
+.b2b-page .b2b-card-rule {
+  height: 1px;
+  background: var(--line);
+  margin: 21px 0 18px;
+}
+
+.b2b-page .b2b-destination-content .b2b-card-detail {
+  flex: 1;
+  font-size: .97rem;
+}
+
+.b2b-page .b2b-destination-content .b2b-text-link {
+  font-size: .9rem;
+  margin-top: 21px;
+  gap: 8px;
+  justify-content: space-between;
+  width: 100%;
+  line-height: 1.5;
+}
+
+.b2b-page .b2b-more-destinations {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1fr;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  margin-top: 35px;
+  padding: 24px 0;
+  gap: 24px;
+}
+
+.b2b-page .b2b-more-destinations .b2b-eyebrow {
+  font-size: .75rem;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.b2b-page .b2b-more-destinations p {
+  font-size: .85rem;
+}
+
+.b2b-page .b2b-more-destinations button {
+  background: none;
+  border: 0;
+  border-left: 1px solid var(--line);
+  padding: 0 24px;
+  text-align: left;
+  position: relative;
+}
+
+.b2b-page .b2b-more-destinations strong {
+  font-weight: 500;
+  display: block;
+  font-size: 1.12rem;
+}
+
+.b2b-page .b2b-more-destinations button>span {
+  font-size: .81rem;
+  display: block;
+  color: var(--muted);
+  margin-top: 3px;
+  padding-right: 10px;
+  line-height: 1.5;
+}
+
+.b2b-page .b2b-more-destinations .b2b-icon {
+  position: absolute;
+  right: 0;
+  top: 3px;
+  width: 17px;
+  color: var(--red);
+}
+
+.b2b-page .b2b-more-destinations button:hover strong {
+  color: var(--red);
+}
+
+.b2b-page .b2b-destination-note {
+  font-size: .81rem;
+  margin-top: 20px;
+  line-height: 1.6;
+}
+
+.b2b-page .b2b-services-section {
+  background: var(--pale);
+}
+
+.b2b-page .b2b-service-grid {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 30px;
+}
+
+.b2b-page .b2b-service-grid article {
+  padding-right: 15px;
+}
+
+.b2b-page .b2b-service-icon {
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: var(--red);
+  margin-bottom: 24px;
+}
+
+.b2b-page .b2b-service-icon .b2b-icon {
+  width: 26px;
+  height: 26px;
+  stroke-width: 1.4;
+}
+
+.b2b-page .b2b-service-grid h3 {
+  font-size: 1.25rem;
+  margin-bottom: 18px;
+}
+
+.b2b-page .b2b-service-grid ul {
+  padding: 0;
+  list-style: none;
+  margin: 0;
+  color: var(--muted);
+  font-size: .98rem;
+  line-height: 1.6;
+}
+
+.b2b-page .b2b-service-grid li {
+  padding: 7px 0 7px 16px;
+  position: relative;
+}
+
+.b2b-page .b2b-service-grid li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 19px;
+  width: 5px;
+  height: 1px;
+  background: var(--red);
+}
+
+.b2b-page .b2b-service-bottom {
+  border-top: 1px solid #d9dee1;
+  padding-top: 32px;
+  margin-top: 38px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 50px;
+}
+
+.b2b-page .b2b-service-bottom p {
+  max-width: 680px;
+  font-size: .99rem;
+}
+
+.b2b-page .b2b-service-bottom .b2b-button {
+  white-space: nowrap;
+  font-size: .94rem;
+  padding: 14px 21px;
+}
+
+.b2b-page .b2b-process-head {
+  text-align: center;
+  margin-bottom: 52px;
+}
+
+.b2b-page .b2b-process-head h2 {
+  line-height: 1.15;
+}
+
+.b2b-page .b2b-process-grid {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 38px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.b2b-page .b2b-process-grid li {
+  border-top: 1px solid var(--line);
+  position: relative;
+  padding-top: 26px;
+}
+
+.b2b-page .b2b-process-grid li::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: 0;
+  width: 32px;
+  height: 3px;
+  background: var(--red);
+}
+
+.b2b-page .b2b-process-grid li>span {
+  font-size: .86rem;
+  color: var(--red);
+  margin-bottom: 20px;
+  display: block;
+}
+
+.b2b-page .b2b-process-grid h3 {
+  font-size: 1.25rem;
+  margin-bottom: 13px;
+}
+
+.b2b-page .b2b-process-grid p {
+  line-height: 1.7;
+}
+
+.b2b-page .b2b-enquiry-section {
+  background: #fff4f3;
+  border-top: 1px solid #f5e6e5;
+}
+
+.b2b-page .b2b-enquiry-layout {
+  display: grid;
+  grid-template-columns: .85fr 1.15fr;
+  gap: 90px;
+  align-items: start;
+}
+
+.b2b-page .b2b-enquiry-intro {
+  padding-top: 22px;
+  position: sticky;
+  top: 124px;
+}
+
+.b2b-page .b2b-enquiry-intro h2 {
+  font-size: clamp(2.7rem,3.7vw,3.6rem);
+  line-height: 1.1;
+}
+
+.b2b-page .b2b-enquiry-intro>p:not(.b2b-eyebrow) {
+  margin-top: 25px;
+  max-width: 390px;
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.b2b-page .b2b-enquiry-benefits {
+  padding: 0;
+  margin: 29px 0;
+  list-style: none;
+  font-size: .99rem;
+}
+
+.b2b-page .b2b-enquiry-benefits li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 0;
+}
+
+.b2b-page .b2b-enquiry-benefits .b2b-icon {
+  color: var(--red);
+  width: 18px;
+  height: 18px;
+}
+
+.b2b-page .b2b-direct-contact {
+  padding-top: 26px;
+  border-top: 1px solid #e6d7d5;
+  margin-top: 33px;
+}
+
+.b2b-page .b2b-direct-contact h3 {
+  font-size: 1.16rem;
+  font-weight: 500;
+  margin-bottom: 19px;
+}
+
+.b2b-page .b2b-direct-contact a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 13px;
+  font-size: .98rem;
+}
+
+.b2b-page .b2b-direct-contact a:hover {
+  color: var(--red);
+}
+
+.b2b-page .b2b-direct-contact .b2b-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--red);
+}
+
+.b2b-page .b2b-direct-contact .b2b-arrow {
+  margin-left: 5px;
+  width: 16px;
+}
+
+.b2b-page .b2b-enquiry-intro>p.b2b-trade-only {
+  font-size: .88rem;
+  color: #7e6665;
+  max-width: 320px;
+  margin-top: 26px;
+}
+
+.b2b-page .b2b-quote-form {
+  background: #fff;
+  border: 1px solid #efdedd;
+  padding: 36px;
+  border-radius: 8px;
+  box-shadow: 0 20px 40px #51282706;
+}
+
+.b2b-page .b2b-form-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 23px;
+  border-bottom: 1px solid var(--line);
+}
+
+.b2b-page .b2b-form-heading .b2b-eyebrow {
+  font-size: .75rem;
+  display: block;
+  margin-bottom: 9px;
+}
+
+.b2b-page .b2b-form-heading h3 {
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+
+.b2b-page .b2b-form-heading>.b2b-icon {
+  width: 27px;
+  color: var(--red);
+}
+
+.b2b-page .b2b-required-note {
+  font-size: .78rem;
+  margin: 18px 0;
+  color: #777;
+}
+
+.b2b-page .b2b-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 16px;
+}
+
+.b2b-page .b2b-quote-form label {
+  font-size: .88rem;
+  font-weight: 500;
+  line-height: 1.5;
+  display: block;
+}
+
+.b2b-page .b2b-quote-form input:not([type=checkbox]),
+.b2b-page .b2b-quote-form select,
+.b2b-page .b2b-quote-form textarea {
+  width: 100%;
+  display: block;
+  border: 1px solid #d8dde0;
+  border-radius: 4px;
+  padding: 11px 12px;
+  margin-top: 6px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 1rem;
+  min-width: 0;
+  line-height: 1.5;
+  min-height: 48px;
+}
+
+.b2b-page .b2b-quote-form input::placeholder,
+.b2b-page .b2b-quote-form textarea::placeholder {
+  color: #858c91;
+  font-weight: 400;
+  font-size: .93rem;
+}
+
+.b2b-page .b2b-quote-form textarea {
+  resize: vertical;
+}
+
+.b2b-page .b2b-quote-form input:focus,
+.b2b-page .b2b-quote-form textarea:focus,
+.b2b-page .b2b-quote-form select:focus {
+  outline: 2px solid #d7192130;
+  border-color: var(--red);
+  outline-offset: 1px;
+}
+
+.b2b-page .b2b-optional {
+  font-weight: 400;
+  color: #737c83;
+  font-size: .77rem;
+}
+
+.b2b-page .b2b-destinations-field {
+  margin: 23px 0;
+  border: 0;
+  padding: 0;
+}
+
+.b2b-page .b2b-destinations-field legend {
+  font-size: .88rem;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.b2b-page .b2b-destination-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.b2b-page .b2b-quote-form .b2b-destination-choices label {
+  position: relative;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.b2b-page .b2b-destination-choices input {
+  position: absolute;
+  left: 12px;
+  top: 13px;
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: var(--red);
+}
+
+.b2b-page .b2b-destination-choices span {
+  display: block;
+  padding: 8px 10px 8px 32px;
+  border: 1px solid #dfe3e5;
+  border-radius: 4px;
+  font-size: .86rem;
+  line-height: 1.6;
+}
+
+.b2b-page .b2b-destination-choices input:checked+span {
+  border-color: var(--red);
+  background: #fff5f5;
+  color: var(--red-dark);
+}
+
+.b2b-page .b2b-destination-choices input:focus-visible+span {
+  outline: 2px solid #3089b2;
+  outline-offset: 2px;
+}
+
+.b2b-page .b2b-field-error {
+  color: var(--red-dark);
+  font-size: .84rem;
+  margin-top: 9px;
+}
+
+.b2b-page .b2b-extra-details {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 17px;
+  margin-top: 19px;
+}
+
+.b2b-page .b2b-extra-details summary {
+  cursor: pointer;
+  font-size: .87rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  list-style: none;
+  color: var(--muted);
+  padding: 8px 0;
+}
+
+.b2b-page .b2b-extra-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.b2b-page .b2b-extra-details summary span {
+  font-size: 1.3rem;
+  color: var(--red);
+}
+
+.b2b-page .b2b-extra-details[open] summary {
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+
+.b2b-page .b2b-extra-details[open] summary span {
+  transform: rotate(45deg);
+}
+
+.b2b-page .b2b-extra-details>label {
+  margin-top: 17px;
+}
+
+.b2b-page .b2b-quote-form .b2b-consent {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: .78rem;
+  font-weight: 400;
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 20px 0;
+}
+
+.b2b-page .b2b-consent input {
+  accent-color: var(--red);
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  margin: 3px 0;
+}
+
+.b2b-page .b2b-consent a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.b2b-page .b2b-form-submit {
+  width: 100%;
+  justify-content: space-between;
+}
+
+.b2b-page .b2b-form-submit:disabled {
+  opacity: .65;
+  cursor: wait;
+  transform: none;
+}
+
+.b2b-page .b2b-form-note {
+  text-align: center;
+  font-size: .78rem;
+  margin-top: 13px;
+  line-height: 1.5;
+}
+
+.b2b-page .b2b-form-status {
+  font-size: .9rem;
+  padding: 12px;
+  margin-top: 15px;
+  border: 1px solid #dfe3e5;
+  background: #f8f9fa;
+  border-radius: 4px;
+  color: var(--ink);
+}
+
+.b2b-page .b2b-form-status.b2b-error {
+  color: #a21219;
+  background: #fff2f2;
+  border-color: #f1cccc;
+}
+
+.b2b-page .b2b-honeypot {
+  position: absolute;
+  left: -10000px;
+  max-width: 1px;
+  overflow: hidden;
+}
+
+.b2b-page .b2b-faq-layout {
+  display: grid;
+  grid-template-columns: .8fr 1.2fr;
+  gap: 75px;
+}
+
+.b2b-page .b2b-faq-layout h2 {
+  margin-bottom: 23px;
+}
+
+.b2b-page .b2b-faq-layout>div>p:not(.b2b-eyebrow) {
+  line-height: 1.85;
+}
+
+.b2b-page .b2b-faq-layout .b2b-text-link {
+  margin-top: 7px;
+}
+
+.b2b-page .b2b-faq-list {
+  border-top: 1px solid var(--line);
+}
+
+.b2b-page .b2b-faq-list details {
+  border-bottom: 1px solid var(--line);
+}
+
+.b2b-page .b2b-faq-list summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  font-size: 1.03rem;
+  font-weight: 500;
+  padding: 23px 0;
+  line-height: 1.45;
+}
+
+.b2b-page .b2b-faq-list summary::-webkit-details-marker {
+  display: none;
+}
+
+.b2b-page .b2b-faq-list summary .b2b-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--red);
+}
+
+.b2b-page .b2b-faq-list details[open] .b2b-icon {
+  transform: rotate(45deg);
+}
+
+.b2b-page .b2b-faq-list details>p {
+  padding: 0 35px 25px 0;
+  line-height: 1.7;
+  font-size: 1rem;
+}
+
+.b2b-page .b2b-faq-list details>p a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  color: var(--red);
+}
+
+.b2b-page .b2b-closing-banner {
+  background: var(--red);
+  color: white;
+  padding: 50px 0;
+}
+
+.b2b-page .b2b-closing-banner>.b2b-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.b2b-page .b2b-closing-banner p {
+  color: #ffe2e3;
+  font-size: .75rem;
+  letter-spacing: .12em;
+  margin-bottom: 15px;
+}
+
+.b2b-page .b2b-closing-banner h2 {
+  font-size: 2.1rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.b2b-page .b2b-closing-banner .b2b-button {
+  flex-shrink: 0;
+}
+
+.b2b-page footer {
+  padding: 51px 0 0;
+  background: #fff;
+}
+
+.b2b-page .b2b-footer-main {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr;
+  gap: 55px;
+  padding-bottom: 39px;
+}
+
+.b2b-page .b2b-footer-brand {
+  display: flex;
+  gap: 17px;
+  align-items: center;
+}
+
+.b2b-page .b2b-footer-brand img {
+  width: 65px;
+  height: auto;
+}
+
+.b2b-page .b2b-footer-brand span {
+  font-size: .88rem;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.b2b-page .b2b-footer-main strong {
+  display: block;
+  font-weight: 500;
+  font-size: .9rem;
+  margin-bottom: 14px;
+}
+
+.b2b-page .b2b-footer-main p,
+.b2b-page .b2b-footer-main>div>a {
+  display: block;
+  font-size: .88rem;
+  line-height: 1.85;
+  color: var(--muted);
+}
+
+.b2b-page .b2b-footer-main a:hover {
+  color: var(--red);
+}
+
+.b2b-page .b2b-footer-bottom {
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  gap: 25px;
+  padding-block: 23px;
+  font-size: .75rem;
+  color: var(--muted);
+}
+
+.b2b-page .b2b-footer-bottom>div {
+  display: flex;
+  gap: 25px;
+}
+
+.b2b-page .b2b-footer-bottom a:hover {
+  text-decoration: underline;
+}
+
+.b2b-page .b2b-mobile-cta {
+  display: none;
+}
+
+@media(min-width:1600px) {
+  .b2b-page .b2b-hero {
+    min-height: 725px;
+  }
+
+  .b2b-page .b2b-hero-content {
+    padding-top: 94px;
+    padding-bottom: 130px;
+  }
+
+  .b2b-page .b2b-hero h1 {
+    font-size: 4.65rem;
+  }
+}
+
+@media(max-width:1150px) {
+  .b2b-page .b2b-container {
+    width: calc(100% - 56px);
+  }
+
+  .b2b-page .b2b-brand span {
+    display: none;
+  }
+
+  .b2b-page nav {
+    gap: 22px;
+  }
+
+  .b2b-page .b2b-nav-row {
+    gap: 20px;
+  }
+
+  .b2b-page .b2b-hero h1 {
+    font-size: 3.8rem;
+  }
+
+  .b2b-page .b2b-hero-description {
+    max-width: 540px;
+  }
+
+  .b2b-page .b2b-hero-actions {
+    gap: 20px;
+  }
+
+  .b2b-page .b2b-hero-link {
+    font-size: .9rem;
+  }
+
+  .b2b-page .b2b-image-caption {
+    right: 28px;
+    bottom: 71px;
+  }
+
+  .b2b-page .b2b-proof-strip>div {
+    padding-inline: 22px;
+  }
+
+  .b2b-page .b2b-proof-strip strong {
+    font-size: 2rem;
+  }
+
+  .b2b-page .b2b-proof-strip strong span {
+    font-size: 1.1rem;
+  }
+
+  .b2b-page .b2b-proof-strip p {
+    font-size: .83rem;
+  }
+
+  .b2b-page .b2b-section-intro {
+    gap: 60px;
+  }
+
+  .b2b-page .b2b-office-layout {
+    gap: 65px;
+  }
+
+  .b2b-page .b2b-destination-content {
+    padding: 22px;
+  }
+
+  .b2b-page .b2b-destination-photo {
+    height: 230px;
+  }
+
+  .b2b-page .b2b-destination-content h3 {
+    font-size: 1.36rem;
+  }
+
+  .b2b-page .b2b-service-grid {
+    gap: 24px;
+  }
+
+  .b2b-page .b2b-service-grid h3 {
+    font-size: 1.12rem;
+  }
+
+  .b2b-page .b2b-service-grid article {
+    padding: 0;
+  }
+
+  .b2b-page .b2b-service-grid ul {
+    font-size: .94rem;
+  }
+
+  .b2b-page .b2b-enquiry-layout {
+    gap: 50px;
+  }
+
+  .b2b-page .b2b-quote-form {
+    padding: 28px;
+  }
+
+  .b2b-page .b2b-enquiry-intro h2 {
+    font-size: 3rem;
+  }
+
+  .b2b-page .b2b-footer-main {
+    gap: 25px;
+  }
+
+  .b2b-page .b2b-footer-bottom {
+    font-size: .75rem;
+  }
+
+  .b2b-page .b2b-footer-bottom>div {
+    gap: 17px;
+  }
+
+  .b2b-page .b2b-more-destinations {
+    gap: 17px;
+  }
+
+  .b2b-page .b2b-more-destinations button {
+    padding-inline: 18px;
+  }
+}
+
+@media(max-width:900px) {
+  .b2b-page .b2b-section {
+    padding: 72px 0;
+  }
+
+  .b2b-page .b2b-nav-row {
+    min-height: 80px;
+  }
+
+  .b2b-page .b2b-brand img {
+    width: 59px;
+  }
+
+  .b2b-page nav {
+    gap: 17px;
+    font-size: .88rem;
+  }
+
+  .b2b-page .b2b-nav-actions .b2b-button {
+    font-size: .85rem;
+    padding: 11px 13px;
+    gap: 10px;
+  }
+
+  .b2b-page .b2b-hero {
+    min-height: 615px;
+  }
+
+  .b2b-page .b2b-hero-content {
+    padding-top: 66px;
+    padding-bottom: 100px;
+  }
+
+  .b2b-page .b2b-hero h1 {
+    font-size: 3.45rem;
+  }
+
+  .b2b-page .b2b-hero-description {
+    font-size: 1.05rem;
+    max-width: 510px;
+  }
+
+  .b2b-page .b2b-hero-shade {
+    background: linear-gradient(90deg,#0b202bef, #0b202bb3 60%,#0b202b55);
+  }
+
+  .b2b-page .b2b-hero-actions {
+    flex-wrap: wrap;
+    gap: 18px;
+  }
+
+  .b2b-page .b2b-hero-actions .b2b-button {
+    font-size: .94rem;
+  }
+
+  .b2b-page .b2b-image-caption {
+    display: none;
+  }
+
+  .b2b-page .b2b-proof-strip {
+    padding: 23px 0;
+  }
+
+  .b2b-page .b2b-proof-strip>div {
+    padding-inline: 16px;
+  }
+
+  .b2b-page .b2b-proof-strip strong {
+    font-size: 1.65rem;
+  }
+
+  .b2b-page .b2b-proof-strip strong span {
+    font-size: .95rem;
+  }
+
+  .b2b-page .b2b-proof-strip p {
+    font-size: .8rem;
+  }
+
+  .b2b-page .b2b-section-intro {
+    gap: 45px;
+  }
+
+  .b2b-page .b2b-section-intro>p {
+    font-size: 1rem;
+  }
+
+  .b2b-page .b2b-advantage-grid {
+    gap: 28px;
+  }
+
+  .b2b-page .b2b-advantage-grid h3 {
+    font-size: 1.19rem;
+  }
+
+  .b2b-page .b2b-advantage-grid p {
+    font-size: .95rem;
+  }
+
+  .b2b-page .b2b-trade-line>span {
+    font-size: .75rem;
+    max-width: 260px;
+  }
+
+  .b2b-page .b2b-trade-line a {
+    font-size: .9rem;
+  }
+
+  .b2b-page .b2b-office-layout {
+    gap: 46px;
+    grid-template-columns: .85fr 1.15fr;
+  }
+
+  .b2b-page .b2b-office-intro h2 {
+    font-size: 2.7rem;
+  }
+
+  .b2b-page .b2b-office-intro .b2b-eyebrow {
+    font-size: .75rem;
+  }
+
+  .b2b-page .b2b-office-intro>p:not(.b2b-eyebrow) {
+    font-size: 1rem;
+  }
+
+  .b2b-page .b2b-office-intro .b2b-text-link {
+    font-size: .82rem;
+  }
+
+  .b2b-page .b2b-office-country {
+    font-size: .75rem;
+    letter-spacing: .07em;
+  }
+
+  .b2b-page .b2b-office-city {
+    font-size: 1.15rem;
+  }
+
+  .b2b-page .b2b-office-list summary {
+    gap: 10px;
+  }
+
+  .b2b-page .b2b-destination-cards {
+    gap: 16px;
+  }
+
+  .b2b-page .b2b-destination-photo {
+    height: 195px;
+  }
+
+  .b2b-page .b2b-destination-content {
+    padding: 18px;
+  }
+
+  .b2b-page .b2b-destination-content h3 {
+    font-size: 1.3rem;
+  }
+
+  .b2b-page .b2b-photo-tag {
+    font-size: .75rem;
+    left: 12px;
+    top: 12px;
+    padding: 6px 8px;
+  }
+
+  .b2b-page .b2b-card-overline {
+    font-size: .75rem;
+    letter-spacing: .07em;
+  }
+
+  .b2b-page .b2b-destination-content .b2b-card-detail {
+    font-size: .91rem;
+  }
+
+  .b2b-page .b2b-destination-content .b2b-text-link {
+    font-size: .84rem;
+    align-items: flex-start;
+  }
+
+  .b2b-page .b2b-more-destinations {
+    grid-template-columns: repeat(2,1fr);
+  }
+
+  .b2b-page .b2b-more-destinations>div {
+    grid-column: 1/-1;
+    display: flex;
+    gap: 18px;
+    align-items: center;
+  }
+
+  .b2b-page .b2b-more-destinations>div .b2b-eyebrow {
+    margin: 0;
+  }
+
+  .b2b-page .b2b-more-destinations button:first-of-type {
+    border: 0;
+    padding-left: 0;
+  }
+
+  .b2b-page .b2b-service-grid {
+    grid-template-columns: repeat(2,1fr);
+    gap: 36px 45px;
+  }
+
+  .b2b-page .b2b-service-grid h3 {
+    font-size: 1.25rem;
+  }
+
+  .b2b-page .b2b-service-grid ul {
+    font-size: 1rem;
+  }
+
+  .b2b-page .b2b-service-bottom {
+    gap: 30px;
+  }
+
+  .b2b-page .b2b-service-bottom p {
+    font-size: .93rem;
+  }
+
+  .b2b-page .b2b-service-bottom .b2b-button {
+    font-size: .86rem;
+    gap: 15px;
+    white-space: normal;
+    min-width: 220px;
+  }
+
+  .b2b-page .b2b-process-grid {
+    gap: 24px;
+  }
+
+  .b2b-page .b2b-process-grid h3 {
+    font-size: 1.12rem;
+  }
+
+  .b2b-page .b2b-process-grid p {
+    font-size: .93rem;
+  }
+
+  .b2b-page .b2b-enquiry-layout {
+    gap: 36px;
+    grid-template-columns: .8fr 1.2fr;
+  }
+
+  .b2b-page .b2b-enquiry-intro h2 {
+    font-size: 2.55rem;
+  }
+
+  .b2b-page .b2b-quote-form {
+    padding: 24px;
+  }
+
+  .b2b-page .b2b-form-grid {
+    gap: 16px 12px;
+  }
+
+  .b2b-page .b2b-form-heading h3 {
+    font-size: 1.24rem;
+  }
+
+  .b2b-page .b2b-quote-form label {
+    font-size: .82rem;
+  }
+
+  .b2b-page .b2b-quote-form input::placeholder {
+    font-size: .85rem;
+  }
+
+  .b2b-page .b2b-destination-choices span {
+    font-size: .81rem;
+  }
+
+  .b2b-page .b2b-destination-choices input {
+    top: 12px;
+  }
+
+  .b2b-page .b2b-enquiry-intro>p:not(.b2b-eyebrow) {
+    font-size: .97rem;
+  }
+
+  .b2b-page .b2b-enquiry-benefits {
+    font-size: .9rem;
+  }
+
+  .b2b-page .b2b-direct-contact a {
+    font-size: .89rem;
+    gap: 8px;
+  }
+
+  .b2b-page .b2b-enquiry-intro>p.b2b-trade-only {
+    font-size: .83rem;
+  }
+
+  .b2b-page .b2b-faq-layout {
+    grid-template-columns: .7fr 1.3fr;
+    gap: 40px;
+  }
+
+  .b2b-page .b2b-closing-banner h2 {
+    font-size: 1.8rem;
+  }
+
+  .b2b-page .b2b-closing-banner .b2b-button {
+    font-size: .89rem;
+    padding: 14px 18px;
+    gap: 15px;
+  }
+
+  .b2b-page .b2b-footer-main {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .b2b-page .b2b-footer-brand {
+    grid-column: 1/-1;
+  }
+
+  .b2b-page .b2b-footer-bottom {
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+
+@media(max-width:700px) {
+  html {
+    scroll-padding-top: 90px;
+  }
+
+  .b2b-page .b2b-container {
+    width: calc(100% - 40px);
+  }
+
+  .b2b-page .b2b-section {
+    padding: 58px 0;
+  }
+
+  .b2b-page .b2b-topbar-inner {
+    font-size: .75rem;
+    min-height: 30px;
+    letter-spacing: .08em;
+    justify-content: center;
+  }
+
+  .b2b-page .b2b-topbar a {
+    display: none;
+  }
+
+  .b2b-page .b2b-nav-row {
+    min-height: 75px;
+    gap: 15px;
+  }
+
+  .b2b-page .b2b-brand img {
+    width: 53px;
+  }
+
+  .b2b-page .b2b-menu-toggle {
+    display: block;
+  }
+
+  .b2b-page .b2b-nav-actions {
+    gap: 10px;
+  }
+
+  .b2b-page .b2b-nav-actions .b2b-button {
+    font-size: .8rem;
+    padding: 10px 13px;
+    gap: 8px;
+  }
+
+  .b2b-page .b2b-nav-actions .b2b-button .b2b-icon {
+    width: 16px;
+  }
+
+  .b2b-page .b2b-header nav {
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    padding: 15px 20px 22px;
+    background: #fff;
+    box-shadow: 0 10px 20px #14252c12;
+    border-bottom: 1px solid var(--line);
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    font-size: 1rem;
+  }
+
+  .b2b-page .b2b-header nav.b2b-is-open {
+    display: flex;
+  }
+
+  .b2b-page .b2b-header nav a {
+    padding: 12px 0;
+  }
+
+  .b2b-page .b2b-hero {
+    min-height: auto;
+  }
+
+  .b2b-page .b2b-hero-content {
+    padding-top: 51px;
+    padding-bottom: 87px;
+  }
+
+  .b2b-page .b2b-hero h1 {
+    font-size: clamp(2.65rem,7vw,3.2rem);
+    line-height: 1.08;
+  }
+
+  .b2b-page .b2b-hero .b2b-eyebrow {
+    font-size: .75rem;
+    letter-spacing: .1em;
+    margin-bottom: 21px;
+  }
+
+  .b2b-page .b2b-hero-image {
+    object-position: 60% center;
+  }
+
+  .b2b-page .b2b-hero-shade {
+    background: linear-gradient(90deg,#0a202bee,#0a202b9c),linear-gradient(0deg,#0a202bc4,transparent);
+  }
+
+  .b2b-page .b2b-hero-description {
+    font-size: 1rem;
+    line-height: 1.65;
+    max-width: 460px;
+    margin-top: 23px;
+  }
+
+  .b2b-page .b2b-hero-actions {
+    margin-top: 27px;
+    gap: 15px;
+    align-items: flex-start;
+  }
+
+  .b2b-page .b2b-hero-actions .b2b-button {
+    font-size: .95rem;
+    gap: 20px;
+    padding: 15px 19px;
+  }
+
+  .b2b-page .b2b-hero-link {
+    font-size: .89rem;
+    margin-top: 4px;
+  }
+
+  .b2b-page .b2b-hero-reassurance {
+    gap: 13px;
+    flex-wrap: wrap;
+    font-size: .75rem;
+    margin-top: 23px;
+  }
+
+  .b2b-page .b2b-proof-strip {
+    grid-template-columns: 1fr 1fr;
+    margin-top: -33px;
+    padding: 9px 19px;
+    border-radius: 6px;
+    box-shadow: 0 9px 20px #14252c09;
+  }
+
+  .b2b-page .b2b-proof-strip>div {
+    padding: 15px 0;
+    border-right: 0;
+  }
+
+  .b2b-page .b2b-proof-strip>div:nth-child(odd) {
+    border-right: 1px solid var(--line);
+    padding-right: 18px;
+  }
+
+  .b2b-page .b2b-proof-strip>div:nth-child(even) {
+    padding-left: 20px;
+  }
+
+  .b2b-page .b2b-proof-strip>div:nth-child(-n+2) {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .b2b-page .b2b-proof-strip strong {
+    font-size: 1.7rem;
+  }
+
+  .b2b-page .b2b-proof-strip strong span {
+    font-size: .98rem;
+  }
+
+  .b2b-page .b2b-proof-strip p {
+    font-size: .77rem;
+    margin-top: 3px;
+    line-height: 1.5;
+  }
+
+  .b2b-page .b2b-eyebrow {
+    font-size: .75rem;
+    margin-bottom: 15px;
+  }
+
+  .b2b-page h2 {
+    font-size: 2.2rem;
+    line-height: 1.13;
+  }
+
+  .b2b-page .b2b-section-intro {
+    grid-template-columns: 1fr;
+    gap: 23px;
+    margin-bottom: 34px;
+  }
+
+  .b2b-page .b2b-section-intro>p {
+    font-size: 1rem;
+    max-width: none;
+  }
+
+  .b2b-page .b2b-advantage-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .b2b-page .b2b-advantage-grid article {
+    padding-top: 23px;
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 10px 7px;
+  }
+
+  .b2b-page .b2b-advantage-grid .b2b-number {
+    grid-row: 1/3;
+    margin: 0;
+    padding-top: 2px;
+  }
+
+  .b2b-page .b2b-advantage-grid h3 {
+    font-size: 1.25rem;
+    margin: 0;
+  }
+
+  .b2b-page .b2b-advantage-grid p {
+    font-size: 1rem;
+  }
+
+  .b2b-page .b2b-trade-line {
+    margin-top: 28px;
+    padding-top: 21px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .b2b-page .b2b-trade-line>span {
+    max-width: none;
+    font-size: .75rem;
+  }
+
+  .b2b-page .b2b-office-layout {
+    grid-template-columns: 1fr;
+    gap: 38px;
+  }
+
+  .b2b-page .b2b-office-intro h2 {
+    font-size: 2.9rem;
+  }
+
+  .b2b-page .b2b-office-intro>p:not(.b2b-eyebrow) {
+    max-width: none;
+    font-size: 1rem;
+  }
+
+  .b2b-page .b2b-office-intro .b2b-text-link {
+    font-size: .9rem;
+  }
+
+  .b2b-page .b2b-office-footnote {
+    margin-top: 25px;
+    padding-top: 21px;
+    font-size: .84rem;
+  }
+
+  .b2b-page .b2b-directory-heading h3 {
+    font-size: 1.25rem;
+  }
+
+  .b2b-page .b2b-office-country {
+    font-size: .75rem;
+  }
+
+  .b2b-page .b2b-office-city {
+    font-size: 1.2rem;
+  }
+
+  .b2b-page .b2b-office-list summary {
+    padding: 15px 0;
+    grid-template-columns: 1fr 1fr 18px;
+  }
+
+  .b2b-page .b2b-destination-cards {
+    grid-template-columns: 1fr;
+    gap: 23px;
+  }
+
+  .b2b-page .b2b-destination-photo {
+    height: 255px;
+  }
+
+  .b2b-page .b2b-destination-content {
+    padding: 25px;
+  }
+
+  .b2b-page .b2b-destination-content h3 {
+    font-size: 1.6rem;
+  }
+
+  .b2b-page .b2b-card-overline {
+    font-size: .75rem;
+  }
+
+  .b2b-page .b2b-photo-tag {
+    font-size: .75rem;
+    left: 18px;
+    top: 18px;
+    padding: 8px 11px;
+  }
+
+  .b2b-page .b2b-destination-content p {
+    font-size: .96rem;
+  }
+
+  .b2b-page .b2b-destination-content .b2b-card-detail {
+    font-size: 1rem;
+  }
+
+  .b2b-page .b2b-destination-content .b2b-text-link {
+    font-size: .97rem;
+    margin-top: 22px;
+  }
+
+  .b2b-page .b2b-card-rule {
+    margin: 18px 0 16px;
+  }
+
+  .b2b-page .b2b-more-destinations {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 19px 0 0;
+    margin-top: 28px;
+  }
+
+  .b2b-page .b2b-more-destinations>div {
+    display: block;
+    margin-bottom: 17px;
+  }
+
+  .b2b-page .b2b-more-destinations>div .b2b-eyebrow {
+    margin-bottom: 4px;
+  }
+
+  .b2b-page .b2b-more-destinations p {
+    font-size: .9rem;
+  }
+
+  .b2b-page .b2b-more-destinations button,
+  .b2b-page .b2b-more-destinations button:first-of-type {
+    padding: 16px 28px 16px 0;
+    border: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .b2b-page .b2b-more-destinations strong {
+    font-size: 1.15rem;
+  }
+
+  .b2b-page .b2b-more-destinations button>span {
+    font-size: .9rem;
+  }
+
+  .b2b-page .b2b-more-destinations .b2b-icon {
+    top: 22px;
+  }
+
+  .b2b-page .b2b-destination-note {
+    font-size: .8rem;
+    margin-top: 18px;
+  }
+
+  .b2b-page .b2b-service-grid {
+    gap: 32px 23px;
+  }
+
+  .b2b-page .b2b-service-grid h3 {
+    font-size: 1.17rem;
+    line-height: 1.2;
+  }
+
+  .b2b-page .b2b-service-grid ul {
+    font-size: .95rem;
+  }
+
+  .b2b-page .b2b-service-icon {
+    margin-bottom: 19px;
+    width: 48px;
+    height: 48px;
+  }
+
+  .b2b-page .b2b-service-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 23px;
+    margin-top: 30px;
+    padding-top: 23px;
+  }
+
+  .b2b-page .b2b-service-bottom p {
+    font-size: .95rem;
+  }
+
+  .b2b-page .b2b-service-bottom .b2b-button {
+    font-size: .94rem;
+    gap: 17px;
+  }
+
+  .b2b-page .b2b-process-head {
+    text-align: left;
+    margin-bottom: 33px;
+  }
+
+  .b2b-page .b2b-process-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 31px 24px;
+  }
+
+  .b2b-page .b2b-process-grid h3 {
+    font-size: 1.2rem;
+  }
+
+  .b2b-page .b2b-process-grid p {
+    font-size: .97rem;
+  }
+
+  .b2b-page .b2b-process-grid li>span {
+    margin-bottom: 14px;
+  }
+
+  .b2b-page .b2b-enquiry-layout {
+    grid-template-columns: 1fr;
+    gap: 35px;
+  }
+
+  .b2b-page .b2b-enquiry-intro {
+    position: static;
+    padding-top: 0;
+  }
+
+  .b2b-page .b2b-enquiry-intro h2 {
+    font-size: 2.85rem;
+  }
+
+  .b2b-page .b2b-enquiry-intro>p:not(.b2b-eyebrow) {
+    max-width: 100%;
+    font-size: 1rem;
+    margin-top: 22px;
+  }
+
+  .b2b-page .b2b-enquiry-benefits {
+    font-size: .94rem;
+    margin-top: 24px;
+    margin-bottom: 20px;
+  }
+
+  .b2b-page .b2b-direct-contact {
+    margin-top: 23px;
+    padding-top: 23px;
+  }
+
+  .b2b-page .b2b-direct-contact a {
+    font-size: .98rem;
+    gap: 11px;
+  }
+
+  .b2b-page .b2b-enquiry-intro>p.b2b-trade-only {
+    font-size: .88rem;
+    max-width: 100%;
+  }
+
+  .b2b-page .b2b-quote-form {
+    padding: 25px 21px;
+  }
+
+  .b2b-page .b2b-form-heading h3 {
+    font-size: 1.33rem;
+  }
+
+  .b2b-page .b2b-quote-form label {
+    font-size: .86rem;
+  }
+
+  .b2b-page .b2b-quote-form input::placeholder {
+    font-size: .9rem;
+  }
+
+  .b2b-page .b2b-form-grid {
+    gap: 17px 14px;
+  }
+
+  .b2b-page .b2b-form-heading>.b2b-icon {
+    display: none;
+  }
+
+  .b2b-page .b2b-destination-choices span {
+    font-size: .83rem;
+  }
+
+  .b2b-page .b2b-destination-choices input {
+    top: 12px;
+  }
+
+  .b2b-page .b2b-quote-form .b2b-consent {
+    font-size: .79rem;
+  }
+
+  .b2b-page .b2b-form-note {
+    font-size: .78rem;
+  }
+
+  .b2b-page .b2b-faq-layout {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .b2b-page .b2b-faq-layout h2 {
+    margin-bottom: 18px;
+  }
+
+  .b2b-page .b2b-faq-list summary {
+    font-size: 1.02rem;
+    padding: 21px 0;
+  }
+
+  .b2b-page .b2b-faq-list details>p {
+    font-size: .98rem;
+    padding-right: 10px;
+  }
+
+  .b2b-page .b2b-closing-banner {
+    padding: 39px 0;
+  }
+
+  .b2b-page .b2b-closing-banner>.b2b-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 25px;
+  }
+
+  .b2b-page .b2b-closing-banner h2 {
+    font-size: 2rem;
+    max-width: 350px;
+  }
+
+  .b2b-page .b2b-closing-banner p {
+    font-size: .75rem;
+  }
+
+  .b2b-page .b2b-closing-banner .b2b-button {
+    font-size: .97rem;
+    padding: 15px 20px;
+  }
+
+  .b2b-page .b2b-footer-main {
+    grid-template-columns: 1fr;
+    gap: 29px;
+    padding-bottom: 30px;
+  }
+
+  .b2b-page .b2b-footer-brand {
+    grid-column: auto;
+  }
+
+  .b2b-page .b2b-footer-main strong {
+    margin-bottom: 10px;
+  }
+
+  .b2b-page .b2b-footer-main p,
+  .b2b-page .b2b-footer-main>div>a {
+    font-size: .91rem;
+  }
+
+  .b2b-page .b2b-footer-brand span {
+    font-size: .9rem;
+  }
+
+  .b2b-page .b2b-footer-bottom {
+    font-size: .75rem;
+    gap: 17px;
+    padding-bottom: 24px;
+  }
+
+  .b2b-page .b2b-footer-bottom>div {
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .b2b-page .b2b-mobile-cta {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 25;
+    background: #fff;
+    box-shadow: 0 -3px 18px #14252c10;
+    border-top: 1px solid var(--line);
+    padding: 10px 20px calc(10px + env(safe-area-inset-bottom));
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+    transition: transform .2s;
+  }
+
+  .b2b-page .b2b-mobile-cta .b2b-button {
+    flex: 1;
+    padding: 12px 15px;
+    font-size: .92rem;
+    gap: 17px;
+  }
+
+  .b2b-page .b2b-mobile-cta>a:last-child {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 47px;
+    border: 1px solid #c8d0d5;
+    border-radius: 5px;
+    color: var(--ink);
+  }
+
+  .b2b-page .b2b-mobile-cta.b2b-is-hidden {
+    transform: translateY(120%);
+  }
+
+  .b2b-page footer {
+    padding-bottom: 80px;
+  }
+}
+
+@media(max-width:380px) {
+  .b2b-page .b2b-container {
+    width: calc(100% - 32px);
+  }
+
+  .b2b-page .b2b-hero h1 {
+    font-size: 2.42rem;
+  }
+
+  .b2b-page .b2b-nav-actions .b2b-button {
+    padding: 10px 11px;
+    font-size: .75rem;
+  }
+
+  .b2b-page .b2b-nav-actions .b2b-button .b2b-icon {
+    display: none;
+  }
+
+  .b2b-page .b2b-menu-toggle {
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+  }
+
+  .b2b-page .b2b-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .b2b-page .b2b-quote-form {
+    padding: 23px 18px;
+  }
+
+  .b2b-page .b2b-proof-strip {
+    padding-inline: 14px;
+  }
+
+  .b2b-page .b2b-proof-strip>div:nth-child(even) {
+    padding-left: 15px;
+  }
+
+  .b2b-page .b2b-proof-strip strong {
+    font-size: 1.5rem;
+  }
+
+  .b2b-page .b2b-proof-strip strong span {
+    font-size: .88rem;
+  }
+
+  .b2b-page .b2b-proof-strip p {
+    font-size: .75rem;
+  }
+
+  .b2b-page .b2b-service-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .b2b-page .b2b-service-grid h3 {
+    font-size: 1.3rem;
+  }
+
+  .b2b-page .b2b-service-grid ul {
+    font-size: 1rem;
+  }
+
+  .b2b-page .b2b-process-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .b2b-page .b2b-process-grid p {
+    font-size: 1rem;
+  }
+}
+
+@media(prefers-reduced-motion:reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .b2b-page *,
+  .b2b-page *::before,
+  .b2b-page *::after {
+    animation: none!important;
+    transition: none!important;
+  }
+}
+
+.b2b-page .b2b-photo-credits {
+  font-size: .75rem;
+  padding-bottom: 22px;
+  color: var(--muted);
+}
+
+.b2b-page .b2b-photo-credits summary {
+  cursor: pointer;
+}
+
+.b2b-page .b2b-photo-credits p {
+  margin-top: 8px;
+  font-size: .75rem;
+  line-height: 1.7;
+  max-width: 900px;
+}
+
+.b2b-page .b2b-photo-credits a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.b2b-page .b2b-advantage-grid p,
+.b2b-page .b2b-service-grid ul,
+.b2b-page .b2b-process-grid p,
+.b2b-page .b2b-destination-content .b2b-card-detail {
+  font-size: 1rem;
+}
+
+.b2b-page .b2b-quote-form label {
+  font-size: .875rem;
+}
+
+.b2b-page .b2b-nav-actions .b2b-button {
+  font-size: .875rem;
+}
+
+/* WhatsApp uses the Simple Icons brand mark; the contact number is not displayed. */
+
+.b2b-page .b2b-footer-main>div>a.b2b-whatsapp-icon-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: 8px 0;
+  border: 1px solid #c6ded6;
+  border-radius: 7px;
+  color: #128c7e;
+  background: #f2fbf6;
+}
+
+.b2b-page .b2b-footer-main>div>a.b2b-whatsapp-icon-link:hover {
+  background: #128c7e;
+  border-color: #128c7e;
+  color: #fff;
+}
+
+.b2b-page .b2b-whatsapp-icon-link .b2b-icon {
+  width: 25px;
+  height: 25px;
+}
+
+.b2b-page .b2b-direct-contact [data-contact="whatsapp"] .b2b-icon:first-child,
+.b2b-page .b2b-mobile-cta>a:last-child .b2b-icon {
+  color: #128c7e;
+}
