@@ -185,6 +185,50 @@ jobs:
             echo "did not become healthy"; sudo docker compose -f /opt/dookwebsite/docker-compose.prod.yml logs --tail=60; exit 1
           '
 
+      # The dookblog container has no network of its own: its compose file sets
+      # network_mode: "container:dookwebsite-app-1", which Docker resolves to a
+      # container ID when THAT container is created, not on every start.
+      #
+      # `docker compose up -d` above always RECREATES this container, because the
+      # image tag is ${GITHUB_SHA} and so the config hash changes every deploy.
+      # Recreating destroys the old network namespace, and the blog is left
+      # holding a reference to a container that no longer exists. Its own
+      # `restart: always` cannot fix that - the recorded ID never comes back - so
+      # the blog stays dark until something recreates IT. On 2026-09-12 that went
+      # unnoticed for 18 days.
+      #
+      # --force-recreate is required, not cosmetic: without it compose sees an
+      # unchanged config and merely tries to START the existing container, which
+      # fails against the dead namespace exactly as the restart policy does.
+      #
+      # IMAGE is read back off the container because dookblog's compose file
+      # defaults to `dookblog:prod`, which does not exist here - the real image is
+      # the SHA-tagged Artifact Registry reference its own deploy pushed. No
+      # docker login is needed: that image is already on this host, and the prune
+      # above only removes dangling images.
+      #
+      # continue-on-error so a blog problem reports itself without marking a
+      # perfectly good dookwebsite deploy as failed.
+      - name: Reattach the blog container
+        continue-on-error: true
+        run: |
+          gcloud compute ssh "$VM_NAME" --zone="$ZONE" --project="$PROJECT_ID" --quiet --command='
+            set -uo pipefail
+            [ -f /opt/dookblog/docker-compose.prod.yml ] || { echo "dookblog not installed on this host - nothing to do"; exit 0; }
+            IMG=$(sudo docker inspect --format "{{.Config.Image}}" dookblog-app-1 2>/dev/null || true)
+            [ -n "$IMG" ] || { echo "no dookblog container - run its own deploy workflow once"; exit 0; }
+            cd /opt/dookblog
+            sudo env IMAGE="$IMG" docker compose -f docker-compose.prod.yml up -d --force-recreate
+            for i in $(seq 1 12); do
+              code=$(sudo docker exec dookwebsite-app-1 curl -fsS -o /dev/null -w "%{http_code}" --max-time 15 http://127.0.0.1:8001/api/all-posts 2>/dev/null || true)
+              if [ "$code" = "200" ]; then echo "blog reattached and serving (HTTP $code)"; exit 0; fi
+              sleep 5
+            done
+            echo "WARNING: /blog/ is down - the blog did not answer after being recreated"
+            sudo docker logs --tail=40 dookblog-app-1 || true
+            exit 1
+          '
+
       - name: Summary
         if: always()
         run: |
